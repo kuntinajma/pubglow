@@ -3,27 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="PubGlow - Platform modern untuk menemukan jurnal ilmiah yang tepat. Glow Up Your Academic Game!">
-  <title>PubGlow - Glow Up Your Academic Game</title>
+  <meta name="description" content="PubGlow - Platform modern untuk menemukan jurnal ilmiah yang tepat">
+  <title>PubGlow</title>
   
-  <!-- CSS -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/pages.css">
   
-  <!-- Favicon (optional) -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar">
     <div class="container container-xl navbar-container">
-      <a href="index.html" class="navbar-brand">
-        <span>✨</span>
-        <span>PubGlow</span>
-      </a>
+      <a href="index.html" class="navbar-brand">PubGlow</a>
       
       <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle menu">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -35,11 +30,10 @@
       
       <ul class="navbar-menu" id="navbarMenu">
         <li><a href="index.html" class="navbar-link active">Beranda</a></li>
-        <li><a href="jurnal.html" class="navbar-link">List Jurnal</a></li>
+        <li><a href="jurnal.html" class="navbar-link">Jurnal</a></li>
         <li><a href="blog.html" class="navbar-link">Blog</a></li>
         <li><a href="submit-jurnal.html" class="navbar-link">Usulkan Jurnal</a></li>
         <li><a href="submit-artikel.html" class="navbar-link">Usulkan Artikel</a></li>
-        <li><a href="admin.html" class="navbar-link" style="color: var(--color-accent);">Admin</a></li>
       </ul>
     </div>
   </nav>
@@ -47,18 +41,13 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="container container-lg hero-content">
-      <h1 class="hero-title animate-slideUp">🌟 PubGlow</h1>
-      <p class="hero-tagline animate-slideUp" style="animation-delay: 0.1s;">Glow Up Your Academic Game</p>
-      <p class="hero-description animate-slideUp" style="animation-delay: 0.2s;">
+      <h1 class="hero-title animate-slideUp">PubGlow</h1>
+      <p class="hero-description animate-slideUp" style="animation-delay: 0.1s;">
         Platform modern untuk menemukan jurnal ilmiah yang tepat. Lengkap dengan informasi akreditasi, biaya, waktu review, dan fast track.
       </p>
-      <div class="hero-actions animate-slideUp" style="animation-delay: 0.3s;">
-        <a href="jurnal.html" class="btn btn-lg" style="background: white; color: var(--color-primary-start); font-weight: 600;">
-          🔍 Cari Jurnal
-        </a>
-        <a href="blog.html" class="btn btn-lg btn-outline" style="border-color: white; color: white;">
-          📝 Baca Blog
-        </a>
+      <div class="hero-actions animate-slideUp" style="animation-delay: 0.2s;">
+        <a href="jurnal.html" class="btn btn-primary">Cari Jurnal</a>
+        <a href="blog.html" class="btn btn-outline">Baca Blog</a>
       </div>
     </div>
   </section>
@@ -73,38 +62,32 @@
       
       <div class="grid grid-cols-3">
         <div class="card text-center">
-          <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
-          <h3 style="font-size: 20px; margin-bottom: 8px;">Filter Lengkap</h3>
+          <h3 style="font-size: 20px; margin-bottom: 12px;">Filter Lengkap</h3>
           <p style="color: var(--text-secondary); margin: 0;">Filter berdasarkan akreditasi, scope, biaya, fast track, dan frekuensi terbit</p>
         </div>
         
         <div class="card text-center">
-          <div style="font-size: 48px; margin-bottom: 16px;">⏱️</div>
-          <h3 style="font-size: 20px; margin-bottom: 8px;">Info Waktu Review</h3>
+          <h3 style="font-size: 20px; margin-bottom: 12px;">Info Waktu Review</h3>
           <p style="color: var(--text-secondary); margin: 0;">Lihat estimasi waktu review dan ketersediaan fast track</p>
         </div>
         
         <div class="card text-center">
-          <div style="font-size: 48px; margin-bottom: 16px;">💾</div>
-          <h3 style="font-size: 20px; margin-bottom: 8px;">Export Data</h3>
+          <h3 style="font-size: 20px; margin-bottom: 12px;">Export Data</h3>
           <p style="color: var(--text-secondary); margin: 0;">Download list jurnal dalam format Excel atau PDF</p>
         </div>
         
         <div class="card text-center">
-          <div style="font-size: 48px; margin-bottom: 16px;">📝</div>
-          <h3 style="font-size: 20px; margin-bottom: 8px;">Blog Informatif</h3>
+          <h3 style="font-size: 20px; margin-bottom: 12px;">Blog Informatif</h3>
           <p style="color: var(--text-secondary); margin: 0;">Tips dan panduan seputar publikasi ilmiah</p>
         </div>
         
         <div class="card text-center">
-          <div style="font-size: 48px; margin-bottom: 16px;">🤝</div>
-          <h3 style="font-size: 20px; margin-bottom: 8px;">Kontribusi Komunitas</h3>
+          <h3 style="font-size: 20px; margin-bottom: 12px;">Kontribusi Komunitas</h3>
           <p style="color: var(--text-secondary); margin: 0;">Usulkan jurnal atau artikel untuk ditambahkan</p>
         </div>
         
         <div class="card text-center">
-          <div style="font-size: 48px; margin-bottom: 16px;">✨</div>
-          <h3 style="font-size: 20px; margin-bottom: 8px;">Gratis</h3>
+          <h3 style="font-size: 20px; margin-bottom: 12px;">Gratis</h3>
           <p style="color: var(--text-secondary); margin: 0;">100% gratis untuk semua pengguna</p>
         </div>
       </div>
@@ -112,19 +95,15 @@
   </section>
 
   <!-- CTA Section -->
-  <section class="section" style="background: var(--gradient-primary); padding: 80px 0;">
-    <div class="container container-lg text-center" style="color: white;">
-      <h2 style="color: white; font-size: 36px; margin-bottom: 16px;">Siap untuk Glow Up? 🚀</h2>
-      <p style="font-size: 18px; color: rgba(255,255,255,0.9); margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto;">
-        Mulai cari jurnal yang tepat untuk riset Anda sekarang!
+  <section class="section" style="background: var(--bg-secondary); padding: 80px 0;">
+    <div class="container container-lg text-center">
+      <h2 style="font-size: 36px; margin-bottom: 16px;">Siap untuk Mulai?</h2>
+      <p style="font-size: 18px; color: var(--text-secondary); margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto;">
+        Mulai cari jurnal yang tepat untuk riset Anda sekarang
       </p>
       <div class="flex justify-center gap-4" style="flex-wrap: wrap;">
-        <a href="jurnal.html" class="btn btn-lg" style="background: white; color: var(--color-primary-start); font-weight: 600;">
-          Lihat List Jurnal
-        </a>
-        <a href="submit-jurnal.html" class="btn btn-lg" style="background: transparent; border: 2px solid white; color: white;">
-          Usulkan Jurnal
-        </a>
+        <a href="jurnal.html" class="btn btn-primary">Lihat List Jurnal</a>
+        <a href="submit-jurnal.html" class="btn btn-outline">Usulkan Jurnal</a>
       </div>
     </div>
   </section>
@@ -134,9 +113,8 @@
     <div class="container container-xl">
       <div class="footer-content">
         <div>
-          <div class="footer-brand">PubGlow ✨</div>
-          <p class="footer-tagline">Glow Up Your Academic Game</p>
-          <p style="color: var(--color-gray-500); font-size: 14px; margin-top: 16px;">
+          <div class="footer-brand">PubGlow</div>
+          <p style="color: var(--text-secondary); font-size: 14px; margin-top: 12px; max-width: 300px;">
             Platform modern untuk menemukan jurnal ilmiah yang tepat.
           </p>
         </div>
@@ -145,7 +123,7 @@
           <h4 class="footer-section-title">Navigasi</h4>
           <ul class="footer-links">
             <li><a href="index.html" class="footer-link">Beranda</a></li>
-            <li><a href="jurnal.html" class="footer-link">List Jurnal</a></li>
+            <li><a href="jurnal.html" class="footer-link">Jurnal</a></li>
             <li><a href="blog.html" class="footer-link">Blog</a></li>
           </ul>
         </div>
@@ -159,22 +137,20 @@
         </div>
         
         <div>
-          <h4 class="footer-section-title">Admin</h4>
+          <h4 class="footer-section-title">Lainnya</h4>
           <ul class="footer-links">
-            <li><a href="admin.html" class="footer-link">Dashboard Admin</a></li>
+            <li><a href="admin.html" class="footer-link">Admin Dashboard</a></li>
           </ul>
         </div>
       </div>
       
       <div class="footer-bottom">
-        <p>Made with ❤️ by Najma &copy; 2025 PubGlow. All rights reserved.</p>
+        <p>&copy; 2025 PubGlow. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script type="module">
-    // Navbar toggle
     document.getElementById('navbarToggle')?.addEventListener('click', () => {
       document.getElementById('navbarMenu')?.classList.toggle('active');
     });

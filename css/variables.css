@@ -1,63 +1,49 @@
 /**
- * PubGlow - CSS Variables
- * Gen Z friendly color palette and design tokens
+ * PubGlow - Design Tokens
+ * Minimalist Dark Theme
  */
 
 :root {
-  /* === COLORS === */
+  /* === COLORS - Dark Minimalist === */
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  --color-gray-50: #FAFAFA;
+  --color-gray-100: #F5F5F5;
+  --color-gray-200: #E5E5E5;
+  --color-gray-300: #D4D4D4;
+  --color-gray-400: #A3A3A3;
+  --color-gray-500: #737373;
+  --color-gray-600: #525252;
+  --color-gray-700: #404040;
+  --color-gray-800: #262626;
+  --color-gray-900: #171717;
   
-  /* Primary Gradient */
-  --color-primary-start: #667eea;
-  --color-primary-end: #764ba2;
-  --gradient-primary: linear-gradient(135deg, var(--color-primary-start) 0%, var(--color-primary-end) 100%);
+  /* Primary (subtle accent) */
+  --color-primary: #404040;
+  --color-primary-hover: #525252;
   
-  /* Accent Colors */
-  --color-accent: #06b6d4;
-  --color-accent-light: #67e8f9;
-  --color-accent-dark: #0891b2;
+  /* Semantic colors */
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+  --color-info: #3B82F6;
   
-  /* Status Colors */
-  --color-success: #10b981;
-  --color-success-light: #d1fae5;
-  --color-warning: #f59e0b;
-  --color-warning-light: #fef3c7;
-  --color-error: #ef4444;
-  --color-error-light: #fee2e2;
-  --color-info: #3b82f6;
-  --color-info-light: #dbeafe;
+  /* === THEME === */
+  --bg-primary: #000000;
+  --bg-secondary: #0A0A0A;
+  --bg-tertiary: #171717;
+  --bg-card: #0F0F0F;
   
-  /* Neutral Colors */
-  --color-white: #ffffff;
-  --color-black: #0f172a;
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
+  --text-primary: #FFFFFF;
+  --text-secondary: #A3A3A3;
+  --text-tertiary: #737373;
   
-  /* Background */
-  --bg-primary: var(--color-white);
-  --bg-secondary: var(--color-gray-50);
-  --bg-tertiary: var(--color-gray-100);
-  
-  /* Text Colors */
-  --text-primary: var(--color-gray-900);
-  --text-secondary: var(--color-gray-600);
-  --text-tertiary: var(--color-gray-400);
-  --text-inverse: var(--color-white);
-  
-  /* Border */
-  --border-color: var(--color-gray-200);
-  --border-color-dark: var(--color-gray-300);
+  --border-color: #262626;
+  --border-hover: #404040;
   
   /* === TYPOGRAPHY === */
-  --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'Inter', -apple-system, system-ui, sans-serif;
+  --font-body: 'Inter', -apple-system, system-ui, sans-serif;
   
   --font-size-xs: 0.75rem;    /* 12px */
   --font-size-sm: 0.875rem;   /* 14px */
@@ -90,39 +76,34 @@
   --space-12: 3rem;     /* 48px */
   --space-16: 4rem;     /* 64px */
   --space-20: 5rem;     /* 80px */
-  --space-24: 6rem;     /* 96px */
   
-  /* === SIZING === */
+  /* === LAYOUT === */
   --container-sm: 640px;
   --container-md: 768px;
   --container-lg: 1024px;
   --container-xl: 1280px;
   --container-2xl: 1536px;
   
+  --navbar-height: 64px;
+  --sidebar-width: 240px;
+  
   /* === BORDER RADIUS === */
-  --radius-sm: 0.25rem;   /* 4px */
-  --radius-md: 0.5rem;    /* 8px */
-  --radius-lg: 0.75rem;   /* 12px */
-  --radius-xl: 1rem;      /* 16px */
-  --radius-2xl: 1.5rem;   /* 24px */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
   --radius-full: 9999px;
   
   /* === SHADOWS === */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  
-  /* Glow effects */
-  --glow-primary: 0 0 20px rgba(102, 126, 234, 0.3);
-  --glow-accent: 0 0 20px rgba(6, 182, 212, 0.3);
-  --glow-success: 0 0 20px rgba(16, 185, 129, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   
   /* === TRANSITIONS === */
-  --transition-fast: 150ms ease-in-out;
-  --transition-base: 250ms ease-in-out;
-  --transition-slow: 350ms ease-in-out;
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
   
   /* === Z-INDEX === */
   --z-dropdown: 1000;
@@ -130,20 +111,5 @@
   --z-fixed: 1030;
   --z-modal-backdrop: 1040;
   --z-modal: 1050;
-  --z-popover: 1060;
   --z-tooltip: 1070;
-}
-
-/* Dark mode variables (optional future enhancement) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-primary: var(--color-gray-900);
-    --bg-secondary: var(--color-gray-800);
-    --bg-tertiary: var(--color-gray-700);
-    --text-primary: var(--color-gray-50);
-    --text-secondary: var(--color-gray-300);
-    --text-tertiary: var(--color-gray-500);
-    --border-color: var(--color-gray-700);
-    --border-color-dark: var(--color-gray-600);
-  }
 }
