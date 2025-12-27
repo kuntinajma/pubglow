@@ -14,7 +14,6 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
   
   <style>
-    /* Ensure tabs work */
     .tab-content {
       display: none;
     }
@@ -26,11 +25,16 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    .action-buttons {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
   </style>
 </head>
 <body>
   <div class="admin-layout">
-    <!-- Sidebar -->
     <aside class="admin-sidebar">
       <a href="admin.html" class="admin-sidebar-brand">PubGlow Admin</a>
       
@@ -39,8 +43,8 @@
           <li><a href="#dashboard" class="admin-sidebar-link active" data-tab="dashboard">Dashboard</a></li>
           <li><a href="#pendingJurnal" class="admin-sidebar-link" data-tab="pendingJurnal">Pending Jurnal</a></li>
           <li><a href="#pendingArtikel" class="admin-sidebar-link" data-tab="pendingArtikel">Pending Artikel</a></li>
-          <li><a href="#allJurnal" class="admin-sidebar-link" data-tab="allJurnal">Semua Jurnal</a></li>
-          <li><a href="#allArtikel" class="admin-sidebar-link" data-tab="allArtikel">Semua Artikel</a></li>
+          <li><a href="#kelolaJurnal" class="admin-sidebar-link" data-tab="kelolaJurnal">Kelola Jurnal</a></li>
+          <li><a href="#kelolaArtikel" class="admin-sidebar-link" data-tab="kelolaArtikel">Kelola Artikel</a></li>
           <li style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--border-color);">
             <a href="index.html" class="admin-sidebar-link">← Kembali ke Website</a>
           </li>
@@ -48,7 +52,6 @@
       </nav>
     </aside>
 
-    <!-- Main Content -->
     <main class="admin-main">
       <!-- Dashboard Tab -->
       <div class="tab-content active" id="dashboardTab">
@@ -136,19 +139,29 @@
         </div>
       </div>
 
-      <!-- All Jurnal Tab -->
-      <div class="tab-content" id="allJurnalTab">
+      <!-- Kelola Jurnal Tab -->
+      <div class="tab-content" id="kelolaJurnalTab">
         <div class="page-header">
-          <h1 class="page-title">Semua Jurnal</h1>
-          <p class="page-subtitle">Daftar lengkap jurnal yang aktif di platform</p>
+          <div>
+            <h1 class="page-title">Kelola Jurnal</h1>
+            <p class="page-subtitle">Manage semua jurnal di platform</p>
+          </div>
+          <a href="tambah-jurnal.html" class="btn btn-primary">+ Tambah Jurnal</a>
         </div>
         
         <div class="card">
-          <div style="margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center;">
+          <div style="margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap;">
             <input type="text" id="searchJurnal" class="input" placeholder="Cari jurnal..." style="max-width: 300px;">
-            <button class="btn btn-outline btn-sm" onclick="loadAllJournals()">Refresh</button>
+            <div style="display: flex; gap: var(--space-2);">
+              <select id="filterJurnalStatus" class="input" style="max-width: 150px;">
+                <option value="all">Semua Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+              <button class="btn btn-outline btn-sm" onclick="loadKelolaJournals()">Refresh</button>
+            </div>
           </div>
-          <div id="allJurnalTable">
+          <div id="kelolaJurnalTable">
             <div class="text-center" style="padding: 40px;">
               <p style="color: var(--text-secondary);">Klik tab ini untuk memuat data</p>
             </div>
@@ -156,19 +169,29 @@
         </div>
       </div>
 
-      <!-- All Artikel Tab -->
-      <div class="tab-content" id="allArtikelTab">
+      <!-- Kelola Artikel Tab -->
+      <div class="tab-content" id="kelolaArtikelTab">
         <div class="page-header">
-          <h1 class="page-title">Semua Artikel</h1>
-          <p class="page-subtitle">Daftar lengkap artikel yang published di blog</p>
+          <div>
+            <h1 class="page-title">Kelola Artikel</h1>
+            <p class="page-subtitle">Manage semua artikel di blog</p>
+          </div>
+          <a href="tambah-artikel.html" class="btn btn-primary">+ Tambah Artikel</a>
         </div>
         
         <div class="card">
-          <div style="margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center;">
+          <div style="margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap;">
             <input type="text" id="searchArtikel" class="input" placeholder="Cari artikel..." style="max-width: 300px;">
-            <button class="btn btn-outline btn-sm" onclick="loadAllArticles()">Refresh</button>
+            <div style="display: flex; gap: var(--space-2);">
+              <select id="filterArtikelStatus" class="input" style="max-width: 150px;">
+                <option value="all">Semua Status</option>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+              </select>
+              <button class="btn btn-outline btn-sm" onclick="loadKelolaArticles()">Refresh</button>
+            </div>
           </div>
-          <div id="allArtikelTable">
+          <div id="kelolaArtikelTable">
             <div class="text-center" style="padding: 40px;">
               <p style="color: var(--text-secondary);">Klik tab ini untuk memuat data</p>
             </div>
@@ -178,26 +201,20 @@
     </main>
   </div>
 
-  <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- NAVIGATION SCRIPT - NON-MODULE, RUNS FIRST -->
   <script>
     console.log('🎬 Navigation script loaded');
     
     let currentTab = 'dashboard';
     
-    // Tab switching function
     function switchTab(tabName) {
       console.log('✅ switchTab called:', tabName);
       
-      // Hide all tabs
       document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
-        console.log('  - Hiding tab:', tab.id);
       });
       
-      // Show target tab
       const targetTab = document.getElementById(tabName + 'Tab');
       if (targetTab) {
         targetTab.classList.add('active');
@@ -206,7 +223,6 @@
         console.error('  ❌ Tab not found:', tabName + 'Tab');
       }
       
-      // Update sidebar
       document.querySelectorAll('.admin-sidebar-link').forEach(link => {
         link.classList.remove('active');
       });
@@ -217,26 +233,21 @@
       
       currentTab = tabName;
       
-      // Trigger data loading (will be defined by module script)
       if (window.loadTabData) {
         window.loadTabData(tabName);
       }
     }
     
-    // Make it global
     window.switchTab = switchTab;
     
-    // Handle hash changes
     function handleHashChange() {
       const hash = window.location.hash.substring(1) || 'dashboard';
       console.log('🔗 Hash:', hash);
       switchTab(hash);
     }
     
-    // Listen to hash changes
     window.addEventListener('hashchange', handleHashChange);
     
-    // Run on load
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', handleHashChange);
     } else {
@@ -246,10 +257,9 @@
     console.log('✅ Navigation system ready');
   </script>
 
-  <!-- DATA LOADING SCRIPT - MODULE -->
   <script type="module">
-    import { getAllJournals, approveJournal, rejectJournal } from './js/services/journalService.js';
-    import { getAllArticles, approveArticle, rejectArticle } from './js/services/blogService.js';
+    import { getAllJournals, approveJournal, rejectJournal, deleteJournal, updateJournalStatus } from './js/services/journalService.js';
+    import { getAllArticles, approveArticle, rejectArticle, deleteArticle, updateArticleStatus } from './js/services/blogService.js';
     import { getPendingJournalSubmissions, getPendingArticleSubmissions } from './js/services/submissionService.js';
     import { formatCurrency, formatDate, truncate } from './js/utils/formatter.js';
     import { showSuccess, showError, showLoading, showConfirm } from './js/utils/notification.js';
@@ -321,7 +331,7 @@
             <td style="white-space: nowrap;">${formatCurrency(sub.harga)}</td>
             <td><small>${sub.namaPengusul}<br><span style="color: var(--text-tertiary);">${sub.emailPengusul}</span></small></td>
             <td style="text-align: center;">
-              <div style="display: flex; gap: 6px; justify-content: center;">
+              <div class="action-buttons">
                 <button class="btn btn-sm btn-success" onclick="approveJournalSubmission('${sub.id}')">Approve</button>
                 <button class="btn btn-sm btn-danger" onclick="rejectJournalSubmission('${sub.id}')">Reject</button>
               </div>
@@ -360,7 +370,7 @@
             <td><span class="badge badge-secondary">${sub.kategori}</span></td>
             <td>${sub.penulis}</td>
             <td style="text-align: center;">
-              <div style="display: flex; gap: 6px; justify-content: center;">
+              <div class="action-buttons">
                 <button class="btn btn-sm btn-success" onclick="approveArticleSubmission('${sub.id}')">Approve</button>
                 <button class="btn btn-sm btn-danger" onclick="rejectArticleSubmission('${sub.id}')">Reject</button>
               </div>
@@ -376,27 +386,47 @@
       }
     }
 
-    window.loadAllJournals = async function() {
-      const container = document.getElementById('allJurnalTable');
+    window.loadKelolaJournals = async function() {
+      const container = document.getElementById('kelolaJurnalTable');
       container.innerHTML = '<div class="text-center" style="padding: 40px;"><div class="loader" style="margin: 0 auto;"></div></div>';
       
       try {
         const journals = await getAllJournals();
-        const activeJournals = journals.filter(j => j.status === 'active');
+        const statusFilter = document.getElementById('filterJurnalStatus')?.value || 'all';
+        const filteredJournals = statusFilter === 'all' ? journals : journals.filter(j => j.status === statusFilter);
+        
+        if (filteredJournals.length === 0) {
+          container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Tidak ada jurnal</div><p class="empty-state-text">Belum ada jurnal yang ditambahkan</p></div>';
+          return;
+        }
         
         let html = '<div class="table-container"><table class="table"><thead><tr>';
-        html += '<th>Nama Jurnal</th><th>Instansi</th><th>Akreditasi</th><th>Scope</th><th>Harga</th><th>Fast Track</th><th>Status</th>';
+        html += '<th>Nama Jurnal</th><th>Instansi</th><th>Akreditasi</th><th>Harga</th><th>Fast Track</th><th>Status</th><th style="text-align: center; min-width: 200px;">Aksi</th>';
         html += '</tr></thead><tbody>';
         
-        activeJournals.forEach(j => {
+        filteredJournals.forEach(j => {
+          const statusBadge = j.status === 'active' ? 
+            '<span class="badge badge-success">Active</span>' : 
+            '<span class="badge badge-gray">Inactive</span>';
+          
+          const statusAction = j.status === 'active' ?
+            `<button class="btn btn-sm btn-outline" onclick="toggleJournalStatus('${j.id}', 'inactive')" title="Nonaktifkan">⏸️</button>` :
+            `<button class="btn btn-sm btn-outline" onclick="toggleJournalStatus('${j.id}', 'active')" title="Aktifkan">▶️</button>`;
+          
           html += `<tr>
             <td><strong style="color: var(--text-primary);">${j.nama}</strong></td>
             <td>${j.instansi}</td>
             <td><span class="badge badge-primary">${j.akreditasi}</span></td>
-            <td><span class="badge badge-secondary">${j.scope}</span></td>
             <td style="white-space: nowrap;">${formatCurrency(j.harga)}</td>
             <td>${j.fastTrack ? '<span class="badge badge-success">Ya</span>' : '<span class="badge badge-gray">Tidak</span>'}</td>
-            <td><span class="badge badge-success">Active</span></td>
+            <td>${statusBadge}</td>
+            <td style="text-align: center;">
+              <div class="action-buttons">
+                <a href="edit-jurnal.html?id=${j.id}" class="btn btn-sm btn-primary" title="Edit">✏️ Edit</a>
+                ${statusAction}
+                <button class="btn btn-sm btn-danger" onclick="deleteJournalConfirm('${j.id}', '${j.nama}')" title="Hapus">🗑️</button>
+              </div>
+            </td>
           </tr>`;
         });
         
@@ -408,26 +438,47 @@
       }
     };
 
-    window.loadAllArticles = async function() {
-      const container = document.getElementById('allArtikelTable');
+    window.loadKelolaArticles = async function() {
+      const container = document.getElementById('kelolaArtikelTable');
       container.innerHTML = '<div class="text-center" style="padding: 40px;"><div class="loader" style="margin: 0 auto;"></div></div>';
       
       try {
         const articles = await getAllArticles();
-        const publishedArticles = articles.filter(a => a.status === 'published');
+        const statusFilter = document.getElementById('filterArtikelStatus')?.value || 'all';
+        const filteredArticles = statusFilter === 'all' ? articles : articles.filter(a => a.status === statusFilter);
+        
+        if (filteredArticles.length === 0) {
+          container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Tidak ada artikel</div><p class="empty-state-text">Belum ada artikel yang ditambahkan</p></div>';
+          return;
+        }
         
         let html = '<div class="table-container"><table class="table"><thead><tr>';
-        html += '<th>Judul</th><th>Kategori</th><th>Penulis</th><th>Tanggal</th><th>Views</th><th>Status</th>';
+        html += '<th>Judul</th><th>Kategori</th><th>Penulis</th><th>Tanggal</th><th>Views</th><th>Status</th><th style="text-align: center; min-width: 200px;">Aksi</th>';
         html += '</tr></thead><tbody>';
         
-        publishedArticles.forEach(a => {
+        filteredArticles.forEach(a => {
+          const statusBadge = a.status === 'published' ? 
+            '<span class="badge badge-success">Published</span>' : 
+            '<span class="badge badge-gray">Draft</span>';
+          
+          const statusAction = a.status === 'published' ?
+            `<button class="btn btn-sm btn-outline" onclick="toggleArticleStatus('${a.id}', 'draft')" title="Unpublish">📝</button>` :
+            `<button class="btn btn-sm btn-outline" onclick="toggleArticleStatus('${a.id}', 'published')" title="Publish">📤</button>`;
+          
           html += `<tr>
-            <td><strong style="color: var(--text-primary);">${truncate(a.judul, 80)}</strong></td>
+            <td><strong style="color: var(--text-primary);">${truncate(a.judul, 60)}</strong></td>
             <td><span class="badge badge-secondary">${a.kategori}</span></td>
             <td>${a.penulis}</td>
-            <td style="white-space: nowrap;"><small>${formatDate(a.tanggalPublish)}</small></td>
+            <td style="white-space: nowrap;"><small>${formatDate(a.tanggalPublish || a.createdAt)}</small></td>
             <td>${a.views || 0}</td>
-            <td><span class="badge badge-success">Published</span></td>
+            <td>${statusBadge}</td>
+            <td style="text-align: center;">
+              <div class="action-buttons">
+                <a href="edit-artikel.html?id=${a.id}" class="btn btn-sm btn-primary" title="Edit">✏️ Edit</a>
+                ${statusAction}
+                <button class="btn btn-sm btn-danger" onclick="deleteArticleConfirm('${a.id}', '${a.judul}')" title="Hapus">🗑️</button>
+              </div>
+            </td>
           </tr>`;
         });
         
@@ -439,16 +490,16 @@
       }
     };
 
-    // Data loading dispatcher
     window.loadTabData = function(tabName) {
       console.log('📊 Loading data for:', tabName);
       if (tabName === 'dashboard') loadStats();
       if (tabName === 'pendingJurnal') loadPendingJournals();
       if (tabName === 'pendingArtikel') loadPendingArticles();
-      if (tabName === 'allJurnal') loadAllJournals();
-      if (tabName === 'allArtikel') loadAllArticles();
+      if (tabName === 'kelolaJurnal') loadKelolaJournals();
+      if (tabName === 'kelolaArtikel') loadKelolaArticles();
     };
 
+    // Pending submissions handlers
     window.approveJournalSubmission = async (id) => {
       const confirmed = await showConfirm('Approve jurnal submission ini?');
       if (!confirmed) return;
@@ -520,6 +571,86 @@
         console.error('Error:', error);
       }
     };
+
+    // Kelola Jurnal handlers
+    window.toggleJournalStatus = async (id, newStatus) => {
+      const action = newStatus === 'active' ? 'mengaktifkan' : 'menonaktifkan';
+      const confirmed = await showConfirm(`Yakin ${action} jurnal ini?`);
+      if (!confirmed) return;
+      
+      const hideLoading = showLoading('Memproses...');
+      try {
+        await updateJournalStatus(id, newStatus);
+        hideLoading();
+        showSuccess(`Jurnal berhasil di${action}!`);
+        loadKelolaJournals();
+        loadStats();
+      } catch (error) {
+        hideLoading();
+        showError(`Gagal ${action} jurnal`);
+        console.error('Error:', error);
+      }
+    };
+
+    window.deleteJournalConfirm = async (id, nama) => {
+      const confirmed = await showConfirm(`Yakin hapus jurnal "${truncate(nama, 50)}"? Aksi ini tidak bisa dibatalkan!`);
+      if (!confirmed) return;
+      
+      const hideLoading = showLoading('Menghapus...');
+      try {
+        await deleteJournal(id);
+        hideLoading();
+        showSuccess('Jurnal berhasil dihapus!');
+        loadKelolaJournals();
+        loadStats();
+      } catch (error) {
+        hideLoading();
+        showError('Gagal menghapus jurnal');
+        console.error('Error:', error);
+      }
+    };
+
+    // Kelola Artikel handlers
+    window.toggleArticleStatus = async (id, newStatus) => {
+      const action = newStatus === 'published' ? 'publish' : 'unpublish';
+      const confirmed = await showConfirm(`Yakin ${action} artikel ini?`);
+      if (!confirmed) return;
+      
+      const hideLoading = showLoading('Memproses...');
+      try {
+        await updateArticleStatus(id, newStatus);
+        hideLoading();
+        showSuccess(`Artikel berhasil di-${action}!`);
+        loadKelolaArticles();
+        loadStats();
+      } catch (error) {
+        hideLoading();
+        showError(`Gagal ${action} artikel`);
+        console.error('Error:', error);
+      }
+    };
+
+    window.deleteArticleConfirm = async (id, judul) => {
+      const confirmed = await showConfirm(`Yakin hapus artikel "${truncate(judul, 50)}"? Aksi ini tidak bisa dibatalkan!`);
+      if (!confirmed) return;
+      
+      const hideLoading = showLoading('Menghapus...');
+      try {
+        await deleteArticle(id);
+        hideLoading();
+        showSuccess('Artikel berhasil dihapus!');
+        loadKelolaArticles();
+        loadStats();
+      } catch (error) {
+        hideLoading();
+        showError('Gagal menghapus artikel');
+        console.error('Error:', error);
+      }
+    };
+
+    // Filter listeners
+    document.getElementById('filterJurnalStatus')?.addEventListener('change', loadKelolaJournals);
+    document.getElementById('filterArtikelStatus')?.addEventListener('change', loadKelolaArticles);
 
     // Initial data load
     loadStats();
