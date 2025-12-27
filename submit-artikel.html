@@ -13,6 +13,7 @@
   
   <!-- Quill Rich Text Editor -->
   <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
   
@@ -20,68 +21,81 @@
     /* Quill Editor Custom Styling */
     #editor-container {
       background: white;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      min-height: 350px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      min-height: 400px;
+      margin-bottom: 12px;
     }
     
     .ql-toolbar.ql-snow {
-      background: var(--bg-secondary);
+      background: #f9fafb;
       border: none;
-      border-bottom: 1px solid var(--border-color);
-      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      border-bottom: 1px solid #e5e7eb;
+      border-radius: 8px 8px 0 0;
       padding: 12px;
     }
     
     .ql-container.ql-snow {
       border: none;
       font-size: 14px;
-      font-family: inherit;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: white;
     }
     
     .ql-editor {
-      min-height: 300px;
+      min-height: 320px;
       font-size: 14px;
-      line-height: 1.6;
-      padding: 16px;
+      line-height: 1.8;
+      padding: 20px;
+      color: #1f2937;
     }
     
     .ql-editor.ql-blank::before {
-      color: var(--text-tertiary);
+      color: #9ca3af;
       font-style: normal;
-      left: 16px;
+      left: 20px;
+      right: 20px;
     }
     
     .ql-snow .ql-stroke {
-      stroke: var(--text-primary);
+      stroke: #374151;
     }
     
     .ql-snow .ql-fill {
-      fill: var(--text-primary);
+      fill: #374151;
     }
     
     .ql-toolbar.ql-snow button:hover,
     .ql-toolbar.ql-snow button:focus,
     .ql-toolbar.ql-snow button.ql-active {
-      color: var(--primary-color);
+      color: #2563eb;
     }
     
     .ql-toolbar.ql-snow button:hover .ql-stroke,
     .ql-toolbar.ql-snow button:focus .ql-stroke,
     .ql-toolbar.ql-snow button.ql-active .ql-stroke {
-      stroke: var(--primary-color);
+      stroke: #2563eb;
     }
     
     .ql-toolbar.ql-snow button:hover .ql-fill,
     .ql-toolbar.ql-snow button:focus .ql-fill,
     .ql-toolbar.ql-snow button.ql-active .ql-fill {
-      fill: var(--primary-color);
+      fill: #2563eb;
     }
     
-    #previewKonten.ql-editor {
+    #preview .ql-editor {
       min-height: auto;
       padding: 0;
       border: none;
+    }
+    
+    .editor-helper {
+      color: #6b7280;
+      font-size: 13px;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
   </style>
 </head>
@@ -148,9 +162,10 @@
               <div id="editor"></div>
             </div>
             <input type="hidden" name="konten" id="kontenHidden" required>
-            <small style="color: var(--text-tertiary); font-size: var(--font-size-xs); margin-top: var(--space-2); display: block;">
-              💡 <strong>Gunakan toolbar</strong> untuk format teks: <strong>Bold</strong>, <em>Italic</em>, List, Link, dll.
-            </small>
+            <div class="editor-helper">
+              <span>💡</span>
+              <span><strong>Gunakan toolbar di atas</strong> untuk memformat teks (Bold, Italic, List, Link, dll)</span>
+            </div>
           </div>
 
           <div class="input-group">
@@ -230,29 +245,30 @@
     </div>
   </footer>
 
-  <!-- Quill Editor JS - Load before our script -->
-  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-  
-  <script type="module">
-    import { submitArticle } from './js/services/submissionService.js';
-    import { showSuccess, showError, showLoading } from './js/utils/notification.js';
+  <!-- Main Script - NON-MODULE for Firebase compatibility -->
+  <script>
+    // Mobile menu
+    document.getElementById('navbarToggle')?.addEventListener('click', () => {
+      document.getElementById('navbarMenu')?.classList.toggle('active');
+    });
 
-    // Wait for DOM to be ready
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('Initializing Quill editor...');
-      
-      // Check if Quill is loaded
+    // Wait for Quill to load
+    let quillEditor = null;
+    
+    function initializeEditor() {
       if (typeof Quill === 'undefined') {
-        console.error('Quill library not loaded!');
-        document.getElementById('editor-container').innerHTML = '<div style="padding: 20px; background: #fee; border: 1px solid #fcc; border-radius: 8px; color: #c00;">Error: Rich text editor gagal dimuat. Silakan refresh halaman.</div>';
+        console.error('Quill not loaded yet, retrying...');
+        setTimeout(initializeEditor, 100);
         return;
       }
 
-      // Initialize Quill editor
+      console.log('Initializing Quill editor...');
+      
       try {
-        const quill = new Quill('#editor', {
+        // Initialize Quill
+        quillEditor = new Quill('#editor', {
           theme: 'snow',
-          placeholder: 'Tulis artikel Anda di sini... Gunakan toolbar di atas untuk memformat teks.',
+          placeholder: 'Mulai menulis artikel Anda di sini... Gunakan toolbar di atas untuk memformat teks.',
           modules: {
             toolbar: [
               [{ 'header': [2, 3, false] }],
@@ -265,14 +281,14 @@
           }
         });
         
-        console.log('Quill editor initialized successfully!');
+        console.log('✅ Quill editor initialized!');
 
-        // Live preview function
+        // Live preview
         function updatePreview() {
           const judul = document.getElementById('judulInput').value || 'Judul artikel akan muncul di sini';
           const kategori = document.getElementById('kategoriSelect').value || 'Kategori';
           const penulis = document.getElementById('penulisInput').value || 'Nama Penulis';
-          const konten = quill.root.innerHTML;
+          const konten = quillEditor.root.innerHTML;
           const tags = document.getElementById('tagsInput').value;
 
           document.getElementById('previewJudul').textContent = judul;
@@ -280,7 +296,7 @@
           document.getElementById('previewPenulis').textContent = penulis;
           
           const previewKonten = document.getElementById('previewKonten');
-          if (quill.getText().trim().length > 0) {
+          if (quillEditor.getText().trim().length > 0) {
             previewKonten.innerHTML = konten;
           } else {
             previewKonten.innerHTML = 'Konten artikel akan muncul di sini...';
@@ -296,23 +312,22 @@
           }
         }
 
-        // Event listeners for live preview
+        // Event listeners
         document.getElementById('judulInput').addEventListener('input', updatePreview);
         document.getElementById('kategoriSelect').addEventListener('change', updatePreview);
         document.getElementById('penulisInput').addEventListener('input', updatePreview);
         document.getElementById('tagsInput').addEventListener('input', updatePreview);
-        quill.on('text-change', updatePreview);
+        quillEditor.on('text-change', updatePreview);
 
         // Form submit
         document.getElementById('submitArtikelForm').addEventListener('submit', async (e) => {
           e.preventDefault();
           
-          const kontenHTML = quill.root.innerHTML;
-          const kontenText = quill.getText().trim();
+          const kontenHTML = quillEditor.root.innerHTML;
+          const kontenText = quillEditor.getText().trim();
           
-          // Validation
           if (kontenText.length < 50) {
-            showError('Konten artikel minimal 50 karakter (saat ini: ' + kontenText.length + ' karakter)');
+            alert('⚠️ Konten artikel minimal 50 karakter (saat ini: ' + kontenText.length + ' karakter)');
             return;
           }
           
@@ -327,42 +342,47 @@
             penulis: formData.get('penulis'),
             konten: kontenHTML,
             tags: tags,
-            email: formData.get('email')
+            email: formData.get('email'),
+            tanggalSubmit: new Date().toISOString(),
+            status: 'pending'
           };
 
           const submitBtn = document.getElementById('submitBtn');
           submitBtn.disabled = true;
-          const hideLoading = showLoading('Mengirim artikel...');
+          submitBtn.textContent = 'Mengirim...';
 
           try {
+            // Import and use submission service
+            const { submitArticle } = await import('./js/services/submissionService.js');
             await submitArticle(data);
-            hideLoading();
-            showSuccess('Artikel berhasil dikirim! Tim kami akan review segera.');
+            
+            alert('✅ Artikel berhasil dikirim! Tim kami akan review segera.');
             e.target.reset();
-            quill.setContents([]);
+            quillEditor.setContents([]);
             updatePreview();
           } catch (error) {
-            hideLoading();
-            showError('Gagal mengirim artikel. Silakan coba lagi.');
+            alert('❌ Gagal mengirim artikel. Silakan coba lagi.');
             console.error('Error:', error);
           } finally {
             submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Artikel';
           }
         });
 
-        // Initial preview
         updatePreview();
         
       } catch (error) {
-        console.error('Error initializing Quill:', error);
-        document.getElementById('editor-container').innerHTML = '<div style="padding: 20px; background: #fee; border: 1px solid #fcc; border-radius: 8px; color: #c00;">Error: Gagal menginisialisasi editor. ' + error.message + '</div>';
+        console.error('Error initializing editor:', error);
+        document.getElementById('editor-container').innerHTML = '<div style="padding: 20px; background: #fee2e2; border: 1px solid #fca5a5; border-radius: 8px; color: #991b1b;">❌ Error: Gagal menginisialisasi editor. ' + error.message + '</div>';
       }
-    });
+    }
 
-    // Mobile menu toggle
-    document.getElementById('navbarToggle')?.addEventListener('click', () => {
-      document.getElementById('navbarMenu')?.classList.toggle('active');
-    });
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeEditor);
+    } else {
+      initializeEditor();
+    }
   </script>
 </body>
 </html>
