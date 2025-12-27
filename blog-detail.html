@@ -3,26 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Artikel Blog - PubGlow">
-  <title id="pageTitle">Blog - PubGlow</title>
+  <title>Blog - PubGlow</title>
   
-  <!-- CSS -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/pages.css">
   
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
 </head>
 <body>
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="container container-xl navbar-container">
-      <a href="index.html" class="navbar-brand">
-        <span>✨</span>
-        <span>PubGlow</span>
-      </a>
+      <a href="index.html" class="navbar-brand">PubGlow</a>
       
       <button class="navbar-toggle" id="navbarToggle">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -34,266 +28,170 @@
       
       <ul class="navbar-menu" id="navbarMenu">
         <li><a href="index.html" class="navbar-link">Beranda</a></li>
-        <li><a href="jurnal.html" class="navbar-link">List Jurnal</a></li>
+        <li><a href="jurnal.html" class="navbar-link">Jurnal</a></li>
         <li><a href="blog.html" class="navbar-link active">Blog</a></li>
         <li><a href="submit-jurnal.html" class="navbar-link">Usulkan Jurnal</a></li>
         <li><a href="submit-artikel.html" class="navbar-link">Usulkan Artikel</a></li>
-        <li><a href="admin.html" class="navbar-link" style="color: var(--color-accent);">Admin</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Main Content -->
-  <main class="section">
-    <div class="container container-md">
-      <!-- Back Button -->
-      <a href="blog.html" class="btn btn-ghost" style="margin-bottom: 24px; display: inline-flex;">
-        ← Kembali ke Blog
-      </a>
-
-      <!-- Article Container -->
-      <article id="articleContainer">
-        <!-- Loading state -->
-        <div class="text-center" style="padding: 60px 20px;">
-          <div class="loader" style="margin: 0 auto 20px;"></div>
-          <p style="color: var(--text-secondary);">Memuat artikel...</p>
-        </div>
-      </article>
-
-      <!-- Related Articles -->
-      <div id="relatedContainer" style="margin-top: 80px; display: none;">
-        <h2 style="margin-bottom: 24px;">Artikel Terkait</h2>
-        <div class="blog-grid" id="relatedArticles"></div>
-      </div>
+  <div class="container container-lg" style="padding-top: var(--space-8); padding-bottom: var(--space-12);">
+    <div style="margin-bottom: var(--space-6);">
+      <a href="blog.html" class="btn btn-ghost btn-sm">← Kembali ke Blog</a>
     </div>
-  </main>
 
-  <!-- Footer -->
+    <article id="articleContent">
+      <div class="text-center" style="padding: 60px 20px;">
+        <div class="loader" style="margin: 0 auto 16px;"></div>
+        <p style="color: var(--text-secondary);">Memuat artikel...</p>
+      </div>
+    </article>
+
+    <div id="relatedArticles" style="margin-top: var(--space-16);"></div>
+  </div>
+
   <footer class="footer">
     <div class="container container-xl">
-      <div class="footer-bottom" style="border: none; padding: 24px 0;">
-        <p>Made with ❤️ by Najma &copy; 2025 PubGlow</p>
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">PubGlow</div>
+          <p style="color: var(--text-secondary); font-size: 14px; margin-top: 12px; max-width: 320px; line-height: 1.6;">
+            Platform modern untuk menemukan jurnal ilmiah yang tepat.
+          </p>
+        </div>
+        
+        <div>
+          <h4 class="footer-section-title">Navigasi</h4>
+          <ul class="footer-links">
+            <li><a href="index.html" class="footer-link">Beranda</a></li>
+            <li><a href="jurnal.html" class="footer-link">Jurnal</a></li>
+            <li><a href="blog.html" class="footer-link">Blog</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-section-title">Kontribusi</h4>
+          <ul class="footer-links">
+            <li><a href="submit-jurnal.html" class="footer-link">Usulkan Jurnal</a></li>
+            <li><a href="submit-artikel.html" class="footer-link">Usulkan Artikel</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-section-title">Lainnya</h4>
+          <ul class="footer-links">
+            <li><a href="admin.html" class="footer-link">Admin Dashboard</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 PubGlow. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script type="module">
-    import { getArticleById, incrementArticleViews } from './js/services/blogService.js';
+    import { getArticleById, getAllArticles, incrementArticleViews } from './js/services/blogService.js';
     import { formatDate, truncate } from './js/utils/formatter.js';
-    import { showError, showLoading } from './js/utils/notification.js';
-    import { parseQueryString } from './js/utils/helpers.js';
 
-    // Navbar toggle
     document.getElementById('navbarToggle')?.addEventListener('click', () => {
       document.getElementById('navbarMenu')?.classList.toggle('active');
     });
 
-    // Get article ID from URL
-    const params = parseQueryString();
-    const articleId = params.id;
+    const urlParams = new URLSearchParams(window.location.search);
+    const articleId = urlParams.get('id');
 
     if (!articleId) {
-      showError('Artikel tidak ditemukan');
       window.location.href = 'blog.html';
     }
 
-    // Load article
     async function loadArticle() {
-      const hideLoading = showLoading('Memuat artikel...');
-      
       try {
         const article = await getArticleById(articleId);
         
         if (!article) {
-          hideLoading();
-          showError('Artikel tidak ditemukan');
-          setTimeout(() => window.location.href = 'blog.html', 2000);
-          return;
+          throw new Error('Article not found');
         }
+
+        // Increment views
+        await incrementArticleViews(articleId);
+
+        document.title = `${article.judul} - PubGlow`;
         
-        // Update page title
-        document.getElementById('pageTitle').textContent = `${article.judul} - PubGlow`;
-        
-        // Render article
-        const container = document.getElementById('articleContainer');
+        const container = document.getElementById('articleContent');
         container.innerHTML = `
-          <header style="margin-bottom: 40px;">
-            <div class="badge badge-primary" style="margin-bottom: 16px; font-size: 14px;">
-              ${article.kategori}
-            </div>
-            <h1 style="font-size: 36px; line-height: 1.2; margin-bottom: 16px;">
-              ${article.judul}
-            </h1>
-            <div class="flex items-center gap-4" style="color: var(--text-secondary); font-size: 14px; flex-wrap: wrap;">
-              <span>👤 ${article.penulis}</span>
-              <span>•</span>
-              <span>📅 ${formatDate(article.tanggalPublish, true)}</span>
-              ${article.views ? `
-                <span>•</span>
-                <span>👁️ ${article.views} views</span>
-              ` : ''}
-            </div>
-          </header>
-          
-          <div class="prose">
-            ${article.konten}
-          </div>
-          
-          ${article.tags && article.tags.length > 0 ? `
-            <div style="margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--border-color);">
-              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                ${article.tags.map(tag => `
-                  <span class="badge badge-secondary">#${tag}</span>
-                `).join('')}
+          <div class="detail-container">
+            <div class="detail-header">
+              <span class="badge badge-primary" style="margin-bottom: var(--space-3);">${article.kategori}</span>
+              <h1 class="detail-title">${article.judul}</h1>
+              <div class="detail-meta">
+                <span>✍️ ${article.penulis}</span>
+                <span>📅 ${formatDate(article.tanggalPublish)}</span>
+                <span>👁️ ${(article.views || 0) + 1} views</span>
               </div>
             </div>
-          ` : ''}
-        `;
-        
-        // Increment view count
-        await incrementArticleViews(articleId);
-        
-        // Load related articles (same category, exclude current)
-        if (article.kategori) {
-          loadRelatedArticles(article.kategori, articleId);
-        }
-        
-        hideLoading();
-      } catch (error) {
-        console.error('Error loading article:', error);
-        hideLoading();
-        showError('Gagal memuat artikel');
-        document.getElementById('articleContainer').innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">⚠️</div>
-            <div class="empty-state-title">Gagal Memuat Artikel</div>
-            <div class="empty-state-text">Silakan coba lagi atau kembali ke halaman blog</div>
+            
+            <div class="prose">
+              ${article.konten}
+            </div>
+            
+            ${article.tags && article.tags.length > 0 ? `
+              <div style="margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--border-color);">
+                <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                  ${article.tags.map(tag => `<span class="badge badge-secondary">#${tag}</span>`).join('')}
+                </div>
+              </div>
+            ` : ''}
           </div>
         `;
+
+        // Load related articles
+        loadRelatedArticles(article.kategori, articleId);
+      } catch (error) {
+        document.getElementById('articleContent').innerHTML = 
+          '<div class="empty-state"><div class="empty-state-title">Artikel tidak ditemukan</div><p class="empty-state-text"><a href="blog.html" class="btn btn-primary">Kembali ke Blog</a></p></div>';
       }
     }
 
-    async function loadRelatedArticles(category, excludeId) {
+    async function loadRelatedArticles(category, currentId) {
       try {
-        const { getPublishedArticles } = await import('./js/services/blogService.js');
-        const allArticles = await getPublishedArticles();
-        
-        // Filter by same category, exclude current article, limit to 3
+        const allArticles = await getAllArticles();
         const related = allArticles
-          .filter(a => a.kategori === category && a.id !== excludeId)
+          .filter(a => a.kategori === category && a.id !== currentId && a.status === 'published')
           .slice(0, 3);
+
+        if (related.length === 0) return;
+
+        const container = document.getElementById('relatedArticles');
+        let html = '<h2 style="margin-bottom: var(--space-6);">Artikel Terkait</h2><div class="blog-grid">';
         
-        if (related.length > 0) {
-          const relatedContainer = document.getElementById('relatedContainer');
-          const relatedArticles = document.getElementById('relatedArticles');
-          
-          relatedArticles.innerHTML = related.map(article => `
-            <div class="blog-card">
-              <div class="blog-card-category">${article.kategori}</div>
+        related.forEach(article => {
+          const excerpt = truncate(article.konten.replace(/<[^>]*>/g, ''), 120);
+          html += `
+            <a href="blog-detail.html?id=${article.id}" class="blog-card" style="text-decoration: none; color: inherit;">
+              <span class="blog-card-category">${article.kategori}</span>
               <h3 class="blog-card-title">${article.judul}</h3>
               <div class="blog-card-meta">
-                <span>👤 ${article.penulis}</span>
+                <span>${article.penulis}</span>
                 <span>•</span>
-                <span>📅 ${formatDate(article.tanggalPublish)}</span>
+                <span>${formatDate(article.tanggalPublish)}</span>
               </div>
-              <p class="blog-card-excerpt">${truncate(article.ringkasan, 100)}</p>
-              <a href="blog-detail.html?id=${article.id}" class="blog-card-link">
-                Baca Selengkapnya →
-              </a>
-            </div>
-          `).join('');
-          
-          relatedContainer.style.display = 'block';
-        }
+              <p class="blog-card-excerpt">${excerpt}</p>
+              <span class="blog-card-link">Baca selengkapnya →</span>
+            </a>
+          `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
       } catch (error) {
         console.error('Error loading related articles:', error);
       }
     }
 
-    // Initialize
     loadArticle();
   </script>
-
-  <!-- Prose styling for article content -->
-  <style>
-    .prose {
-      font-size: 18px;
-      line-height: 1.8;
-      color: var(--text-secondary);
-    }
-    
-    .prose h2 {
-      font-size: 28px;
-      margin-top: 48px;
-      margin-bottom: 16px;
-      color: var(--text-primary);
-    }
-    
-    .prose h3 {
-      font-size: 24px;
-      margin-top: 32px;
-      margin-bottom: 12px;
-      color: var(--text-primary);
-    }
-    
-    .prose p {
-      margin-bottom: 20px;
-    }
-    
-    .prose ul, .prose ol {
-      margin-bottom: 20px;
-      padding-left: 32px;
-    }
-    
-    .prose li {
-      margin-bottom: 8px;
-    }
-    
-    .prose a {
-      color: var(--color-primary-start);
-      text-decoration: underline;
-    }
-    
-    .prose a:hover {
-      color: var(--color-primary-end);
-    }
-    
-    .prose blockquote {
-      border-left: 4px solid var(--color-primary-start);
-      padding-left: 20px;
-      margin: 24px 0;
-      font-style: italic;
-      color: var(--text-tertiary);
-    }
-    
-    .prose img {
-      max-width: 100%;
-      border-radius: var(--radius-md);
-      margin: 24px 0;
-    }
-    
-    .prose code {
-      background-color: var(--bg-tertiary);
-      padding: 2px 6px;
-      border-radius: var(--radius-sm);
-      font-size: 16px;
-    }
-    
-    .prose pre {
-      background-color: var(--color-gray-900);
-      color: var(--color-gray-100);
-      padding: 20px;
-      border-radius: var(--radius-md);
-      overflow-x: auto;
-      margin: 24px 0;
-    }
-    
-    .prose pre code {
-      background: none;
-      padding: 0;
-      color: inherit;
-    }
-  </style>
 </body>
 </html>

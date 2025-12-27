@@ -3,26 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Blog informatif seputar publikasi ilmiah - PubGlow">
   <title>Blog - PubGlow</title>
   
-  <!-- CSS -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/pages.css">
   
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
 </head>
 <body>
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="container container-xl navbar-container">
-      <a href="index.html" class="navbar-brand">
-        <span>✨</span>
-        <span>PubGlow</span>
-      </a>
+      <a href="index.html" class="navbar-brand">PubGlow</a>
       
       <button class="navbar-toggle" id="navbarToggle">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -34,226 +28,199 @@
       
       <ul class="navbar-menu" id="navbarMenu">
         <li><a href="index.html" class="navbar-link">Beranda</a></li>
-        <li><a href="jurnal.html" class="navbar-link">List Jurnal</a></li>
+        <li><a href="jurnal.html" class="navbar-link">Jurnal</a></li>
         <li><a href="blog.html" class="navbar-link active">Blog</a></li>
         <li><a href="submit-jurnal.html" class="navbar-link">Usulkan Jurnal</a></li>
         <li><a href="submit-artikel.html" class="navbar-link">Usulkan Artikel</a></li>
-        <li><a href="admin.html" class="navbar-link" style="color: var(--color-accent);">Admin</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Main Content -->
-  <main class="section">
-    <div class="container container-lg">
-      <div class="section-header">
-        <h1 class="section-title">📝 Blog</h1>
-        <p class="section-subtitle">Tips dan panduan seputar publikasi ilmiah</p>
-      </div>
+  <div class="container container-xl" style="padding-top: var(--space-8); padding-bottom: var(--space-12);">
+    <div class="page-header">
+      <h1 class="page-title">Blog</h1>
+      <p class="page-subtitle">Tips, panduan, dan informasi seputar publikasi ilmiah</p>
+    </div>
 
-      <!-- Filter & Search -->
-      <div class="flex items-center gap-4 mb-6" style="flex-wrap: wrap;">
+    <div class="card" style="margin-bottom: var(--space-8);">
+      <div class="flex items-center justify-between" style="flex-wrap: wrap; gap: var(--space-4);">
         <div style="flex: 1; min-width: 250px;">
-          <input 
-            type="text" 
-            class="input" 
-            id="searchInput" 
-            placeholder="🔍 Cari artikel...">
+          <input type="text" id="searchArticle" class="input" placeholder="Cari artikel...">
         </div>
         
-        <select class="select input" id="categoryFilter" style="width: 200px;">
-          <option value="">Semua Kategori</option>
-        </select>
-        
-        <select class="select input" id="sortBy" style="width: 180px;">
-          <option value="latest">Terbaru</option>
-          <option value="oldest">Terlama</option>
-          <option value="popular">Terpopuler</option>
-        </select>
-      </div>
-
-      <!-- Blog Grid -->
-      <div id="blogContainer">
-        <!-- Loading state -->
-        <div class="text-center" style="padding: 60px 20px;">
-          <div class="loader" style="margin: 0 auto 20px;"></div>
-          <p style="color: var(--text-secondary);">Memuat artikel...</p>
+        <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+          <select id="filterCategory" class="select" style="min-width: 150px;">
+            <option value="">Semua Kategori</option>
+            <option value="Tips">Tips</option>
+            <option value="Panduan">Panduan</option>
+            <option value="Tutorial">Tutorial</option>
+            <option value="Berita">Berita</option>
+            <option value="Opini">Opini</option>
+          </select>
+          
+          <select id="sortArticles" class="select" style="min-width: 150px;">
+            <option value="latest">Terbaru</option>
+            <option value="oldest">Terlama</option>
+            <option value="popular">Terpopuler</option>
+          </select>
         </div>
-      </div>
-
-      <!-- Load More Button -->
-      <div class="text-center mt-8" id="loadMoreContainer" style="display: none;">
-        <button class="btn btn-outline" id="loadMoreBtn">
-          Muat Lebih Banyak
-        </button>
       </div>
     </div>
-  </main>
 
-  <!-- Footer -->
+    <div id="articleGrid">
+      <div class="text-center" style="padding: 60px 20px;">
+        <div class="loader" style="margin: 0 auto 16px;"></div>
+        <p style="color: var(--text-secondary);">Memuat artikel...</p>
+      </div>
+    </div>
+
+    <div class="text-center" style="margin-top: var(--space-8);">
+      <button id="loadMore" class="btn btn-outline" style="display: none;">Load More</button>
+    </div>
+  </div>
+
   <footer class="footer">
     <div class="container container-xl">
-      <div class="footer-bottom" style="border: none; padding: 24px 0;">
-        <p>Made with ❤️ by Najma &copy; 2025 PubGlow</p>
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">PubGlow</div>
+          <p style="color: var(--text-secondary); font-size: 14px; margin-top: 12px; max-width: 320px; line-height: 1.6;">
+            Platform modern untuk menemukan jurnal ilmiah yang tepat.
+          </p>
+        </div>
+        
+        <div>
+          <h4 class="footer-section-title">Navigasi</h4>
+          <ul class="footer-links">
+            <li><a href="index.html" class="footer-link">Beranda</a></li>
+            <li><a href="jurnal.html" class="footer-link">Jurnal</a></li>
+            <li><a href="blog.html" class="footer-link">Blog</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-section-title">Kontribusi</h4>
+          <ul class="footer-links">
+            <li><a href="submit-jurnal.html" class="footer-link">Usulkan Jurnal</a></li>
+            <li><a href="submit-artikel.html" class="footer-link">Usulkan Artikel</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-section-title">Lainnya</h4>
+          <ul class="footer-links">
+            <li><a href="admin.html" class="footer-link">Admin Dashboard</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 PubGlow. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script type="module">
-    import { getPublishedArticles } from './js/services/blogService.js';
-    import { getBlogCategories } from './js/services/categoryService.js';
-    import { formatDate, formatRelativeTime, truncate } from './js/utils/formatter.js';
-    import { showError, showLoading } from './js/utils/notification.js';
-    import { debounce } from './js/utils/helpers.js';
+    import { getAllArticles } from './js/services/blogService.js';
+    import { formatDate, truncate } from './js/utils/formatter.js';
 
-    let allArticles = [];
-    let filteredArticles = [];
-    let displayedCount = 9;
-    const loadMoreIncrement = 9;
-
-    // Navbar toggle
     document.getElementById('navbarToggle')?.addEventListener('click', () => {
       document.getElementById('navbarMenu')?.classList.toggle('active');
     });
 
-    // Load data
-    async function loadData() {
-      const hideLoading = showLoading('Memuat artikel...');
-      
+    let allArticles = [];
+    let filteredArticles = [];
+    let displayCount = 9;
+
+    async function loadArticles() {
       try {
-        const [articles, categories] = await Promise.all([
-          getPublishedArticles(),
-          getBlogCategories()
-        ]);
-        
-        allArticles = articles;
-        filteredArticles = [...articles];
-        
-        // Populate category filter
-        const categoryFilter = document.getElementById('categoryFilter');
-        categories.forEach(cat => {
-          const option = document.createElement('option');
-          option.value = cat.nama;
-          option.textContent = cat.nama;
-          categoryFilter.appendChild(option);
-        });
-        
-        hideLoading();
+        allArticles = await getAllArticles();
+        allArticles = allArticles.filter(a => a.status === 'published');
+        filteredArticles = [...allArticles];
         applyFilters();
-        
-        if (articles.length === 0) {
-          showError('Belum ada artikel. Usulkan artikel pertama Anda!');
-        }
       } catch (error) {
-        console.error('Error loading articles:', error);
-        hideLoading();
-        showError('Gagal memuat artikel. Pastikan Firebase sudah dikonfigurasi.');
-        document.getElementById('blogContainer').innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">⚠️</div>
-            <div class="empty-state-title">Gagal Memuat Artikel</div>
-            <div class="empty-state-text">Silakan refresh halaman atau hubungi admin</div>
-          </div>
-        `;
+        document.getElementById('articleGrid').innerHTML = 
+          '<div class="empty-state"><div class="empty-state-title">Gagal memuat artikel</div></div>';
       }
     }
 
     function applyFilters() {
-      let data = [...allArticles];
-      
-      // Search
-      const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-      if (searchQuery) {
-        data = data.filter(a => 
-          a.judul.toLowerCase().includes(searchQuery) ||
-          a.ringkasan.toLowerCase().includes(searchQuery) ||
-          a.penulis.toLowerCase().includes(searchQuery)
-        );
-      }
-      
-      // Category filter
-      const category = document.getElementById('categoryFilter').value;
-      if (category) {
-        data = data.filter(a => a.kategori === category);
-      }
-      
+      const search = document.getElementById('searchArticle').value.toLowerCase();
+      const category = document.getElementById('filterCategory').value;
+      const sort = document.getElementById('sortArticles').value;
+
+      filteredArticles = allArticles.filter(a => {
+        if (search && !a.judul.toLowerCase().includes(search) && !a.konten.toLowerCase().includes(search)) return false;
+        if (category && a.kategori !== category) return false;
+        return true;
+      });
+
       // Sort
-      const sortBy = document.getElementById('sortBy').value;
-      if (sortBy === 'latest') {
-        data.sort((a, b) => b.tanggalPublish.toDate() - a.tanggalPublish.toDate());
-      } else if (sortBy === 'oldest') {
-        data.sort((a, b) => a.tanggalPublish.toDate() - b.tanggalPublish.toDate());
-      } else if (sortBy === 'popular') {
-        data.sort((a, b) => (b.views || 0) - (a.views || 0));
+      if (sort === 'latest') {
+        filteredArticles.sort((a, b) => new Date(b.tanggalPublish) - new Date(a.tanggalPublish));
+      } else if (sort === 'oldest') {
+        filteredArticles.sort((a, b) => new Date(a.tanggalPublish) - new Date(b.tanggalPublish));
+      } else if (sort === 'popular') {
+        filteredArticles.sort((a, b) => (b.views || 0) - (a.views || 0));
       }
-      
-      filteredArticles = data;
-      displayedCount = loadMoreIncrement;
-      renderBlog();
+
+      displayCount = 9;
+      renderArticles();
     }
 
-    function renderBlog() {
-      const container = document.getElementById('blogContainer');
-      const displayArticles = filteredArticles.slice(0, displayedCount);
+    function renderArticles() {
+      const container = document.getElementById('articleGrid');
       
-      if (displayArticles.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">🔍</div>
-            <div class="empty-state-title">Artikel tidak ditemukan</div>
-            <div class="empty-state-text">Coba ubah kata kunci atau filter pencarian Anda</div>
-          </div>
-        `;
-        document.getElementById('loadMoreContainer').style.display = 'none';
+      if (filteredArticles.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Tidak ada artikel ditemukan</div><p class="empty-state-text">Coba ubah filter pencarian Anda</p></div>';
+        document.getElementById('loadMore').style.display = 'none';
         return;
       }
+
+      const displayArticles = filteredArticles.slice(0, displayCount);
       
-      container.innerHTML = `
-        <div class="blog-grid">
-          ${displayArticles.map(article => `
-            <div class="blog-card">
-              <div class="blog-card-category">${article.kategori}</div>
-              <h3 class="blog-card-title">${article.judul}</h3>
-              <div class="blog-card-meta">
-                <span>👤 ${article.penulis}</span>
-                <span>•</span>
-                <span>📅 ${formatRelativeTime(article.tanggalPublish)}</span>
-                ${article.views ? `
-                  <span>•</span>
-                  <span>👁️ ${article.views}</span>
-                ` : ''}
-              </div>
-              <p class="blog-card-excerpt">${truncate(article.ringkasan, 120)}</p>
-              <a href="blog-detail.html?id=${article.id}" class="blog-card-link">
-                Baca Selengkapnya →
-              </a>
+      let html = '<div class="blog-grid">';
+      displayArticles.forEach(article => {
+        const excerpt = truncate(article.konten.replace(/<[^>]*>/g, ''), 120);
+        html += `
+          <a href="blog-detail.html?id=${article.id}" class="blog-card" style="text-decoration: none; color: inherit;">
+            <span class="blog-card-category">${article.kategori}</span>
+            <h3 class="blog-card-title">${article.judul}</h3>
+            <div class="blog-card-meta">
+              <span>${article.penulis}</span>
+              <span>•</span>
+              <span>${formatDate(article.tanggalPublish)}</span>
+              <span>•</span>
+              <span>${article.views || 0} views</span>
             </div>
-          `).join('')}
-        </div>
-      `;
+            <p class="blog-card-excerpt">${excerpt}</p>
+            <span class="blog-card-link">Baca selengkapnya →</span>
+          </a>
+        `;
+      });
+      html += '</div>';
       
+      container.innerHTML = html;
+
       // Show/hide load more button
-      const loadMoreContainer = document.getElementById('loadMoreContainer');
-      if (displayedCount < filteredArticles.length) {
-        loadMoreContainer.style.display = 'block';
+      const loadMoreBtn = document.getElementById('loadMore');
+      if (displayCount < filteredArticles.length) {
+        loadMoreBtn.style.display = 'inline-flex';
       } else {
-        loadMoreContainer.style.display = 'none';
+        loadMoreBtn.style.display = 'none';
       }
     }
 
-    // Event listeners
-    document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
-    document.getElementById('categoryFilter').addEventListener('change', applyFilters);
-    document.getElementById('sortBy').addEventListener('change', applyFilters);
-    
-    document.getElementById('loadMoreBtn').addEventListener('click', () => {
-      displayedCount += loadMoreIncrement;
-      renderBlog();
+    document.getElementById('searchArticle').addEventListener('input', applyFilters);
+    document.getElementById('filterCategory').addEventListener('change', applyFilters);
+    document.getElementById('sortArticles').addEventListener('change', applyFilters);
+
+    document.getElementById('loadMore').addEventListener('click', () => {
+      displayCount += 9;
+      renderArticles();
     });
 
-    // Initialize
-    loadData();
+    loadArticles();
   </script>
 </body>
 </html>
