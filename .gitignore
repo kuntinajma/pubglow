@@ -1,0 +1,24 @@
+# Firebase config (user-specific)
+js/config/firebase.js
+js/config/emailjs.js
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
