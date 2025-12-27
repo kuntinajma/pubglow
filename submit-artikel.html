@@ -11,7 +11,30 @@
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/pages.css">
   
+  <!-- Quill Rich Text Editor -->
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+  
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
+  
+  <style>
+    .ql-toolbar {
+      background-color: var(--bg-secondary);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      border-color: var(--border-color);
+    }
+    .ql-container {
+      border-color: var(--border-color);
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      font-size: 14px;
+      min-height: 300px;
+    }
+    .ql-editor {
+      min-height: 300px;
+    }
+    #previewKonten.ql-editor {
+      min-height: auto;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
@@ -72,8 +95,9 @@
 
           <div class="input-group">
             <label class="input-label required">Konten Artikel</label>
-            <textarea name="konten" id="kontenTextarea" class="textarea" required placeholder="Tulis artikel Anda di sini... Mendukung HTML sederhana." style="min-height: 300px;"></textarea>
-            <small style="color: var(--text-tertiary); font-size: var(--font-size-xs); margin-top: var(--space-1);">Panjang: <span id="charCount">0</span> karakter</small>
+            <div id="editor"></div>
+            <input type="hidden" name="konten" id="kontenHidden" required>
+            <small style="color: var(--text-tertiary); font-size: var(--font-size-xs); margin-top: var(--space-2); display: block;">Gunakan toolbar untuk format teks (bold, italic, list, dll)</small>
           </div>
 
           <div class="input-group">
@@ -104,7 +128,7 @@
             <div style="font-size: var(--font-size-xs); color: var(--text-tertiary); margin-bottom: var(--space-4);">
               <span id="previewPenulis">Nama Penulis</span>
             </div>
-            <div id="previewKonten" class="prose" style="font-size: var(--font-size-sm);">Konten artikel akan muncul di sini...</div>
+            <div id="previewKonten" class="ql-editor" style="font-size: var(--font-size-sm); padding: 0; border: none;">Konten artikel akan muncul di sini...</div>
             <div id="previewTags" style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4);"></div>
           </div>
         </div>
@@ -153,6 +177,9 @@
     </div>
   </footer>
 
+  <!-- Quill Editor JS -->
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+  
   <script type="module">
     import { submitArticle } from './js/services/submissionService.js';
     import { showSuccess, showError, showLoading } from './js/utils/notification.js';
@@ -161,21 +188,34 @@
       document.getElementById('navbarMenu')?.classList.toggle('active');
     });
 
+    // Initialize Quill editor
+    const quill = new Quill('#editor', {
+      theme: 'snow',
+      placeholder: 'Tulis artikel Anda di sini...',
+      modules: {
+        toolbar: [
+          [{ 'header': [2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'indent': '-1'}, { 'indent': '+1' }],
+          ['link'],
+          ['clean']
+        ]
+      }
+    });
+
     // Live preview
     function updatePreview() {
       const judul = document.getElementById('judulInput').value || 'Judul artikel akan muncul di sini';
       const kategori = document.getElementById('kategoriSelect').value || 'Kategori';
       const penulis = document.getElementById('penulisInput').value || 'Nama Penulis';
-      const konten = document.getElementById('kontenTextarea').value || 'Konten artikel akan muncul di sini...';
+      const konten = quill.root.innerHTML;
       const tags = document.getElementById('tagsInput').value;
 
       document.getElementById('previewJudul').textContent = judul;
       document.getElementById('previewKategori').textContent = kategori;
       document.getElementById('previewPenulis').textContent = penulis;
-      document.getElementById('previewKonten').innerHTML = konten;
-      
-      // Character count
-      document.getElementById('charCount').textContent = konten.length;
+      document.getElementById('previewKonten').innerHTML = konten || 'Konten artikel akan muncul di sini...';
 
       // Tags
       const tagsContainer = document.getElementById('previewTags');
@@ -190,12 +230,15 @@
     document.getElementById('judulInput').addEventListener('input', updatePreview);
     document.getElementById('kategoriSelect').addEventListener('change', updatePreview);
     document.getElementById('penulisInput').addEventListener('input', updatePreview);
-    document.getElementById('kontenTextarea').addEventListener('input', updatePreview);
     document.getElementById('tagsInput').addEventListener('input', updatePreview);
+    quill.on('text-change', updatePreview);
 
     // Form submit
     document.getElementById('submitArtikelForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      const kontenHTML = quill.root.innerHTML;
+      document.getElementById('kontenHidden').value = kontenHTML;
       
       const formData = new FormData(e.target);
       const tags = formData.get('tags') ? formData.get('tags').split(',').map(t => t.trim()).filter(t => t) : [];
@@ -204,10 +247,16 @@
         judul: formData.get('judul'),
         kategori: formData.get('kategori'),
         penulis: formData.get('penulis'),
-        konten: formData.get('konten'),
+        konten: kontenHTML,
         tags: tags,
         email: formData.get('email')
       };
+
+      // Validation
+      if (quill.getText().trim().length < 50) {
+        showError('Konten artikel minimal 50 karakter');
+        return;
+      }
 
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
@@ -218,6 +267,7 @@
         hideLoading();
         showSuccess('Artikel berhasil dikirim! Tim kami akan review segera.');
         e.target.reset();
+        quill.setContents([]);
         updatePreview();
       } catch (error) {
         hideLoading();
