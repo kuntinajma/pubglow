@@ -17,7 +17,7 @@
   <div class="admin-layout">
     <!-- Sidebar -->
     <aside class="admin-sidebar">
-      <a href="admin.html" class="admin-sidebar-brand">PubGlow</a>
+      <a href="admin.html" class="admin-sidebar-brand">PubGlow Admin</a>
       
       <nav>
         <ul class="admin-sidebar-nav">
@@ -37,56 +37,61 @@
     <main class="admin-main">
       <!-- Dashboard Tab -->
       <div class="tab-content active" id="dashboardTab">
-        <div style="margin-bottom: var(--space-8);">
-          <h1 style="font-size: var(--font-size-4xl); margin-bottom: var(--space-2);">Dashboard</h1>
-          <p style="color: var(--text-secondary);">Overview statistik dan aktivitas</p>
+        <div class="page-header">
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-subtitle">Overview statistik dan aktivitas PubGlow</p>
         </div>
 
-        <div class="grid grid-cols-4" style="margin-bottom: var(--space-12);">
+        <div class="stats-grid" style="margin-bottom: var(--space-8);">
           <div class="stat-card">
-            <div class="stat-content">
-              <div class="stat-label">Total Jurnal</div>
-              <div class="stat-value" id="statJurnal">-</div>
-            </div>
+            <div class="stat-label">Total Jurnal</div>
+            <div class="stat-value" id="statJurnal">-</div>
+            <div class="stat-change positive">↑ Aktif di platform</div>
           </div>
           
           <div class="stat-card">
-            <div class="stat-content">
-              <div class="stat-label">Total Artikel</div>
-              <div class="stat-value" id="statArtikel">-</div>
-            </div>
+            <div class="stat-label">Total Artikel</div>
+            <div class="stat-value" id="statArtikel">-</div>
+            <div class="stat-change positive">↑ Published</div>
           </div>
           
           <div class="stat-card">
-            <div class="stat-content">
-              <div class="stat-label">Pending Jurnal</div>
-              <div class="stat-value" id="statPendingJurnal">-</div>
-            </div>
+            <div class="stat-label">Pending Jurnal</div>
+            <div class="stat-value" id="statPendingJurnal">-</div>
+            <div class="stat-change" style="color: var(--text-tertiary);">Menunggu review</div>
           </div>
           
           <div class="stat-card">
-            <div class="stat-content">
-              <div class="stat-label">Pending Artikel</div>
-              <div class="stat-value" id="statPendingArtikel">-</div>
-            </div>
+            <div class="stat-label">Pending Artikel</div>
+            <div class="stat-value" id="statPendingArtikel">-</div>
+            <div class="stat-change" style="color: var(--text-tertiary);">Menunggu review</div>
           </div>
         </div>
 
-        <div class="card">
-          <h3 style="margin-bottom: var(--space-4);">Quick Actions</h3>
-          <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
-            <button class="btn btn-primary" onclick="document.querySelector('[data-tab=pendingJurnal]').click()">Review Jurnal</button>
-            <button class="btn btn-primary" onclick="document.querySelector('[data-tab=pendingArtikel]').click()">Review Artikel</button>
-            <button class="btn btn-outline" onclick="location.reload()">Refresh Data</button>
+        <div class="grid grid-cols-2" style="gap: var(--space-6);">
+          <div class="card">
+            <h3 style="margin-bottom: var(--space-4); font-size: var(--font-size-lg);">Quick Actions</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+              <button class="btn btn-outline" style="justify-content: flex-start;" onclick="document.querySelector('[data-tab=pendingJurnal]').click()">Review Jurnal Pending</button>
+              <button class="btn btn-outline" style="justify-content: flex-start;" onclick="document.querySelector('[data-tab=pendingArtikel]').click()">Review Artikel Pending</button>
+              <button class="btn btn-outline" style="justify-content: flex-start;" onclick="location.reload()">Refresh Data</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 style="margin-bottom: var(--space-4); font-size: var(--font-size-lg);">Recent Activity</h3>
+            <div id="recentActivity" style="font-size: var(--font-size-sm); color: var(--text-secondary);">
+              <p>Loading aktivitas terbaru...</p>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Pending Jurnal Tab -->
       <div class="tab-content" id="pendingJurnalTab">
-        <div style="margin-bottom: var(--space-8);">
-          <h1 style="font-size: var(--font-size-4xl); margin-bottom: var(--space-2);">Pending Jurnal</h1>
-          <p style="color: var(--text-secondary);">Review dan approve submission jurnal</p>
+        <div class="page-header">
+          <h1 class="page-title">Pending Jurnal</h1>
+          <p class="page-subtitle">Review dan approve submission jurnal dari kontributor</p>
         </div>
         
         <div class="card">
@@ -101,9 +106,9 @@
 
       <!-- Pending Artikel Tab -->
       <div class="tab-content" id="pendingArtikelTab">
-        <div style="margin-bottom: var(--space-8);">
-          <h1 style="font-size: var(--font-size-4xl); margin-bottom: var(--space-2);">Pending Artikel</h1>
-          <p style="color: var(--text-secondary);">Review dan approve submission artikel</p>
+        <div class="page-header">
+          <h1 class="page-title">Pending Artikel</h1>
+          <p class="page-subtitle">Review dan approve submission artikel dari kontributor</p>
         </div>
         
         <div class="card">
@@ -118,12 +123,16 @@
 
       <!-- All Jurnal Tab -->
       <div class="tab-content" id="allJurnalTab">
-        <div style="margin-bottom: var(--space-8);">
-          <h1 style="font-size: var(--font-size-4xl); margin-bottom: var(--space-2);">Semua Jurnal</h1>
-          <p style="color: var(--text-secondary);">Daftar lengkap jurnal yang aktif</p>
+        <div class="page-header">
+          <h1 class="page-title">Semua Jurnal</h1>
+          <p class="page-subtitle">Daftar lengkap jurnal yang aktif di platform</p>
         </div>
         
         <div class="card">
+          <div style="margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center;">
+            <input type="text" id="searchJurnal" class="input" placeholder="Cari jurnal..." style="max-width: 300px;">
+            <button class="btn btn-outline btn-sm" onclick="loadAllJournals()">Refresh</button>
+          </div>
           <div id="allJurnalTable">
             <div class="text-center" style="padding: 40px;">
               <p style="color: var(--text-secondary);">Klik tab ini untuk memuat data</p>
@@ -134,12 +143,16 @@
 
       <!-- All Artikel Tab -->
       <div class="tab-content" id="allArtikelTab">
-        <div style="margin-bottom: var(--space-8);">
-          <h1 style="font-size: var(--font-size-4xl); margin-bottom: var(--space-2);">Semua Artikel</h1>
-          <p style="color: var(--text-secondary);">Daftar lengkap artikel yang published</p>
+        <div class="page-header">
+          <h1 class="page-title">Semua Artikel</h1>
+          <p class="page-subtitle">Daftar lengkap artikel yang published di blog</p>
         </div>
         
         <div class="card">
+          <div style="margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center;">
+            <input type="text" id="searchArtikel" class="input" placeholder="Cari artikel..." style="max-width: 300px;">
+            <button class="btn btn-outline btn-sm" onclick="loadAllArticles()">Refresh</button>
+          </div>
           <div id="allArtikelTable">
             <div class="text-center" style="padding: 40px;">
               <p style="color: var(--text-secondary);">Klik tab ini untuk memuat data</p>
@@ -149,6 +162,9 @@
       </div>
     </main>
   </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
 
   <script type="module">
     import { getAllJournals, approveJournal, rejectJournal } from './js/services/journalService.js';
@@ -182,7 +198,7 @@
       });
     });
 
-    // Load stats
+    // Load stats and initial data
     async function loadStats() {
       try {
         const [journals, articles, pendingJournals, pendingArticles] = await Promise.all([
@@ -196,6 +212,29 @@
         document.getElementById('statArtikel').textContent = articles.filter(a => a.status === 'published').length;
         document.getElementById('statPendingJurnal').textContent = pendingJournals.length;
         document.getElementById('statPendingArtikel').textContent = pendingArticles.length;
+        
+        // Update recent activity
+        const recentActivity = document.getElementById('recentActivity');
+        let activityHTML = '<div style="display: flex; flex-direction: column; gap: 12px;">';
+        
+        if (pendingJournals.length > 0) {
+          activityHTML += `<div style="padding: 8px; background: var(--bg-secondary); border-radius: 6px;">
+            <strong style="color: var(--text-primary);">${pendingJournals.length}</strong> jurnal menunggu review
+          </div>`;
+        }
+        
+        if (pendingArticles.length > 0) {
+          activityHTML += `<div style="padding: 8px; background: var(--bg-secondary); border-radius: 6px;">
+            <strong style="color: var(--text-primary);">${pendingArticles.length}</strong> artikel menunggu review
+          </div>`;
+        }
+        
+        if (pendingJournals.length === 0 && pendingArticles.length === 0) {
+          activityHTML += '<div style="padding: 16px; text-align: center; color: var(--text-tertiary);">Tidak ada aktivitas pending</div>';
+        }
+        
+        activityHTML += '</div>';
+        recentActivity.innerHTML = activityHTML;
       } catch (error) {
         console.error('Error loading stats:', error);
       }
@@ -209,25 +248,26 @@
         const submissions = await getPendingJournalSubmissions();
         
         if (submissions.length === 0) {
-          container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Tidak ada pending submission</div></div>';
+          container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Tidak ada pending submission</div><p class="empty-state-text">Semua submission jurnal sudah diproses</p></div>';
           return;
         }
         
         let html = '<div class="table-container"><table class="table"><thead><tr>';
-        html += '<th>Tanggal</th><th>Nama Jurnal</th><th>Instansi</th><th>Akreditasi</th><th>Pengusul</th><th>Aksi</th>';
+        html += '<th>Tanggal</th><th>Nama Jurnal</th><th>Instansi</th><th>Akreditasi</th><th>Harga</th><th>Pengusul</th><th style="text-align: center;">Aksi</th>';
         html += '</tr></thead><tbody>';
         
         submissions.forEach(sub => {
           html += `<tr>
-            <td><small>${formatDate(sub.tanggalSubmit)}</small></td>
-            <td><strong>${sub.nama}</strong></td>
+            <td style="white-space: nowrap;"><small>${formatDate(sub.tanggalSubmit)}</small></td>
+            <td><strong style="color: var(--text-primary);">${sub.nama}</strong></td>
             <td>${sub.instansi}</td>
             <td><span class="badge badge-primary">${sub.akreditasi}</span></td>
-            <td><small>${sub.namaPengusul}<br>${sub.emailPengusul}</small></td>
-            <td>
-              <div style="display: flex; gap: 8px;">
-                <button class="btn btn-sm" style="background: var(--color-success);" onclick="approveJournalSubmission('${sub.id}')">Approve</button>
-                <button class="btn btn-sm" style="background: var(--color-danger);" onclick="rejectJournalSubmission('${sub.id}')">Reject</button>
+            <td style="white-space: nowrap;">${formatCurrency(sub.harga)}</td>
+            <td><small>${sub.namaPengusul}<br><span style="color: var(--text-tertiary);">${sub.emailPengusul}</span></small></td>
+            <td style="text-align: center;">
+              <div style="display: flex; gap: 6px; justify-content: center;">
+                <button class="btn btn-sm btn-success" onclick="approveJournalSubmission('${sub.id}')">Approve</button>
+                <button class="btn btn-sm btn-danger" onclick="rejectJournalSubmission('${sub.id}')">Reject</button>
               </div>
             </td>
           </tr>`;
@@ -236,7 +276,8 @@
         html += '</tbody></table></div>';
         container.innerHTML = html;
       } catch (error) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Gagal memuat data</div></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Gagal memuat data</div><p class="empty-state-text">Terjadi kesalahan saat mengambil data</p></div>';
+        console.error('Error:', error);
       }
     }
 
@@ -248,24 +289,24 @@
         const submissions = await getPendingArticleSubmissions();
         
         if (submissions.length === 0) {
-          container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Tidak ada pending submission</div></div>';
+          container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Tidak ada pending submission</div><p class="empty-state-text">Semua submission artikel sudah diproses</p></div>';
           return;
         }
         
         let html = '<div class="table-container"><table class="table"><thead><tr>';
-        html += '<th>Tanggal</th><th>Judul</th><th>Kategori</th><th>Penulis</th><th>Aksi</th>';
+        html += '<th>Tanggal</th><th>Judul</th><th>Kategori</th><th>Penulis</th><th style="text-align: center;">Aksi</th>';
         html += '</tr></thead><tbody>';
         
         submissions.forEach(sub => {
           html += `<tr>
-            <td><small>${formatDate(sub.tanggalSubmit)}</small></td>
-            <td><strong>${truncate(sub.judul, 60)}</strong></td>
+            <td style="white-space: nowrap;"><small>${formatDate(sub.tanggalSubmit)}</small></td>
+            <td><strong style="color: var(--text-primary);">${truncate(sub.judul, 80)}</strong></td>
             <td><span class="badge badge-secondary">${sub.kategori}</span></td>
-            <td><small>${sub.penulis}</small></td>
-            <td>
-              <div style="display: flex; gap: 8px;">
-                <button class="btn btn-sm" style="background: var(--color-success);" onclick="approveArticleSubmission('${sub.id}')">Approve</button>
-                <button class="btn btn-sm" style="background: var(--color-danger);" onclick="rejectArticleSubmission('${sub.id}')">Reject</button>
+            <td>${sub.penulis}</td>
+            <td style="text-align: center;">
+              <div style="display: flex; gap: 6px; justify-content: center;">
+                <button class="btn btn-sm btn-success" onclick="approveArticleSubmission('${sub.id}')">Approve</button>
+                <button class="btn btn-sm btn-danger" onclick="rejectArticleSubmission('${sub.id}')">Reject</button>
               </div>
             </td>
           </tr>`;
@@ -274,28 +315,32 @@
         html += '</tbody></table></div>';
         container.innerHTML = html;
       } catch (error) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Gagal memuat data</div></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Gagal memuat data</div><p class="empty-state-text">Terjadi kesalahan saat mengambil data</p></div>';
+        console.error('Error:', error);
       }
     }
 
-    async function loadAllJournals() {
+    window.loadAllJournals = async function() {
       const container = document.getElementById('allJurnalTable');
       container.innerHTML = '<div class="text-center" style="padding: 40px;"><div class="loader" style="margin: 0 auto;"></div></div>';
       
       try {
         const journals = await getAllJournals();
+        const activeJournals = journals.filter(j => j.status === 'active');
         
         let html = '<div class="table-container"><table class="table"><thead><tr>';
-        html += '<th>Nama</th><th>Instansi</th><th>Akreditasi</th><th>Harga</th><th>Status</th>';
+        html += '<th>Nama Jurnal</th><th>Instansi</th><th>Akreditasi</th><th>Scope</th><th>Harga</th><th>Fast Track</th><th>Status</th>';
         html += '</tr></thead><tbody>';
         
-        journals.forEach(j => {
+        activeJournals.forEach(j => {
           html += `<tr>
-            <td><strong>${j.nama}</strong></td>
+            <td><strong style="color: var(--text-primary);">${j.nama}</strong></td>
             <td>${j.instansi}</td>
             <td><span class="badge badge-primary">${j.akreditasi}</span></td>
-            <td>${formatCurrency(j.harga)}</td>
-            <td><span class="badge badge-${j.status === 'active' ? 'success' : 'gray'}">${j.status}</span></td>
+            <td><span class="badge badge-secondary">${j.scope}</span></td>
+            <td style="white-space: nowrap;">${formatCurrency(j.harga)}</td>
+            <td>${j.fastTrack ? '<span class="badge badge-success">Ya</span>' : '<span class="badge badge-gray">Tidak</span>'}</td>
+            <td><span class="badge badge-success">Active</span></td>
           </tr>`;
         });
         
@@ -303,27 +348,30 @@
         container.innerHTML = html;
       } catch (error) {
         container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Gagal memuat data</div></div>';
+        console.error('Error:', error);
       }
-    }
+    };
 
-    async function loadAllArticles() {
+    window.loadAllArticles = async function() {
       const container = document.getElementById('allArtikelTable');
       container.innerHTML = '<div class="text-center" style="padding: 40px;"><div class="loader" style="margin: 0 auto;"></div></div>';
       
       try {
         const articles = await getAllArticles();
+        const publishedArticles = articles.filter(a => a.status === 'published');
         
         let html = '<div class="table-container"><table class="table"><thead><tr>';
-        html += '<th>Judul</th><th>Kategori</th><th>Penulis</th><th>Views</th><th>Status</th>';
+        html += '<th>Judul</th><th>Kategori</th><th>Penulis</th><th>Tanggal</th><th>Views</th><th>Status</th>';
         html += '</tr></thead><tbody>';
         
-        articles.forEach(a => {
+        publishedArticles.forEach(a => {
           html += `<tr>
-            <td><strong>${truncate(a.judul, 60)}</strong></td>
+            <td><strong style="color: var(--text-primary);">${truncate(a.judul, 80)}</strong></td>
             <td><span class="badge badge-secondary">${a.kategori}</span></td>
             <td>${a.penulis}</td>
+            <td style="white-space: nowrap;"><small>${formatDate(a.tanggalPublish)}</small></td>
             <td>${a.views || 0}</td>
-            <td><span class="badge badge-${a.status === 'published' ? 'success' : 'warning'}">${a.status}</span></td>
+            <td><span class="badge badge-success">Published</span></td>
           </tr>`;
         });
         
@@ -331,8 +379,9 @@
         container.innerHTML = html;
       } catch (error) {
         container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Gagal memuat data</div></div>';
+        console.error('Error:', error);
       }
-    }
+    };
 
     window.approveJournalSubmission = async (id) => {
       const confirmed = await showConfirm('Approve jurnal submission ini?');
@@ -348,6 +397,7 @@
       } catch (error) {
         hideLoading();
         showError('Gagal approve jurnal');
+        console.error('Error:', error);
       }
     };
 
@@ -365,6 +415,7 @@
       } catch (error) {
         hideLoading();
         showError('Gagal reject jurnal');
+        console.error('Error:', error);
       }
     };
 
@@ -382,6 +433,7 @@
       } catch (error) {
         hideLoading();
         showError('Gagal approve artikel');
+        console.error('Error:', error);
       }
     };
 
@@ -399,10 +451,13 @@
       } catch (error) {
         hideLoading();
         showError('Gagal reject artikel');
+        console.error('Error:', error);
       }
     };
 
+    // Initial load
     loadStats();
+    loadPendingJournals();
   </script>
 </body>
 </html>
