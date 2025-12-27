@@ -21,7 +21,7 @@
       
       <nav>
         <ul class="admin-sidebar-nav">
-          <li><a href="#dashboard" class="admin-sidebar-link active" data-tab="dashboard">Dashboard</a></li>
+          <li><a href="#dashboard" class="admin-sidebar-link" data-tab="dashboard">Dashboard</a></li>
           <li><a href="#pendingJurnal" class="admin-sidebar-link" data-tab="pendingJurnal">Pending Jurnal</a></li>
           <li><a href="#pendingArtikel" class="admin-sidebar-link" data-tab="pendingArtikel">Pending Artikel</a></li>
           <li><a href="#allJurnal" class="admin-sidebar-link" data-tab="allJurnal">Semua Jurnal</a></li>
@@ -72,8 +72,8 @@
           <div class="card">
             <h3 style="margin-bottom: var(--space-4); font-size: var(--font-size-lg);">Quick Actions</h3>
             <div style="display: flex; flex-direction: column; gap: var(--space-3);">
-              <a href="#pendingJurnal" class="btn btn-outline" style="justify-content: flex-start;">Review Jurnal Pending</a>
-              <a href="#pendingArtikel" class="btn btn-outline" style="justify-content: flex-start;">Review Artikel Pending</a>
+              <a href="#pendingJurnal" class="btn btn-outline" style="justify-content: flex-start; text-decoration: none;">Review Jurnal Pending</a>
+              <a href="#pendingArtikel" class="btn btn-outline" style="justify-content: flex-start; text-decoration: none;">Review Artikel Pending</a>
               <button class="btn btn-outline" style="justify-content: flex-start;" onclick="location.reload()">Refresh Data</button>
             </div>
           </div>
@@ -177,18 +177,17 @@
 
     // Switch tabs based on hash
     function switchTab(tabName) {
-      console.log('Switching to tab:', tabName);
+      console.log('✅ Switching to tab:', tabName);
       
-      // Update URL hash
-      window.location.hash = tabName;
-      
-      // Update sidebar
+      // Update sidebar active state
       document.querySelectorAll('.admin-sidebar-link').forEach(l => l.classList.remove('active'));
+      const activeLink = document.querySelector(`[data-tab="${tabName}"]`);
+      if (activeLink) {
+        activeLink.classList.add('active');
+      }
+      
+      // Update tab content visibility
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      
-      const link = document.querySelector(`[data-tab="${tabName}"]`);
-      if (link) link.classList.add('active');
-      
       const tabElement = document.getElementById(tabName + 'Tab');
       if (tabElement) {
         tabElement.classList.add('active');
@@ -204,29 +203,24 @@
       if (tabName === 'dashboard') loadStats();
     }
     
-    // Make switchTab global for onclick handlers
+    // Make switchTab global
     window.switchTab = switchTab;
 
-    // Handle hash changes
-    window.addEventListener('hashchange', () => {
+    // Handle hash changes (main navigation logic)
+    function handleHashChange() {
       const hash = window.location.hash.substring(1) || 'dashboard';
+      console.log('🔗 Hash changed to:', hash);
       switchTab(hash);
-    });
+    }
 
-    // Sidebar navigation
-    document.querySelectorAll('.admin-sidebar-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const tabName = link.dataset.tab;
-        if (!tabName) return;
-        // Let the hash change handle the switch
-      });
-    });
+    // Listen to hash changes
+    window.addEventListener('hashchange', handleHashChange);
 
     // Initial load based on hash
-    const initialHash = window.location.hash.substring(1) || 'dashboard';
-    if (initialHash !== 'dashboard') {
-      switchTab(initialHash);
-    }
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('📄 Page loaded');
+      handleHashChange();
+    });
 
     async function loadStats() {
       try {
@@ -482,10 +476,6 @@
         console.error('Error:', error);
       }
     };
-
-    // Initial load
-    loadStats();
-    loadPendingJournals();
   </script>
 </body>
 </html>
