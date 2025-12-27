@@ -12,6 +12,25 @@
   <link rel="stylesheet" href="css/pages.css">
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
+  
+  <style>
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+    }
+    .form-group {
+      margin-bottom: 0;
+    }
+    .form-actions {
+      margin-top: var(--space-8);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+  </style>
 </head>
 <body>
   <div class="admin-layout">
@@ -90,14 +109,14 @@
             <div class="form-group">
               <label for="harga" class="form-label">Biaya Publikasi (Rp) <span class="text-danger">*</span></label>
               <input type="number" id="harga" name="harga" class="input" placeholder="0" min="0" step="1000" required>
-              <small class="form-help">Masukkan dalam Rupiah, tanpa titik atau koma</small>
+              <small class="form-help">Masukkan dalam Rupiah</small>
             </div>
 
             <!-- Estimasi Waktu (dalam bulan) -->
             <div class="form-group">
               <label for="estimasiWaktu" class="form-label">Estimasi Review (bulan) <span class="text-danger">*</span></label>
               <input type="number" id="estimasiWaktu" name="estimasiWaktu" class="input" placeholder="3" min="1" max="24" step="0.5" required>
-              <small class="form-help">Contoh: 3 = 3 bulan, 1.5 = 1.5 bulan</small>
+              <small class="form-help">Contoh: 3 atau 1.5 bulan</small>
             </div>
 
             <!-- URL Jurnal -->
@@ -113,7 +132,7 @@
             </div>
 
             <!-- Fast Track -->
-            <div class="form-group" style="grid-column: 1 / -1;">
+            <div class="form-group" style="grid-column: 1 / -1; margin-top: var(--space-4);">
               <label class="checkbox-label">
                 <input type="checkbox" id="fastTrack" name="fastTrack" class="checkbox">
                 <span>Tersedia Fast Track</span>
@@ -135,8 +154,8 @@
           </div>
 
           <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Simpan Jurnal</button>
-            <a href="admin.html#kelolaJurnal" class="btn btn-outline">Batal</a>
+            <button type="submit" class="btn btn-primary btn-sm">Simpan Jurnal</button>
+            <a href="admin.html#kelolaJurnal" class="btn btn-outline btn-sm">Batal</a>
           </div>
         </form>
       </div>

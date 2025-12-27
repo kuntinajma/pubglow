@@ -13,6 +13,25 @@
   <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
+  
+  <style>
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+    }
+    .form-group {
+      margin-bottom: 0;
+    }
+    .form-actions {
+      margin-top: var(--space-8);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+  </style>
 </head>
 <body>
   <div class="admin-layout">
@@ -76,22 +95,15 @@
               <input type="text" id="penulis" name="penulis" class="input" placeholder="Nama penulis" required>
             </div>
 
-            <!-- Featured Image URL -->
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="featuredImage" class="form-label">URL Gambar Utama</label>
-              <input type="url" id="featuredImage" name="featuredImage" class="input" placeholder="https://example.com/image.jpg">
-              <small class="form-help">URL gambar dari Unsplash, Pexels, atau upload ke Firebase Storage</small>
-            </div>
-
             <!-- Content (Rich Text Editor) -->
-            <div class="form-group" style="grid-column: 1 / -1;">
+            <div class="form-group" style="grid-column: 1 / -1; margin-top: var(--space-4);">
               <label class="form-label">Konten Artikel <span class="text-danger">*</span></label>
               <div id="editor" style="height: 400px; background: white; border: 1px solid var(--border-color); border-radius: var(--radius-md);"></div>
               <input type="hidden" id="konten" name="konten" required>
             </div>
 
             <!-- Status -->
-            <div class="form-group">
+            <div class="form-group" style="margin-top: var(--space-4);">
               <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
               <select id="status" name="status" class="input" required>
                 <option value="draft">Draft</option>
@@ -102,9 +114,9 @@
           </div>
 
           <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Simpan Artikel</button>
-            <button type="button" class="btn btn-outline" onclick="saveDraft()">Simpan sebagai Draft</button>
-            <a href="admin.html#kelolaArtikel" class="btn btn-outline">Batal</a>
+            <button type="submit" class="btn btn-primary btn-sm">Simpan Artikel</button>
+            <button type="button" class="btn btn-outline btn-sm" onclick="saveDraft()">Simpan sebagai Draft</button>
+            <a href="admin.html#kelolaArtikel" class="btn btn-outline btn-sm">Batal</a>
           </div>
         </form>
       </div>
@@ -192,7 +204,6 @@
         slug: formData.get('slug'),
         kategori: formData.get('kategori'),
         penulis: formData.get('penulis'),
-        featuredImage: formData.get('featuredImage') || '',
         konten: kontenHTML,
         status: formData.get('status'),
         views: 0,
