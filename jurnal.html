@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Daftar jurnal ilmiah dengan filter lengkap - PubGlow">
+  <title>List Jurnal - PubGlow</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/pages.css">
+  
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container container-xl navbar-container">
+      <a href="index.html" class="navbar-brand">
+        <span>✨</span>
+        <span>PubGlow</span>
+      </a>
+      
+      <button class="navbar-toggle" id="navbarToggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      
+      <ul class="navbar-menu" id="navbarMenu">
+        <li><a href="index.html" class="navbar-link">Beranda</a></li>
+        <li><a href="jurnal.html" class="navbar-link active">List Jurnal</a></li>
+        <li><a href="blog.html" class="navbar-link">Blog</a></li>
+        <li><a href="submit-jurnal.html" class="navbar-link">Usulkan Jurnal</a></li>
+        <li><a href="submit-artikel.html" class="navbar-link">Usulkan Artikel</a></li>
+        <li><a href="admin.html" class="navbar-link" style="color: var(--color-accent);">Admin</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="section">
+    <div class="container container-2xl">
+      <div class="section-header">
+        <h1 class="section-title">📚 List Jurnal</h1>
+        <p class="section-subtitle">Temukan jurnal yang tepat untuk riset Anda</p>
+      </div>
+
+      <!-- Filters -->
+      <div class="jurnal-filters">
+        <div class="flex items-center justify-between mb-4" style="flex-wrap: wrap; gap: 16px;">
+          <h3 style="margin: 0; font-size: 18px;">🔍 Filter & Pencarian</h3>
+          <button class="btn btn-sm btn-ghost" id="resetFilters">↻ Reset Filter</button>
+        </div>
+        
+        <!-- Search -->
+        <div class="input-group">
+          <input 
+            type="text" 
+            class="input" 
+            id="searchInput" 
+            placeholder="Cari jurnal (nama, instansi, scope...)">
+        </div>
+        
+        <!-- Filter Row 1 -->
+        <div class="filter-row">
+          <div>
+            <label class="input-label">Akreditasi</label>
+            <div id="filterAkreditasi"></div>
+          </div>
+          
+          <div>
+            <label class="input-label">Scope / Kategori</label>
+            <div id="filterScope"></div>
+          </div>
+          
+          <div>
+            <label class="input-label">Fast Track</label>
+            <select class="select input" id="filterFastTrack">
+              <option value="">Semua</option>
+              <option value="tersedia">Tersedia</option>
+              <option value="tidak">Tidak Tersedia</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Filter Row 2 -->
+        <div class="filter-row">
+          <div>
+            <label class="input-label">Range Biaya</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="number" class="input" id="minPrice" placeholder="Min" min="0">
+              <span>-</span>
+              <input type="number" class="input" id="maxPrice" placeholder="Max" min="0">
+            </div>
+          </div>
+          
+          <div>
+            <label class="input-label">Frekuensi Terbit</label>
+            <div id="filterFrekuensi"></div>
+          </div>
+          
+          <div>
+            <label class="input-label">Urutkan</label>
+            <select class="select input" id="sortBy">
+              <option value="">Default</option>
+              <option value="harga-asc">Harga (Termurah)</option>
+              <option value="harga-desc">Harga (Termahal)</option>
+              <option value="akreditasi-asc">Akreditasi (Tertinggi)</option>
+              <option value="waktu-asc">Waktu Review (Tercepat)</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="filter-actions">
+          <button class="btn btn-secondary" id="applyFilters">
+            <span>✓</span>
+            Terapkan Filter
+          </button>
+          <button class="btn btn-outline" id="exportExcel">
+            <span>📄</span>
+            Export Excel
+          </button>
+          <button class="btn btn-outline" id="exportPDF">
+            <span>📝</span>
+            Export PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div id="tableContainer">
+        <!-- Loading state -->
+        <div class="text-center" style="padding: 60px 20px;">
+          <div class="loader" style="margin: 0 auto 20px;"></div>
+          <p style="color: var(--text-secondary);">Memuat data jurnal...</p>
+        </div>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div class="flex items-center justify-between mt-6" style="flex-wrap: wrap; gap: 16px;">
+        <div>
+          <label style="margin-right: 8px; color: var(--text-secondary); font-size: 14px;">Tampilkan:</label>
+          <select class="select" id="pageSize" style="width: auto; display: inline-block;">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+          <span style="margin-left: 8px; color: var(--text-secondary); font-size: 14px;">per halaman</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container container-xl">
+      <div class="footer-bottom" style="border: none; padding: 24px 0;">
+        <p>Made with ❤️ by Najma &copy; 2025 PubGlow</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { getActiveJournals } from './js/services/journalService.js';
+    import { getScopeCategories } from './js/services/categoryService.js';
+    import { formatCurrency, formatDate, formatArray } from './js/utils/formatter.js';
+    import { exportToExcel, exportToPDF } from './js/utils/export.js';
+    import { showError, showSuccess, showLoading } from './js/utils/notification.js';
+    import { debounce } from './js/utils/helpers.js';
+
+    let allJournals = [];
+    let filteredJournals = [];
+    let currentPage = 1;
+    let pageSize = 10;
+    let scopeCategories = [];
+
+    // Navbar toggle
+    document.getElementById('navbarToggle')?.addEventListener('click', () => {
+      document.getElementById('navbarMenu')?.classList.toggle('active');
+    });
+
+    // Load data
+    async function loadData() {
+      const hideLoading = showLoading('Memuat data jurnal...');
+      
+      try {
+        [allJournals, scopeCategories] = await Promise.all([
+          getActiveJournals(),
+          getScopeCategories()
+        ]);
+        
+        filteredJournals = [...allJournals];
+        
+        // Populate filters
+        populateFilters();
+        renderTable();
+        hideLoading();
+        
+        if (allJournals.length === 0) {
+          showError('Belum ada data jurnal. Usulkan jurnal pertama Anda!');
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+        hideLoading();
+        showError('Gagal memuat data. Pastikan Firebase sudah dikonfigurasi.');
+        document.getElementById('tableContainer').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <div class="empty-state-title">Gagal Memuat Data</div>
+            <div class="empty-state-text">Silakan refresh halaman atau hubungi admin</div>
+          </div>
+        `;
+      }
+    }
+
+    function populateFilters() {
+      // Akreditasi filter (checkboxes)
+      const akreditasiOptions = ['SINTA 1', 'SINTA 2', 'SINTA 3', 'SINTA 4', 'SINTA 5', 'SINTA 6'];
+      document.getElementById('filterAkreditasi').innerHTML = akreditasiOptions.map(opt => `
+        <label class="checkbox">
+          <input type="checkbox" value="${opt}" name="akreditasi">
+          <span>${opt}</span>
+        </label>
+      `).join('');
+      
+      // Scope filter (select multiple)
+      if (scopeCategories.length > 0) {
+        document.getElementById('filterScope').innerHTML = `
+          <select class="select input" id="selectScope" multiple style="height: 80px;">
+            ${scopeCategories.map(cat => `
+              <option value="${cat.nama}">${cat.nama}</option>
+            `).join('')}
+          </select>
+        `;
+      }
+    }
+
+    function applyFilters() {
+      let data = [...allJournals];
+      
+      // Search
+      const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+      if (searchQuery) {
+        data = data.filter(j => 
+          j.nama.toLowerCase().includes(searchQuery) ||
+          j.instansi.toLowerCase().includes(searchQuery) ||
+          j.scope.some(s => s.toLowerCase().includes(searchQuery))
+        );
+      }
+      
+      // Akreditasi
+      const selectedAkreditasi = Array.from(document.querySelectorAll('[name="akreditasi"]:checked'))
+        .map(cb => cb.value);
+      if (selectedAkreditasi.length > 0) {
+        data = data.filter(j => selectedAkreditasi.includes(j.akreditasi));
+      }
+      
+      // Scope
+      const selectScope = document.getElementById('selectScope');
+      if (selectScope) {
+        const selectedScope = Array.from(selectScope.selectedOptions).map(opt => opt.value);
+        if (selectedScope.length > 0) {
+          data = data.filter(j => j.scope.some(s => selectedScope.includes(s)));
+        }
+      }
+      
+      // Fast Track
+      const fastTrack = document.getElementById('filterFastTrack').value;
+      if (fastTrack === 'tersedia') {
+        data = data.filter(j => j.fastTrack?.tersedia === true);
+      } else if (fastTrack === 'tidak') {
+        data = data.filter(j => !j.fastTrack?.tersedia);
+      }
+      
+      // Price range
+      const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+      const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+      data = data.filter(j => j.harga >= minPrice && j.harga <= maxPrice);
+      
+      // Sort
+      const sortBy = document.getElementById('sortBy').value;
+      if (sortBy === 'harga-asc') {
+        data.sort((a, b) => a.harga - b.harga);
+      } else if (sortBy === 'harga-desc') {
+        data.sort((a, b) => b.harga - a.harga);
+      } else if (sortBy === 'akreditasi-asc') {
+        data.sort((a, b) => a.akreditasi.localeCompare(b.akreditasi));
+      } else if (sortBy === 'waktu-asc') {
+        data.sort((a, b) => a.waktuReview - b.waktuReview);
+      }
+      
+      filteredJournals = data;
+      currentPage = 1;
+      renderTable();
+    }
+
+    function renderTable() {
+      const start = (currentPage - 1) * pageSize;
+      const end = start + pageSize;
+      const pageData = filteredJournals.slice(start, end);
+      const totalPages = Math.ceil(filteredJournals.length / pageSize);
+      
+      let html = `
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="width: 40px;">No</th>
+                <th>Nama Jurnal</th>
+                <th>Instansi</th>
+                <th>Scope</th>
+                <th style="width: 100px;">Akreditasi</th>
+                <th style="width: 120px;">Harga</th>
+                <th>Frekuensi</th>
+                <th style="width: 100px;">Waktu Review</th>
+                <th style="width: 120px;">Fast Track</th>
+                <th style="width: 100px;">Link</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+      
+      if (pageData.length === 0) {
+        html += `
+          <tr>
+            <td colspan="10" class="text-center" style="padding: 40px;">
+              <div class="empty-state">
+                <div class="empty-state-icon">🔍</div>
+                <div class="empty-state-title">Tidak ada data</div>
+                <div class="empty-state-text">Coba ubah filter atau pencarian Anda</div>
+              </div>
+            </td>
+          </tr>
+        `;
+      } else {
+        pageData.forEach((j, idx) => {
+          html += `
+            <tr>
+              <td>${start + idx + 1}</td>
+              <td><strong>${j.nama}</strong></td>
+              <td>${j.instansi}</td>
+              <td><small>${formatArray(j.scope)}</small></td>
+              <td><span class="badge badge-primary">${j.akreditasi}</span></td>
+              <td>${formatCurrency(j.harga)}</td>
+              <td><small>${j.frekuensi}</small></td>
+              <td>${j.waktuReview} bulan</td>
+              <td>
+                ${j.fastTrack?.tersedia ? `
+                  <span class="badge badge-success">Tersedia</span><br>
+                  <small>${formatCurrency(j.fastTrack.biaya)}</small>
+                ` : '<span class="badge badge-gray">Tidak</span>'}
+              </td>
+              <td>
+                <a href="${j.tautan}" target="_blank" class="btn btn-sm btn-outline">
+                  Link →
+                </a>
+              </td>
+            </tr>
+          `;
+        });
+      }
+      
+      html += `
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="flex items-center justify-between mt-6" style="flex-wrap: wrap; gap: 16px;">
+          <div style="color: var(--text-secondary); font-size: 14px;">
+            Menampilkan ${start + 1}-${Math.min(end, filteredJournals.length)} dari ${filteredJournals.length} jurnal
+          </div>
+          
+          <div class="pagination">
+            <button class="pagination-btn" id="prevPage" ${currentPage === 1 ? 'disabled' : ''}>
+              ← Prev
+            </button>
+            ${generatePageButtons(totalPages)}
+            <button class="pagination-btn" id="nextPage" ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''}>
+              Next →
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('tableContainer').innerHTML = html;
+      attachPaginationListeners();
+    }
+
+    function generatePageButtons(totalPages) {
+      let html = '';
+      const maxVisible = 5;
+      
+      if (totalPages <= maxVisible) {
+        for (let i = 1; i <= totalPages; i++) {
+          html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+      } else {
+        html += `<button class="pagination-btn ${1 === currentPage ? 'active' : ''}" data-page="1">1</button>`;
+        
+        let start = Math.max(2, currentPage - 1);
+        let end = Math.min(totalPages - 1, currentPage + 1);
+        
+        for (let i = start; i <= end; i++) {
+          html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+        
+        html += `<button class="pagination-btn ${totalPages === currentPage ? 'active' : ''}" data-page="${totalPages}">${totalPages}</button>`;
+      }
+      
+      return html;
+    }
+
+    function attachPaginationListeners() {
+      document.getElementById('prevPage')?.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderTable();
+        }
+      });
+      
+      document.getElementById('nextPage')?.addEventListener('click', () => {
+        const totalPages = Math.ceil(filteredJournals.length / pageSize);
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderTable();
+        }
+      });
+      
+      document.querySelectorAll('[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentPage = parseInt(btn.dataset.page);
+          renderTable();
+        });
+      });
+    }
+
+    // Event listeners
+    document.getElementById('applyFilters').addEventListener('click', applyFilters);
+    document.getElementById('resetFilters').addEventListener('click', () => {
+      document.getElementById('searchInput').value = '';
+      document.querySelectorAll('[name="akreditasi"]').forEach(cb => cb.checked = false);
+      document.getElementById('selectScope')?.querySelectorAll('option').forEach(opt => opt.selected = false);
+      document.getElementById('filterFastTrack').value = '';
+      document.getElementById('minPrice').value = '';
+      document.getElementById('maxPrice').value = '';
+      document.getElementById('sortBy').value = '';
+      applyFilters();
+    });
+    
+    document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
+    document.getElementById('pageSize').addEventListener('change', (e) => {
+      pageSize = parseInt(e.target.value);
+      currentPage = 1;
+      renderTable();
+    });
+
+    // Export handlers
+    document.getElementById('exportExcel').addEventListener('click', () => {
+      const columns = [
+        { key: 'nama', label: 'Nama Jurnal' },
+        { key: 'instansi', label: 'Instansi' },
+        { key: 'scope', label: 'Scope', type: 'array' },
+        { key: 'akreditasi', label: 'Akreditasi' },
+        { key: 'harga', label: 'Harga', type: 'currency' },
+        { key: 'frekuensi', label: 'Frekuensi Terbit' },
+        { key: 'waktuReview', label: 'Waktu Review (bulan)' },
+        { key: 'fastTrack', label: 'Fast Track' },
+        { key: 'tautan', label: 'Link' }
+      ];
+      
+      const data = filteredJournals.map(j => ({
+        ...j,
+        fastTrack: j.fastTrack?.tersedia ? `Tersedia (${formatCurrency(j.fastTrack.biaya)})` : 'Tidak Tersedia'
+      }));
+      
+      exportToExcel(data, `PubGlow_Jurnal_${new Date().toISOString().split('T')[0]}`, columns);
+      showSuccess('Export Excel berhasil!');
+    });
+    
+    document.getElementById('exportPDF').addEventListener('click', () => {
+      const columns = [
+        { key: 'nama', label: 'Nama Jurnal' },
+        { key: 'instansi', label: 'Instansi' },
+        { key: 'akreditasi', label: 'Akreditasi' },
+        { key: 'harga', label: 'Harga', type: 'currency' },
+        { key: 'waktuReview', label: 'Review' },
+        { key: 'fastTrack', label: 'Fast Track' }
+      ];
+      
+      const data = filteredJournals.map(j => ({
+        ...j,
+        fastTrack: j.fastTrack?.tersedia ? 'Ya' : 'Tidak'
+      }));
+      
+      exportToPDF(data, `PubGlow_Jurnal_${new Date().toISOString().split('T')[0]}`, 'PubGlow - Daftar Jurnal', columns);
+      showSuccess('Export PDF berhasil!');
+    });
+
+    // Initialize
+    loadData();
+  </script>
+</body>
+</html>
