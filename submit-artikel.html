@@ -18,21 +18,26 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
   
   <style>
-    /* Quill Editor Custom Styling */
+    /* Ensure Quill toolbar is always visible */
+    .ql-toolbar.ql-snow {
+      display: block !important;
+      background: #f3f4f6;
+      border: none;
+      border-bottom: 1px solid #e5e7eb;
+      border-radius: 8px 8px 0 0;
+      padding: 12px;
+    }
+    
+    .ql-toolbar.ql-snow .ql-formats {
+      margin-right: 15px;
+    }
+    
     #editor-container {
       background: white;
       border: 1px solid #e5e7eb;
       border-radius: 8px;
       min-height: 400px;
       margin-bottom: 12px;
-    }
-    
-    .ql-toolbar.ql-snow {
-      background: #f9fafb;
-      border: none;
-      border-bottom: 1px solid #e5e7eb;
-      border-radius: 8px 8px 0 0;
-      padding: 12px;
     }
     
     .ql-container.ql-snow {
@@ -97,6 +102,11 @@
       align-items: center;
       gap: 8px;
     }
+    
+    .preview-empty {
+      color: #9ca3af;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -159,6 +169,23 @@
           <div class="input-group">
             <label class="input-label required">Konten Artikel</label>
             <div id="editor-container">
+              <div id="toolbar">
+                <select class="ql-header">
+                  <option value="2">Heading 2</option>
+                  <option value="3">Heading 3</option>
+                  <option selected>Normal</option>
+                </select>
+                <button class="ql-bold">Bold</button>
+                <button class="ql-italic">Italic</button>
+                <button class="ql-underline">Underline</button>
+                <button class="ql-strike">Strike</button>
+                <button class="ql-list" value="ordered">Numbered</button>
+                <button class="ql-list" value="bullet">Bullet</button>
+                <button class="ql-indent" value="-1">Outdent</button>
+                <button class="ql-indent" value="+1">Indent</button>
+                <button class="ql-link">Link</button>
+                <button class="ql-clean">Clear</button>
+              </div>
               <div id="editor"></div>
             </div>
             <input type="hidden" name="konten" id="kontenHidden" required>
@@ -196,7 +223,7 @@
             <div style="font-size: var(--font-size-xs); color: var(--text-tertiary); margin-bottom: var(--space-4);">
               ✍️ <span id="previewPenulis">Nama Penulis</span>
             </div>
-            <div id="previewKonten" class="ql-editor" style="font-size: var(--font-size-sm); color: var(--text-secondary);">Konten artikel akan muncul di sini...</div>
+            <div id="previewKonten" class="ql-editor preview-empty">Konten artikel akan muncul di sini...</div>
             <div id="previewTags" style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4);"></div>
           </div>
         </div>
@@ -245,50 +272,41 @@
     </div>
   </footer>
 
-  <!-- Main Script - NON-MODULE for Firebase compatibility -->
   <script>
     // Mobile menu
     document.getElementById('navbarToggle')?.addEventListener('click', () => {
       document.getElementById('navbarMenu')?.classList.toggle('active');
     });
 
-    // Wait for Quill to load
     let quillEditor = null;
     
     function initializeEditor() {
       if (typeof Quill === 'undefined') {
-        console.error('Quill not loaded yet, retrying...');
+        console.error('Quill not loaded, retrying...');
         setTimeout(initializeEditor, 100);
         return;
       }
 
-      console.log('Initializing Quill editor...');
+      console.log('✅ Initializing Quill editor...');
       
       try {
-        // Initialize Quill
         quillEditor = new Quill('#editor', {
           theme: 'snow',
           placeholder: 'Mulai menulis artikel Anda di sini... Gunakan toolbar di atas untuk memformat teks.',
           modules: {
-            toolbar: [
-              [{ 'header': [2, 3, false] }],
-              ['bold', 'italic', 'underline', 'strike'],
-              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-              [{ 'indent': '-1'}, { 'indent': '+1' }],
-              ['link'],
-              ['clean']
-            ]
+            toolbar: '#toolbar'
           }
         });
         
-        console.log('✅ Quill editor initialized!');
+        console.log('✅ Quill editor ready!');
 
-        // Live preview
+        // Live preview function
         function updatePreview() {
           const judul = document.getElementById('judulInput').value || 'Judul artikel akan muncul di sini';
           const kategori = document.getElementById('kategoriSelect').value || 'Kategori';
           const penulis = document.getElementById('penulisInput').value || 'Nama Penulis';
           const konten = quillEditor.root.innerHTML;
+          const kontenText = quillEditor.getText().trim();
           const tags = document.getElementById('tagsInput').value;
 
           document.getElementById('previewJudul').textContent = judul;
@@ -296,13 +314,14 @@
           document.getElementById('previewPenulis').textContent = penulis;
           
           const previewKonten = document.getElementById('previewKonten');
-          if (quillEditor.getText().trim().length > 0) {
+          if (kontenText.length > 0) {
             previewKonten.innerHTML = konten;
+            previewKonten.classList.remove('preview-empty');
           } else {
             previewKonten.innerHTML = 'Konten artikel akan muncul di sini...';
+            previewKonten.classList.add('preview-empty');
           }
 
-          // Tags
           const tagsContainer = document.getElementById('previewTags');
           if (tags) {
             const tagArray = tags.split(',').map(t => t.trim()).filter(t => t);
@@ -312,12 +331,17 @@
           }
         }
 
-        // Event listeners
+        // Event listeners for live preview
         document.getElementById('judulInput').addEventListener('input', updatePreview);
         document.getElementById('kategoriSelect').addEventListener('change', updatePreview);
         document.getElementById('penulisInput').addEventListener('input', updatePreview);
         document.getElementById('tagsInput').addEventListener('input', updatePreview);
-        quillEditor.on('text-change', updatePreview);
+        
+        // CRITICAL: Listen to Quill text changes
+        quillEditor.on('text-change', function() {
+          console.log('Text changed in editor');
+          updatePreview();
+        });
 
         // Form submit
         document.getElementById('submitArtikelForm').addEventListener('submit', async (e) => {
@@ -352,7 +376,6 @@
           submitBtn.textContent = 'Mengirim...';
 
           try {
-            // Import and use submission service
             const { submitArticle } = await import('./js/services/submissionService.js');
             await submitArticle(data);
             
@@ -372,12 +395,11 @@
         updatePreview();
         
       } catch (error) {
-        console.error('Error initializing editor:', error);
-        document.getElementById('editor-container').innerHTML = '<div style="padding: 20px; background: #fee2e2; border: 1px solid #fca5a5; border-radius: 8px; color: #991b1b;">❌ Error: Gagal menginisialisasi editor. ' + error.message + '</div>';
+        console.error('Error:', error);
+        document.getElementById('editor-container').innerHTML = '<div style="padding: 20px; background: #fee2e2; border: 1px solid #fca5a5; border-radius: 8px; color: #991b1b;">❌ Error: ' + error.message + '</div>';
       }
     }
 
-    // Initialize when DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initializeEditor);
     } else {
