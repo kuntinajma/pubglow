@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="PubGlow - Platform modern untuk menemukan jurnal ilmiah yang tepat">
-  <title>PubGlow - Platform Jurnal Ilmiah</title>
+  <title>PubGlow - Platform Publikasi Jurnal & Artikel</title>
   
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
@@ -13,147 +12,42 @@
   <link rel="stylesheet" href="css/pages.css">
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
+  
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="container container-xl navbar-container">
-      <a href="index.html" class="navbar-brand">PubGlow</a>
-      
-      <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-      </button>
-      
-      <ul class="navbar-menu" id="navbarMenu">
-        <li><a href="index.html" class="navbar-link active">Beranda</a></li>
-        <li><a href="jurnal.html" class="navbar-link">Jurnal</a></li>
-        <li><a href="blog.html" class="navbar-link">Blog</a></li>
-        <li><a href="submit-jurnal.html" class="navbar-link">Usulkan Jurnal</a></li>
-        <li><a href="submit-artikel.html" class="navbar-link">Usulkan Artikel</a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container container-lg hero-content">
-      <h1 class="hero-title animate-slideUp">PubGlow</h1>
-      <p class="hero-description animate-slideUp" style="animation-delay: 0.1s;">
-        Platform modern untuk menemukan jurnal ilmiah yang tepat. Lengkap dengan informasi akreditasi, biaya, waktu review, dan fast track.
-      </p>
-      <div class="hero-actions animate-slideUp" style="animation-delay: 0.2s;">
-        <a href="jurnal.html" class="btn btn-primary btn-lg">Cari Jurnal</a>
-        <a href="blog.html" class="btn btn-outline btn-lg">Baca Blog</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section class="section">
-    <div class="container container-lg">
-      <div class="section-header">
-        <h2 class="section-title">Fitur Unggulan</h2>
-        <p class="section-subtitle">Semua yang Anda butuhkan untuk riset dan publikasi ilmiah</p>
-      </div>
-      
-      <div class="grid grid-cols-3">
-        <div class="card text-center">
-          <h3 style="font-size: 20px; margin-bottom: 12px; color: var(--text-primary);">Filter Lengkap</h3>
-          <p style="color: var(--text-secondary); margin: 0; line-height: 1.6;">Filter berdasarkan akreditasi, scope, biaya, fast track, dan frekuensi terbit</p>
-        </div>
-        
-        <div class="card text-center">
-          <h3 style="font-size: 20px; margin-bottom: 12px; color: var(--text-primary);">Info Waktu Review</h3>
-          <p style="color: var(--text-secondary); margin: 0; line-height: 1.6;">Lihat estimasi waktu review dan ketersediaan fast track</p>
-        </div>
-        
-        <div class="card text-center">
-          <h3 style="font-size: 20px; margin-bottom: 12px; color: var(--text-primary);">Export Data</h3>
-          <p style="color: var(--text-secondary); margin: 0; line-height: 1.6;">Download list jurnal dalam format Excel atau PDF</p>
-        </div>
-        
-        <div class="card text-center">
-          <h3 style="font-size: 20px; margin-bottom: 12px; color: var(--text-primary);">Blog Informatif</h3>
-          <p style="color: var(--text-secondary); margin: 0; line-height: 1.6;">Tips dan panduan seputar publikasi ilmiah</p>
-        </div>
-        
-        <div class="card text-center">
-          <h3 style="font-size: 20px; margin-bottom: 12px; color: var(--text-primary);">Kontribusi Komunitas</h3>
-          <p style="color: var(--text-secondary); margin: 0; line-height: 1.6;">Usulkan jurnal atau artikel untuk ditambahkan</p>
-        </div>
-        
-        <div class="card text-center">
-          <h3 style="font-size: 20px; margin-bottom: 12px; color: var(--text-primary);">100% Gratis</h3>
-          <p style="color: var(--text-secondary); margin: 0; line-height: 1.6;">Semua fitur tersedia gratis untuk semua pengguna</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="section" style="background: linear-gradient(135deg, #DBEAFE 0%, #FFFFFF 100%); padding: 80px 0;">
-    <div class="container container-lg text-center">
-      <h2 style="font-size: 42px; margin-bottom: 16px; color: var(--text-primary);">Siap untuk Mulai?</h2>
-      <p style="font-size: 20px; color: var(--text-secondary); margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6;">
-        Mulai cari jurnal yang tepat untuk riset Anda sekarang juga
-      </p>
-      <div class="flex justify-center gap-4" style="flex-wrap: wrap;">
-        <a href="jurnal.html" class="btn btn-primary btn-lg">Lihat List Jurnal</a>
-        <a href="submit-jurnal.html" class="btn btn-outline btn-lg">Usulkan Jurnal</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container container-xl">
-      <div class="footer-content">
-        <div>
-          <div class="footer-brand">PubGlow</div>
-          <p style="color: var(--text-secondary); font-size: 14px; margin-top: 12px; max-width: 320px; line-height: 1.6;">
-            Platform modern untuk menemukan jurnal ilmiah yang tepat dengan informasi lengkap dan akurat.
-          </p>
-        </div>
-        
-        <div>
-          <h4 class="footer-section-title">Navigasi</h4>
-          <ul class="footer-links">
-            <li><a href="index.html" class="footer-link">Beranda</a></li>
-            <li><a href="jurnal.html" class="footer-link">Jurnal</a></li>
-            <li><a href="blog.html" class="footer-link">Blog</a></li>
-          </ul>
-        </div>
-        
-        <div>
-          <h4 class="footer-section-title">Kontribusi</h4>
-          <ul class="footer-links">
-            <li><a href="submit-jurnal.html" class="footer-link">Usulkan Jurnal</a></li>
-            <li><a href="submit-artikel.html" class="footer-link">Usulkan Artikel</a></li>
-          </ul>
-        </div>
-        
-        <div>
-          <h4 class="footer-section-title">Lainnya</h4>
-          <ul class="footer-links">
-            <li><a href="admin.html" class="footer-link">Admin Dashboard</a></li>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="footer-bottom">
-        <p>&copy; 2025 PubGlow. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-
+  <h1>🚀 PubGlow Platform</h1>
+  <p>Firebase & EmailJS Configuration Complete!</p>
+  
+  <div style="max-width: 600px; margin: 40px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+    <h2>✅ Services Configured:</h2>
+    <ul>
+      <li>🔥 Firebase (Firestore, Auth, Storage, Analytics)</li>
+      <li>📧 EmailJS (Service ID: service_qzsmxcn)</li>
+    </ul>
+    
+    <h3>Next Steps:</h3>
+    <ol>
+      <li>Setup Firestore collections (scopes, kategori_artikel)</li>
+      <li>Create EmailJS templates & update IDs</li>
+      <li>Create admin user in Firebase Auth</li>
+      <li>Test connections</li>
+    </ol>
+    
+    <p><a href="admin.html" style="display: inline-block; padding: 10px 20px; background: #3b82f6; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px;">Go to Admin Dashboard</a></p>
+  </div>
+  
   <script type="module">
-    document.getElementById('navbarToggle')?.addEventListener('click', () => {
-      document.getElementById('navbarMenu')?.classList.toggle('active');
-    });
+    import { db, auth, storage, analytics } from './js/firebase.js';
+    import { EMAILJS_CONFIG } from './js/emailjs-config.js';
+    
+    console.log('✅ All services loaded!');
+    console.log('📊 Firebase DB:', db);
+    console.log('🔐 Firebase Auth:', auth);
+    console.log('📦 Firebase Storage:', storage);
+    console.log('📈 Firebase Analytics:', analytics);
+    console.log('📧 EmailJS Config:', EMAILJS_CONFIG);
   </script>
 </body>
 </html>
