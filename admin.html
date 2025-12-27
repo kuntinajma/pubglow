@@ -21,11 +21,11 @@
       
       <nav>
         <ul class="admin-sidebar-nav">
-          <li><a href="javascript:void(0)" class="admin-sidebar-link active" data-tab="dashboard">Dashboard</a></li>
-          <li><a href="javascript:void(0)" class="admin-sidebar-link" data-tab="pendingJurnal">Pending Jurnal</a></li>
-          <li><a href="javascript:void(0)" class="admin-sidebar-link" data-tab="pendingArtikel">Pending Artikel</a></li>
-          <li><a href="javascript:void(0)" class="admin-sidebar-link" data-tab="allJurnal">Semua Jurnal</a></li>
-          <li><a href="javascript:void(0)" class="admin-sidebar-link" data-tab="allArtikel">Semua Artikel</a></li>
+          <li><a href="#dashboard" class="admin-sidebar-link active" data-tab="dashboard">Dashboard</a></li>
+          <li><a href="#pendingJurnal" class="admin-sidebar-link" data-tab="pendingJurnal">Pending Jurnal</a></li>
+          <li><a href="#pendingArtikel" class="admin-sidebar-link" data-tab="pendingArtikel">Pending Artikel</a></li>
+          <li><a href="#allJurnal" class="admin-sidebar-link" data-tab="allJurnal">Semua Jurnal</a></li>
+          <li><a href="#allArtikel" class="admin-sidebar-link" data-tab="allArtikel">Semua Artikel</a></li>
           <li style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--border-color);">
             <a href="index.html" class="admin-sidebar-link">← Kembali ke Website</a>
           </li>
@@ -72,8 +72,8 @@
           <div class="card">
             <h3 style="margin-bottom: var(--space-4); font-size: var(--font-size-lg);">Quick Actions</h3>
             <div style="display: flex; flex-direction: column; gap: var(--space-3);">
-              <button class="btn btn-outline" style="justify-content: flex-start;" onclick="switchTab('pendingJurnal')">Review Jurnal Pending</button>
-              <button class="btn btn-outline" style="justify-content: flex-start;" onclick="switchTab('pendingArtikel')">Review Artikel Pending</button>
+              <a href="#pendingJurnal" class="btn btn-outline" style="justify-content: flex-start;">Review Jurnal Pending</a>
+              <a href="#pendingArtikel" class="btn btn-outline" style="justify-content: flex-start;">Review Artikel Pending</a>
               <button class="btn btn-outline" style="justify-content: flex-start;" onclick="location.reload()">Refresh Data</button>
             </div>
           </div>
@@ -175,35 +175,59 @@
 
     let currentTab = 'dashboard';
 
-    // Global function for switching tabs
-    window.switchTab = function(tabName) {
+    // Switch tabs based on hash
+    function switchTab(tabName) {
+      console.log('Switching to tab:', tabName);
+      
+      // Update URL hash
+      window.location.hash = tabName;
+      
+      // Update sidebar
       document.querySelectorAll('.admin-sidebar-link').forEach(l => l.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       
       const link = document.querySelector(`[data-tab="${tabName}"]`);
       if (link) link.classList.add('active');
       
-      document.getElementById(tabName + 'Tab').classList.add('active');
+      const tabElement = document.getElementById(tabName + 'Tab');
+      if (tabElement) {
+        tabElement.classList.add('active');
+      }
+      
       currentTab = tabName;
       
+      // Load data for the tab
       if (tabName === 'pendingJurnal') loadPendingJournals();
       if (tabName === 'pendingArtikel') loadPendingArticles();
       if (tabName === 'allJurnal') loadAllJournals();
       if (tabName === 'allArtikel') loadAllArticles();
-    };
+      if (tabName === 'dashboard') loadStats();
+    }
+    
+    // Make switchTab global for onclick handlers
+    window.switchTab = switchTab;
+
+    // Handle hash changes
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash.substring(1) || 'dashboard';
+      switchTab(hash);
+    });
 
     // Sidebar navigation
     document.querySelectorAll('.admin-sidebar-link').forEach(link => {
       link.addEventListener('click', (e) => {
         const tabName = link.dataset.tab;
         if (!tabName) return;
-        
-        e.preventDefault();
-        switchTab(tabName);
+        // Let the hash change handle the switch
       });
     });
 
-    // Load stats and initial data
+    // Initial load based on hash
+    const initialHash = window.location.hash.substring(1) || 'dashboard';
+    if (initialHash !== 'dashboard') {
+      switchTab(initialHash);
+    }
+
     async function loadStats() {
       try {
         const [journals, articles, pendingJournals, pendingArticles] = await Promise.all([
@@ -218,7 +242,6 @@
         document.getElementById('statPendingJurnal').textContent = pendingJournals.length;
         document.getElementById('statPendingArtikel').textContent = pendingArticles.length;
         
-        // Update recent activity
         const recentActivity = document.getElementById('recentActivity');
         let activityHTML = '<div style="display: flex; flex-direction: column; gap: 12px;">';
         
@@ -281,7 +304,7 @@
         html += '</tbody></table></div>';
         container.innerHTML = html;
       } catch (error) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Gagal memuat data</div><p class="empty-state-text">Terjadi kesalahan saat mengambil data</p></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Gagal memuat data</div></div>';
         console.error('Error:', error);
       }
     }
@@ -320,7 +343,7 @@
         html += '</tbody></table></div>';
         container.innerHTML = html;
       } catch (error) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Gagal memuat data</div><p class="empty-state-text">Terjadi kesalahan saat mengambil data</p></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Gagal memuat data</div></div>';
         console.error('Error:', error);
       }
     }
