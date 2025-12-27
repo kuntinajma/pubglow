@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Blog informatif seputar publikasi ilmiah - PubGlow">
+  <title>Blog - PubGlow</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/pages.css">
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container container-xl navbar-container">
+      <a href="index.html" class="navbar-brand">
+        <span>✨</span>
+        <span>PubGlow</span>
+      </a>
+      
+      <button class="navbar-toggle" id="navbarToggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      
+      <ul class="navbar-menu" id="navbarMenu">
+        <li><a href="index.html" class="navbar-link">Beranda</a></li>
+        <li><a href="jurnal.html" class="navbar-link">List Jurnal</a></li>
+        <li><a href="blog.html" class="navbar-link active">Blog</a></li>
+        <li><a href="submit-jurnal.html" class="navbar-link">Usulkan Jurnal</a></li>
+        <li><a href="submit-artikel.html" class="navbar-link">Usulkan Artikel</a></li>
+        <li><a href="admin.html" class="navbar-link" style="color: var(--color-accent);">Admin</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="section">
+    <div class="container container-lg">
+      <div class="section-header">
+        <h1 class="section-title">📝 Blog</h1>
+        <p class="section-subtitle">Tips dan panduan seputar publikasi ilmiah</p>
+      </div>
+
+      <!-- Filter & Search -->
+      <div class="flex items-center gap-4 mb-6" style="flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 250px;">
+          <input 
+            type="text" 
+            class="input" 
+            id="searchInput" 
+            placeholder="🔍 Cari artikel...">
+        </div>
+        
+        <select class="select input" id="categoryFilter" style="width: 200px;">
+          <option value="">Semua Kategori</option>
+        </select>
+        
+        <select class="select input" id="sortBy" style="width: 180px;">
+          <option value="latest">Terbaru</option>
+          <option value="oldest">Terlama</option>
+          <option value="popular">Terpopuler</option>
+        </select>
+      </div>
+
+      <!-- Blog Grid -->
+      <div id="blogContainer">
+        <!-- Loading state -->
+        <div class="text-center" style="padding: 60px 20px;">
+          <div class="loader" style="margin: 0 auto 20px;"></div>
+          <p style="color: var(--text-secondary);">Memuat artikel...</p>
+        </div>
+      </div>
+
+      <!-- Load More Button -->
+      <div class="text-center mt-8" id="loadMoreContainer" style="display: none;">
+        <button class="btn btn-outline" id="loadMoreBtn">
+          Muat Lebih Banyak
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container container-xl">
+      <div class="footer-bottom" style="border: none; padding: 24px 0;">
+        <p>Made with ❤️ by Najma &copy; 2025 PubGlow</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { getPublishedArticles } from './js/services/blogService.js';
+    import { getBlogCategories } from './js/services/categoryService.js';
+    import { formatDate, formatRelativeTime, truncate } from './js/utils/formatter.js';
+    import { showError, showLoading } from './js/utils/notification.js';
+    import { debounce } from './js/utils/helpers.js';
+
+    let allArticles = [];
+    let filteredArticles = [];
+    let displayedCount = 9;
+    const loadMoreIncrement = 9;
+
+    // Navbar toggle
+    document.getElementById('navbarToggle')?.addEventListener('click', () => {
+      document.getElementById('navbarMenu')?.classList.toggle('active');
+    });
+
+    // Load data
+    async function loadData() {
+      const hideLoading = showLoading('Memuat artikel...');
+      
+      try {
+        const [articles, categories] = await Promise.all([
+          getPublishedArticles(),
+          getBlogCategories()
+        ]);
+        
+        allArticles = articles;
+        filteredArticles = [...articles];
+        
+        // Populate category filter
+        const categoryFilter = document.getElementById('categoryFilter');
+        categories.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.nama;
+          option.textContent = cat.nama;
+          categoryFilter.appendChild(option);
+        });
+        
+        hideLoading();
+        applyFilters();
+        
+        if (articles.length === 0) {
+          showError('Belum ada artikel. Usulkan artikel pertama Anda!');
+        }
+      } catch (error) {
+        console.error('Error loading articles:', error);
+        hideLoading();
+        showError('Gagal memuat artikel. Pastikan Firebase sudah dikonfigurasi.');
+        document.getElementById('blogContainer').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <div class="empty-state-title">Gagal Memuat Artikel</div>
+            <div class="empty-state-text">Silakan refresh halaman atau hubungi admin</div>
+          </div>
+        `;
+      }
+    }
+
+    function applyFilters() {
+      let data = [...allArticles];
+      
+      // Search
+      const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+      if (searchQuery) {
+        data = data.filter(a => 
+          a.judul.toLowerCase().includes(searchQuery) ||
+          a.ringkasan.toLowerCase().includes(searchQuery) ||
+          a.penulis.toLowerCase().includes(searchQuery)
+        );
+      }
+      
+      // Category filter
+      const category = document.getElementById('categoryFilter').value;
+      if (category) {
+        data = data.filter(a => a.kategori === category);
+      }
+      
+      // Sort
+      const sortBy = document.getElementById('sortBy').value;
+      if (sortBy === 'latest') {
+        data.sort((a, b) => b.tanggalPublish.toDate() - a.tanggalPublish.toDate());
+      } else if (sortBy === 'oldest') {
+        data.sort((a, b) => a.tanggalPublish.toDate() - b.tanggalPublish.toDate());
+      } else if (sortBy === 'popular') {
+        data.sort((a, b) => (b.views || 0) - (a.views || 0));
+      }
+      
+      filteredArticles = data;
+      displayedCount = loadMoreIncrement;
+      renderBlog();
+    }
+
+    function renderBlog() {
+      const container = document.getElementById('blogContainer');
+      const displayArticles = filteredArticles.slice(0, displayedCount);
+      
+      if (displayArticles.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🔍</div>
+            <div class="empty-state-title">Artikel tidak ditemukan</div>
+            <div class="empty-state-text">Coba ubah kata kunci atau filter pencarian Anda</div>
+          </div>
+        `;
+        document.getElementById('loadMoreContainer').style.display = 'none';
+        return;
+      }
+      
+      container.innerHTML = `
+        <div class="blog-grid">
+          ${displayArticles.map(article => `
+            <div class="blog-card">
+              <div class="blog-card-category">${article.kategori}</div>
+              <h3 class="blog-card-title">${article.judul}</h3>
+              <div class="blog-card-meta">
+                <span>👤 ${article.penulis}</span>
+                <span>•</span>
+                <span>📅 ${formatRelativeTime(article.tanggalPublish)}</span>
+                ${article.views ? `
+                  <span>•</span>
+                  <span>👁️ ${article.views}</span>
+                ` : ''}
+              </div>
+              <p class="blog-card-excerpt">${truncate(article.ringkasan, 120)}</p>
+              <a href="blog-detail.html?id=${article.id}" class="blog-card-link">
+                Baca Selengkapnya →
+              </a>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      
+      // Show/hide load more button
+      const loadMoreContainer = document.getElementById('loadMoreContainer');
+      if (displayedCount < filteredArticles.length) {
+        loadMoreContainer.style.display = 'block';
+      } else {
+        loadMoreContainer.style.display = 'none';
+      }
+    }
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 300));
+    document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+    document.getElementById('sortBy').addEventListener('change', applyFilters);
+    
+    document.getElementById('loadMoreBtn').addEventListener('click', () => {
+      displayedCount += loadMoreIncrement;
+      renderBlog();
+    });
+
+    // Initialize
+    loadData();
+  </script>
+</body>
+</html>
