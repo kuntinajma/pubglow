@@ -25,6 +25,8 @@
           <li><a href="admin.html#pendingArtikel" class="admin-sidebar-link">Pending Artikel</a></li>
           <li><a href="admin.html#kelolaJurnal" class="admin-sidebar-link active">Kelola Jurnal</a></li>
           <li><a href="admin.html#kelolaArtikel" class="admin-sidebar-link">Kelola Artikel</a></li>
+          <li><a href="admin.html#kelolaScope" class="admin-sidebar-link">Kelola Scope</a></li>
+          <li><a href="admin.html#kelolaKategori" class="admin-sidebar-link">Kelola Kategori</a></li>
           <li style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--border-color);">
             <a href="index.html" class="admin-sidebar-link">← Kembali ke Website</a>
           </li>
@@ -74,14 +76,14 @@
               </select>
             </div>
 
-            <!-- Scope -->
+            <!-- Scope (dari database) -->
             <div class="form-group">
-              <label for="scope" class="form-label">Scope <span class="text-danger">*</span></label>
+              <label for="scope" class="form-label">Scope/Bidang Ilmu <span class="text-danger">*</span></label>
               <select id="scope" name="scope" class="input" required>
                 <option value="">-- Pilih Scope --</option>
-                <option value="Nasional">Nasional</option>
-                <option value="Internasional">Internasional</option>
+                <!-- Akan diisi dari database -->
               </select>
+              <small class="form-help">Belum ada? <a href="admin.html#kelolaScope" style="color: var(--primary);">Tambah scope baru</a></small>
             </div>
 
             <!-- Harga -->
@@ -91,10 +93,11 @@
               <small class="form-help">Masukkan dalam Rupiah, tanpa titik atau koma</small>
             </div>
 
-            <!-- Estimasi Waktu -->
+            <!-- Estimasi Waktu (dalam bulan) -->
             <div class="form-group">
-              <label for="estimasiWaktu" class="form-label">Estimasi Review (hari) <span class="text-danger">*</span></label>
-              <input type="number" id="estimasiWaktu" name="estimasiWaktu" class="input" placeholder="30" min="1" required>
+              <label for="estimasiWaktu" class="form-label">Estimasi Review (bulan) <span class="text-danger">*</span></label>
+              <input type="number" id="estimasiWaktu" name="estimasiWaktu" class="input" placeholder="3" min="1" max="24" step="0.5" required>
+              <small class="form-help">Contoh: 3 = 3 bulan, 1.5 = 1.5 bulan</small>
             </div>
 
             <!-- URL Jurnal -->
@@ -120,14 +123,14 @@
 
             <!-- Harga Fast Track (conditional) -->
             <div class="form-group" id="fastTrackPriceGroup" style="display: none;">
-              <label for="hargaFastTrack" class="form-label">Biaya Fast Track (Rp)</label>
+              <label for="hargaFastTrack" class="form-label">Biaya Fast Track (Rp) <span class="text-danger">*</span></label>
               <input type="number" id="hargaFastTrack" name="hargaFastTrack" class="input" placeholder="0" min="0" step="1000">
             </div>
 
-            <!-- Estimasi Fast Track (conditional) -->
+            <!-- Estimasi Fast Track (conditional, dalam bulan) -->
             <div class="form-group" id="fastTrackTimeGroup" style="display: none;">
-              <label for="estimasiFastTrack" class="form-label">Estimasi Fast Track (hari)</label>
-              <input type="number" id="estimasiFastTrack" name="estimasiFastTrack" class="input" placeholder="15" min="1">
+              <label for="estimasiFastTrack" class="form-label">Estimasi Fast Track (bulan) <span class="text-danger">*</span></label>
+              <input type="number" id="estimasiFastTrack" name="estimasiFastTrack" class="input" placeholder="1.5" min="0.5" max="12" step="0.5">
             </div>
           </div>
 
@@ -144,20 +147,45 @@
 
   <script type="module">
     import { addJournal } from './js/services/journalService.js';
+    import { getAllScopes } from './js/services/scopeService.js';
     import { showSuccess, showError, showLoading } from './js/utils/notification.js';
+
+    // Load scopes from database
+    async function loadScopes() {
+      try {
+        const scopes = await getAllScopes();
+        const scopeSelect = document.getElementById('scope');
+        
+        scopes.forEach(scope => {
+          const option = document.createElement('option');
+          option.value = scope.nama;
+          option.textContent = scope.nama;
+          scopeSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error loading scopes:', error);
+        showError('Gagal memuat daftar scope');
+      }
+    }
 
     // Toggle fast track fields
     const fastTrackCheckbox = document.getElementById('fastTrack');
     const fastTrackPriceGroup = document.getElementById('fastTrackPriceGroup');
     const fastTrackTimeGroup = document.getElementById('fastTrackTimeGroup');
+    const hargaFastTrackInput = document.getElementById('hargaFastTrack');
+    const estimasiFastTrackInput = document.getElementById('estimasiFastTrack');
 
     fastTrackCheckbox.addEventListener('change', (e) => {
       if (e.target.checked) {
         fastTrackPriceGroup.style.display = 'block';
         fastTrackTimeGroup.style.display = 'block';
+        hargaFastTrackInput.required = true;
+        estimasiFastTrackInput.required = true;
       } else {
         fastTrackPriceGroup.style.display = 'none';
         fastTrackTimeGroup.style.display = 'none';
+        hargaFastTrackInput.required = false;
+        estimasiFastTrackInput.required = false;
       }
     });
 
@@ -172,12 +200,12 @@
         akreditasi: formData.get('akreditasi'),
         scope: formData.get('scope'),
         harga: parseInt(formData.get('harga')),
-        estimasiWaktu: parseInt(formData.get('estimasiWaktu')),
+        estimasiWaktu: parseFloat(formData.get('estimasiWaktu')), // dalam bulan
         url: formData.get('url'),
         deskripsi: formData.get('deskripsi') || '',
         fastTrack: formData.get('fastTrack') === 'on',
         hargaFastTrack: formData.get('fastTrack') === 'on' ? parseInt(formData.get('hargaFastTrack') || 0) : null,
-        estimasiFastTrack: formData.get('fastTrack') === 'on' ? parseInt(formData.get('estimasiFastTrack') || 0) : null,
+        estimasiFastTrack: formData.get('fastTrack') === 'on' ? parseFloat(formData.get('estimasiFastTrack') || 0) : null,
         status: 'active',
         createdAt: new Date().toISOString()
       };
@@ -196,6 +224,9 @@
         console.error('Error:', error);
       }
     });
+
+    // Initialize
+    loadScopes();
   </script>
 </body>
 </html>

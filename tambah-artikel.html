@@ -26,6 +26,8 @@
           <li><a href="admin.html#pendingArtikel" class="admin-sidebar-link">Pending Artikel</a></li>
           <li><a href="admin.html#kelolaJurnal" class="admin-sidebar-link">Kelola Jurnal</a></li>
           <li><a href="admin.html#kelolaArtikel" class="admin-sidebar-link active">Kelola Artikel</a></li>
+          <li><a href="admin.html#kelolaScope" class="admin-sidebar-link">Kelola Scope</a></li>
+          <li><a href="admin.html#kelolaKategori" class="admin-sidebar-link">Kelola Kategori</a></li>
           <li style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--border-color);">
             <a href="index.html" class="admin-sidebar-link">← Kembali ke Website</a>
           </li>
@@ -58,17 +60,14 @@
               <small class="form-help">Slug akan di-generate otomatis dari judul</small>
             </div>
 
-            <!-- Kategori -->
+            <!-- Kategori (dari database) -->
             <div class="form-group">
               <label for="kategori" class="form-label">Kategori <span class="text-danger">*</span></label>
               <select id="kategori" name="kategori" class="input" required>
                 <option value="">-- Pilih Kategori --</option>
-                <option value="Tips Publikasi">Tips Publikasi</option>
-                <option value="Riset & Akademik">Riset & Akademik</option>
-                <option value="Berita">Berita</option>
-                <option value="Tutorial">Tutorial</option>
-                <option value="Opini">Opini</option>
+                <!-- Akan diisi dari database -->
               </select>
+              <small class="form-help">Belum ada? <a href="admin.html#kelolaKategori" style="color: var(--primary);">Tambah kategori baru</a></small>
             </div>
 
             <!-- Penulis -->
@@ -84,25 +83,11 @@
               <small class="form-help">URL gambar dari Unsplash, Pexels, atau upload ke Firebase Storage</small>
             </div>
 
-            <!-- Excerpt -->
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="excerpt" class="form-label">Ringkasan <span class="text-danger">*</span></label>
-              <textarea id="excerpt" name="excerpt" class="textarea" rows="3" placeholder="Tulis ringkasan singkat artikel (maks 200 karakter)..." maxlength="200" required></textarea>
-              <small class="form-help">Ringkasan ini akan tampil di card preview artikel</small>
-            </div>
-
             <!-- Content (Rich Text Editor) -->
             <div class="form-group" style="grid-column: 1 / -1;">
               <label class="form-label">Konten Artikel <span class="text-danger">*</span></label>
               <div id="editor" style="height: 400px; background: white; border: 1px solid var(--border-color); border-radius: var(--radius-md);"></div>
               <input type="hidden" id="konten" name="konten" required>
-            </div>
-
-            <!-- Tags -->
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="tags" class="form-label">Tags</label>
-              <input type="text" id="tags" name="tags" class="input" placeholder="Contoh: publikasi, jurnal, tips (pisahkan dengan koma)">
-              <small class="form-help">Pisahkan setiap tag dengan koma</small>
             </div>
 
             <!-- Status -->
@@ -111,6 +96,7 @@
               <select id="status" name="status" class="input" required>
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
+                <option value="rejected">Rejected</option>
               </select>
             </div>
           </div>
@@ -130,7 +116,26 @@
   <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
   <script type="module">
     import { addArticle } from './js/services/blogService.js';
+    import { getAllKategori } from './js/services/kategoriService.js';
     import { showSuccess, showError, showLoading } from './js/utils/notification.js';
+
+    // Load kategori from database
+    async function loadKategori() {
+      try {
+        const kategoris = await getAllKategori();
+        const kategoriSelect = document.getElementById('kategori');
+        
+        kategoris.forEach(kat => {
+          const option = document.createElement('option');
+          option.value = kat.nama;
+          option.textContent = kat.nama;
+          kategoriSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error loading kategori:', error);
+        showError('Gagal memuat daftar kategori');
+      }
+    }
 
     // Initialize Quill editor
     const quill = new Quill('#editor', {
@@ -181,7 +186,6 @@
       }
 
       const formData = new FormData(e.target);
-      const tags = formData.get('tags') ? formData.get('tags').split(',').map(t => t.trim()) : [];
       
       const data = {
         judul: formData.get('judul'),
@@ -189,9 +193,7 @@
         kategori: formData.get('kategori'),
         penulis: formData.get('penulis'),
         featuredImage: formData.get('featuredImage') || '',
-        excerpt: formData.get('excerpt'),
         konten: kontenHTML,
-        tags: tags,
         status: formData.get('status'),
         views: 0,
         tanggalPublish: formData.get('status') === 'published' ? new Date().toISOString() : null,
@@ -203,7 +205,8 @@
       try {
         await addArticle(data);
         hideLoading();
-        showSuccess(`Artikel berhasil ${data.status === 'published' ? 'dipublish' : 'disimpan sebagai draft'}!`);
+        const statusText = data.status === 'published' ? 'dipublish' : data.status === 'rejected' ? 'ditandai rejected' : 'disimpan sebagai draft';
+        showSuccess(`Artikel berhasil ${statusText}!`);
         setTimeout(() => {
           window.location.href = 'admin.html#kelolaArtikel';
         }, 1500);
@@ -213,6 +216,9 @@
         console.error('Error:', error);
       }
     });
+
+    // Initialize
+    loadKategori();
   </script>
 </body>
 </html>
