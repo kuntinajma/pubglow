@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tambah Jurnal - PubGlow Admin</title>
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/pages.css">
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <a href="admin.html" class="admin-sidebar-brand">PubGlow Admin</a>
+      
+      <nav>
+        <ul class="admin-sidebar-nav">
+          <li><a href="admin.html#dashboard" class="admin-sidebar-link">Dashboard</a></li>
+          <li><a href="admin.html#pendingJurnal" class="admin-sidebar-link">Pending Jurnal</a></li>
+          <li><a href="admin.html#pendingArtikel" class="admin-sidebar-link">Pending Artikel</a></li>
+          <li><a href="admin.html#kelolaJurnal" class="admin-sidebar-link active">Kelola Jurnal</a></li>
+          <li><a href="admin.html#kelolaArtikel" class="admin-sidebar-link">Kelola Artikel</a></li>
+          <li style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--border-color);">
+            <a href="index.html" class="admin-sidebar-link">← Kembali ke Website</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Tambah Jurnal Baru</h1>
+          <p class="page-subtitle">Isi form di bawah untuk menambahkan jurnal ke database</p>
+        </div>
+        <a href="admin.html#kelolaJurnal" class="btn btn-outline btn-sm">← Kembali</a>
+      </div>
+
+      <div class="card">
+        <form id="formTambahJurnal">
+          <div class="form-grid">
+            <!-- Nama Jurnal -->
+            <div class="form-group">
+              <label for="nama" class="form-label">Nama Jurnal <span class="text-danger">*</span></label>
+              <input type="text" id="nama" name="nama" class="input" placeholder="Contoh: Jurnal Teknologi Informasi" required>
+            </div>
+
+            <!-- Instansi -->
+            <div class="form-group">
+              <label for="instansi" class="form-label">Instansi <span class="text-danger">*</span></label>
+              <input type="text" id="instansi" name="instansi" class="input" placeholder="Contoh: Universitas Indonesia" required>
+            </div>
+
+            <!-- Akreditasi -->
+            <div class="form-group">
+              <label for="akreditasi" class="form-label">Akreditasi <span class="text-danger">*</span></label>
+              <select id="akreditasi" name="akreditasi" class="input" required>
+                <option value="">-- Pilih Akreditasi --</option>
+                <option value="Sinta 1">Sinta 1</option>
+                <option value="Sinta 2">Sinta 2</option>
+                <option value="Sinta 3">Sinta 3</option>
+                <option value="Sinta 4">Sinta 4</option>
+                <option value="Sinta 5">Sinta 5</option>
+                <option value="Sinta 6">Sinta 6</option>
+                <option value="Scopus Q1">Scopus Q1</option>
+                <option value="Scopus Q2">Scopus Q2</option>
+                <option value="Scopus Q3">Scopus Q3</option>
+                <option value="Scopus Q4">Scopus Q4</option>
+              </select>
+            </div>
+
+            <!-- Scope -->
+            <div class="form-group">
+              <label for="scope" class="form-label">Scope <span class="text-danger">*</span></label>
+              <select id="scope" name="scope" class="input" required>
+                <option value="">-- Pilih Scope --</option>
+                <option value="Nasional">Nasional</option>
+                <option value="Internasional">Internasional</option>
+              </select>
+            </div>
+
+            <!-- Harga -->
+            <div class="form-group">
+              <label for="harga" class="form-label">Biaya Publikasi (Rp) <span class="text-danger">*</span></label>
+              <input type="number" id="harga" name="harga" class="input" placeholder="0" min="0" step="1000" required>
+              <small class="form-help">Masukkan dalam Rupiah, tanpa titik atau koma</small>
+            </div>
+
+            <!-- Estimasi Waktu -->
+            <div class="form-group">
+              <label for="estimasiWaktu" class="form-label">Estimasi Review (hari) <span class="text-danger">*</span></label>
+              <input type="number" id="estimasiWaktu" name="estimasiWaktu" class="input" placeholder="30" min="1" required>
+            </div>
+
+            <!-- URL Jurnal -->
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="url" class="form-label">URL Website Jurnal <span class="text-danger">*</span></label>
+              <input type="url" id="url" name="url" class="input" placeholder="https://example.com/journal" required>
+            </div>
+
+            <!-- Deskripsi -->
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="deskripsi" class="form-label">Deskripsi Singkat</label>
+              <textarea id="deskripsi" name="deskripsi" class="textarea" rows="4" placeholder="Jelaskan fokus dan ruang lingkup jurnal..."></textarea>
+            </div>
+
+            <!-- Fast Track -->
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="fastTrack" name="fastTrack" class="checkbox">
+                <span>Tersedia Fast Track</span>
+              </label>
+              <small class="form-help">Centang jika jurnal menyediakan layanan fast track review</small>
+            </div>
+
+            <!-- Harga Fast Track (conditional) -->
+            <div class="form-group" id="fastTrackPriceGroup" style="display: none;">
+              <label for="hargaFastTrack" class="form-label">Biaya Fast Track (Rp)</label>
+              <input type="number" id="hargaFastTrack" name="hargaFastTrack" class="input" placeholder="0" min="0" step="1000">
+            </div>
+
+            <!-- Estimasi Fast Track (conditional) -->
+            <div class="form-group" id="fastTrackTimeGroup" style="display: none;">
+              <label for="estimasiFastTrack" class="form-label">Estimasi Fast Track (hari)</label>
+              <input type="number" id="estimasiFastTrack" name="estimasiFastTrack" class="input" placeholder="15" min="1">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Simpan Jurnal</button>
+            <a href="admin.html#kelolaJurnal" class="btn btn-outline">Batal</a>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script type="module">
+    import { addJournal } from './js/services/journalService.js';
+    import { showSuccess, showError, showLoading } from './js/utils/notification.js';
+
+    // Toggle fast track fields
+    const fastTrackCheckbox = document.getElementById('fastTrack');
+    const fastTrackPriceGroup = document.getElementById('fastTrackPriceGroup');
+    const fastTrackTimeGroup = document.getElementById('fastTrackTimeGroup');
+
+    fastTrackCheckbox.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        fastTrackPriceGroup.style.display = 'block';
+        fastTrackTimeGroup.style.display = 'block';
+      } else {
+        fastTrackPriceGroup.style.display = 'none';
+        fastTrackTimeGroup.style.display = 'none';
+      }
+    });
+
+    // Form submission
+    document.getElementById('formTambahJurnal').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
+      const data = {
+        nama: formData.get('nama'),
+        instansi: formData.get('instansi'),
+        akreditasi: formData.get('akreditasi'),
+        scope: formData.get('scope'),
+        harga: parseInt(formData.get('harga')),
+        estimasiWaktu: parseInt(formData.get('estimasiWaktu')),
+        url: formData.get('url'),
+        deskripsi: formData.get('deskripsi') || '',
+        fastTrack: formData.get('fastTrack') === 'on',
+        hargaFastTrack: formData.get('fastTrack') === 'on' ? parseInt(formData.get('hargaFastTrack') || 0) : null,
+        estimasiFastTrack: formData.get('fastTrack') === 'on' ? parseInt(formData.get('estimasiFastTrack') || 0) : null,
+        status: 'active',
+        createdAt: new Date().toISOString()
+      };
+
+      const hideLoading = showLoading('Menyimpan jurnal...');
+      try {
+        await addJournal(data);
+        hideLoading();
+        showSuccess('Jurnal berhasil ditambahkan!');
+        setTimeout(() => {
+          window.location.href = 'admin.html#kelolaJurnal';
+        }, 1500);
+      } catch (error) {
+        hideLoading();
+        showError('Gagal menambahkan jurnal: ' + error.message);
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+</html>

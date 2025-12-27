@@ -31,6 +31,13 @@
       justify-content: center;
       flex-wrap: wrap;
     }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-6);
+      gap: var(--space-4);
+    }
   </style>
 </head>
 <body>
@@ -108,8 +115,10 @@
       <!-- Pending Jurnal Tab -->
       <div class="tab-content" id="pendingJurnalTab">
         <div class="page-header">
-          <h1 class="page-title">Pending Jurnal</h1>
-          <p class="page-subtitle">Review dan approve submission jurnal dari kontributor</p>
+          <div>
+            <h1 class="page-title">Pending Jurnal</h1>
+            <p class="page-subtitle">Review dan approve submission jurnal dari kontributor</p>
+          </div>
         </div>
         
         <div class="card">
@@ -125,8 +134,10 @@
       <!-- Pending Artikel Tab -->
       <div class="tab-content" id="pendingArtikelTab">
         <div class="page-header">
-          <h1 class="page-title">Pending Artikel</h1>
-          <p class="page-subtitle">Review dan approve submission artikel dari kontributor</p>
+          <div>
+            <h1 class="page-title">Pending Artikel</h1>
+            <p class="page-subtitle">Review dan approve submission artikel dari kontributor</p>
+          </div>
         </div>
         
         <div class="card">
@@ -146,7 +157,7 @@
             <h1 class="page-title">Kelola Jurnal</h1>
             <p class="page-subtitle">Manage semua jurnal di platform</p>
           </div>
-          <a href="tambah-jurnal.html" class="btn btn-primary">+ Tambah Jurnal</a>
+          <a href="tambah-jurnal.html" class="btn btn-outline btn-sm">+ Tambah Jurnal</a>
         </div>
         
         <div class="card">
@@ -176,7 +187,7 @@
             <h1 class="page-title">Kelola Artikel</h1>
             <p class="page-subtitle">Manage semua artikel di blog</p>
           </div>
-          <a href="tambah-artikel.html" class="btn btn-primary">+ Tambah Artikel</a>
+          <a href="tambah-artikel.html" class="btn btn-outline btn-sm">+ Tambah Artikel</a>
         </div>
         
         <div class="card">
@@ -499,7 +510,6 @@
       if (tabName === 'kelolaArtikel') loadKelolaArticles();
     };
 
-    // Pending submissions handlers
     window.approveJournalSubmission = async (id) => {
       const confirmed = await showConfirm('Approve jurnal submission ini?');
       if (!confirmed) return;
@@ -572,7 +582,6 @@
       }
     };
 
-    // Kelola Jurnal handlers
     window.toggleJournalStatus = async (id, newStatus) => {
       const action = newStatus === 'active' ? 'mengaktifkan' : 'menonaktifkan';
       const confirmed = await showConfirm(`Yakin ${action} jurnal ini?`);
@@ -610,7 +619,6 @@
       }
     };
 
-    // Kelola Artikel handlers
     window.toggleArticleStatus = async (id, newStatus) => {
       const action = newStatus === 'published' ? 'publish' : 'unpublish';
       const confirmed = await showConfirm(`Yakin ${action} artikel ini?`);
@@ -648,11 +656,9 @@
       }
     };
 
-    // Filter listeners
     document.getElementById('filterJurnalStatus')?.addEventListener('change', loadKelolaJournals);
     document.getElementById('filterArtikelStatus')?.addEventListener('change', loadKelolaArticles);
 
-    // Initial data load
     loadStats();
     loadPendingJournals();
     
