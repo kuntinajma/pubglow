@@ -1,0 +1,29 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Images folder - public read, authenticated write
+    match /images/{imageId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && 
+                      request.resource.size < 5 * 1024 * 1024 && // Max 5MB
+                      request.resource.contentType.matches('image/.*');
+    }
+    
+    // Documents folder - authenticated only
+    match /documents/{documentId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Default - deny all
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

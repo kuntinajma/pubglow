@@ -1,0 +1,59 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Journals - Public read, authenticated write
+    match /journals/{journalId} {
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // Articles - Public read published only, authenticated write
+    match /articles/{articleId} {
+      allow read: if resource.data.status == 'published' || isAuthenticated();
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // Scopes - Public read, authenticated write
+    match /scopes/{scopeId} {
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // Article Categories - Public read, authenticated write
+    match /kategori_artikel/{kategoriId} {
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // Journal Submissions - Public create, authenticated read/update
+    match /journal_submissions/{submissionId} {
+      allow read: if isAuthenticated();
+      allow create: if true; // Public can submit
+      allow update, delete: if isAuthenticated();
+    }
+    
+    // Article Submissions - Public create, authenticated read/update
+    match /article_submissions/{submissionId} {
+      allow read: if isAuthenticated();
+      allow create: if true; // Public can submit
+      allow update, delete: if isAuthenticated();
+    }
+    
+    // Admins collection - Only admin can read/write
+    match /admins/{adminId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
