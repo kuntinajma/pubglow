@@ -17,33 +17,71 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
   
   <style>
-    .ql-toolbar {
-      background-color: var(--bg-secondary);
+    /* Quill Editor Custom Styling */
+    #editor-container {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      min-height: 350px;
+    }
+    
+    .ql-toolbar.ql-snow {
+      background: var(--bg-secondary);
+      border: none;
+      border-bottom: 1px solid var(--border-color);
       border-radius: var(--radius-md) var(--radius-md) 0 0;
-      border-color: var(--border-color);
+      padding: 12px;
     }
-    .ql-container {
-      background-color: var(--bg-primary);
-      border-color: var(--border-color);
-      border-radius: 0 0 var(--radius-md) var(--radius-md);
+    
+    .ql-container.ql-snow {
+      border: none;
       font-size: 14px;
-      min-height: 300px;
-    }
-    .ql-editor {
-      min-height: 300px;
       font-family: inherit;
     }
+    
+    .ql-editor {
+      min-height: 300px;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 16px;
+    }
+    
     .ql-editor.ql-blank::before {
       color: var(--text-tertiary);
       font-style: normal;
+      left: 16px;
     }
+    
+    .ql-snow .ql-stroke {
+      stroke: var(--text-primary);
+    }
+    
+    .ql-snow .ql-fill {
+      fill: var(--text-primary);
+    }
+    
+    .ql-toolbar.ql-snow button:hover,
+    .ql-toolbar.ql-snow button:focus,
+    .ql-toolbar.ql-snow button.ql-active {
+      color: var(--primary-color);
+    }
+    
+    .ql-toolbar.ql-snow button:hover .ql-stroke,
+    .ql-toolbar.ql-snow button:focus .ql-stroke,
+    .ql-toolbar.ql-snow button.ql-active .ql-stroke {
+      stroke: var(--primary-color);
+    }
+    
+    .ql-toolbar.ql-snow button:hover .ql-fill,
+    .ql-toolbar.ql-snow button:focus .ql-fill,
+    .ql-toolbar.ql-snow button.ql-active .ql-fill {
+      fill: var(--primary-color);
+    }
+    
     #previewKonten.ql-editor {
       min-height: auto;
-      padding: var(--space-4) 0;
-    }
-    #preview .ql-editor {
-      border: none;
       padding: 0;
+      border: none;
     }
   </style>
 </head>
@@ -106,10 +144,12 @@
 
           <div class="input-group">
             <label class="input-label required">Konten Artikel</label>
-            <div id="editor" style="background: var(--bg-primary);"></div>
+            <div id="editor-container">
+              <div id="editor"></div>
+            </div>
             <input type="hidden" name="konten" id="kontenHidden" required>
             <small style="color: var(--text-tertiary); font-size: var(--font-size-xs); margin-top: var(--space-2); display: block;">
-              💡 Gunakan toolbar untuk format teks: <strong>Bold</strong>, <em>Italic</em>, List, Link, dll.
+              💡 <strong>Gunakan toolbar</strong> untuk format teks: <strong>Bold</strong>, <em>Italic</em>, List, Link, dll.
             </small>
           </div>
 
@@ -190,117 +230,139 @@
     </div>
   </footer>
 
-  <!-- Quill Editor JS -->
+  <!-- Quill Editor JS - Load before our script -->
   <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
   
   <script type="module">
     import { submitArticle } from './js/services/submissionService.js';
     import { showSuccess, showError, showLoading } from './js/utils/notification.js';
 
+    // Wait for DOM to be ready
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Initializing Quill editor...');
+      
+      // Check if Quill is loaded
+      if (typeof Quill === 'undefined') {
+        console.error('Quill library not loaded!');
+        document.getElementById('editor-container').innerHTML = '<div style="padding: 20px; background: #fee; border: 1px solid #fcc; border-radius: 8px; color: #c00;">Error: Rich text editor gagal dimuat. Silakan refresh halaman.</div>';
+        return;
+      }
+
+      // Initialize Quill editor
+      try {
+        const quill = new Quill('#editor', {
+          theme: 'snow',
+          placeholder: 'Tulis artikel Anda di sini... Gunakan toolbar di atas untuk memformat teks.',
+          modules: {
+            toolbar: [
+              [{ 'header': [2, 3, false] }],
+              ['bold', 'italic', 'underline', 'strike'],
+              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+              [{ 'indent': '-1'}, { 'indent': '+1' }],
+              ['link'],
+              ['clean']
+            ]
+          }
+        });
+        
+        console.log('Quill editor initialized successfully!');
+
+        // Live preview function
+        function updatePreview() {
+          const judul = document.getElementById('judulInput').value || 'Judul artikel akan muncul di sini';
+          const kategori = document.getElementById('kategoriSelect').value || 'Kategori';
+          const penulis = document.getElementById('penulisInput').value || 'Nama Penulis';
+          const konten = quill.root.innerHTML;
+          const tags = document.getElementById('tagsInput').value;
+
+          document.getElementById('previewJudul').textContent = judul;
+          document.getElementById('previewKategori').textContent = kategori;
+          document.getElementById('previewPenulis').textContent = penulis;
+          
+          const previewKonten = document.getElementById('previewKonten');
+          if (quill.getText().trim().length > 0) {
+            previewKonten.innerHTML = konten;
+          } else {
+            previewKonten.innerHTML = 'Konten artikel akan muncul di sini...';
+          }
+
+          // Tags
+          const tagsContainer = document.getElementById('previewTags');
+          if (tags) {
+            const tagArray = tags.split(',').map(t => t.trim()).filter(t => t);
+            tagsContainer.innerHTML = tagArray.map(tag => `<span class="badge badge-secondary">#${tag}</span>`).join('');
+          } else {
+            tagsContainer.innerHTML = '';
+          }
+        }
+
+        // Event listeners for live preview
+        document.getElementById('judulInput').addEventListener('input', updatePreview);
+        document.getElementById('kategoriSelect').addEventListener('change', updatePreview);
+        document.getElementById('penulisInput').addEventListener('input', updatePreview);
+        document.getElementById('tagsInput').addEventListener('input', updatePreview);
+        quill.on('text-change', updatePreview);
+
+        // Form submit
+        document.getElementById('submitArtikelForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const kontenHTML = quill.root.innerHTML;
+          const kontenText = quill.getText().trim();
+          
+          // Validation
+          if (kontenText.length < 50) {
+            showError('Konten artikel minimal 50 karakter (saat ini: ' + kontenText.length + ' karakter)');
+            return;
+          }
+          
+          document.getElementById('kontenHidden').value = kontenHTML;
+          
+          const formData = new FormData(e.target);
+          const tags = formData.get('tags') ? formData.get('tags').split(',').map(t => t.trim()).filter(t => t) : [];
+          
+          const data = {
+            judul: formData.get('judul'),
+            kategori: formData.get('kategori'),
+            penulis: formData.get('penulis'),
+            konten: kontenHTML,
+            tags: tags,
+            email: formData.get('email')
+          };
+
+          const submitBtn = document.getElementById('submitBtn');
+          submitBtn.disabled = true;
+          const hideLoading = showLoading('Mengirim artikel...');
+
+          try {
+            await submitArticle(data);
+            hideLoading();
+            showSuccess('Artikel berhasil dikirim! Tim kami akan review segera.');
+            e.target.reset();
+            quill.setContents([]);
+            updatePreview();
+          } catch (error) {
+            hideLoading();
+            showError('Gagal mengirim artikel. Silakan coba lagi.');
+            console.error('Error:', error);
+          } finally {
+            submitBtn.disabled = false;
+          }
+        });
+
+        // Initial preview
+        updatePreview();
+        
+      } catch (error) {
+        console.error('Error initializing Quill:', error);
+        document.getElementById('editor-container').innerHTML = '<div style="padding: 20px; background: #fee; border: 1px solid #fcc; border-radius: 8px; color: #c00;">Error: Gagal menginisialisasi editor. ' + error.message + '</div>';
+      }
+    });
+
+    // Mobile menu toggle
     document.getElementById('navbarToggle')?.addEventListener('click', () => {
       document.getElementById('navbarMenu')?.classList.toggle('active');
     });
-
-    // Initialize Quill editor
-    const quill = new Quill('#editor', {
-      theme: 'snow',
-      placeholder: 'Tulis artikel Anda di sini... Gunakan toolbar untuk format teks.',
-      modules: {
-        toolbar: [
-          [{ 'header': [2, 3, false] }],
-          ['bold', 'italic', 'underline', 'strike'],
-          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-          [{ 'indent': '-1'}, { 'indent': '+1' }],
-          ['link'],
-          ['clean']
-        ]
-      }
-    });
-
-    // Live preview
-    function updatePreview() {
-      const judul = document.getElementById('judulInput').value || 'Judul artikel akan muncul di sini';
-      const kategori = document.getElementById('kategoriSelect').value || 'Kategori';
-      const penulis = document.getElementById('penulisInput').value || 'Nama Penulis';
-      const konten = quill.root.innerHTML;
-      const tags = document.getElementById('tagsInput').value;
-
-      document.getElementById('previewJudul').textContent = judul;
-      document.getElementById('previewKategori').textContent = kategori;
-      document.getElementById('previewPenulis').textContent = penulis;
-      
-      const previewKonten = document.getElementById('previewKonten');
-      if (quill.getText().trim().length > 0) {
-        previewKonten.innerHTML = konten;
-      } else {
-        previewKonten.innerHTML = 'Konten artikel akan muncul di sini...';
-      }
-
-      // Tags
-      const tagsContainer = document.getElementById('previewTags');
-      if (tags) {
-        const tagArray = tags.split(',').map(t => t.trim()).filter(t => t);
-        tagsContainer.innerHTML = tagArray.map(tag => `<span class="badge badge-secondary">#${tag}</span>`).join('');
-      } else {
-        tagsContainer.innerHTML = '';
-      }
-    }
-
-    document.getElementById('judulInput').addEventListener('input', updatePreview);
-    document.getElementById('kategoriSelect').addEventListener('change', updatePreview);
-    document.getElementById('penulisInput').addEventListener('input', updatePreview);
-    document.getElementById('tagsInput').addEventListener('input', updatePreview);
-    quill.on('text-change', updatePreview);
-
-    // Form submit
-    document.getElementById('submitArtikelForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const kontenHTML = quill.root.innerHTML;
-      const kontenText = quill.getText().trim();
-      
-      // Validation
-      if (kontenText.length < 50) {
-        showError('Konten artikel minimal 50 karakter (saat ini: ' + kontenText.length + ' karakter)');
-        return;
-      }
-      
-      document.getElementById('kontenHidden').value = kontenHTML;
-      
-      const formData = new FormData(e.target);
-      const tags = formData.get('tags') ? formData.get('tags').split(',').map(t => t.trim()).filter(t => t) : [];
-      
-      const data = {
-        judul: formData.get('judul'),
-        kategori: formData.get('kategori'),
-        penulis: formData.get('penulis'),
-        konten: kontenHTML,
-        tags: tags,
-        email: formData.get('email')
-      };
-
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.disabled = true;
-      const hideLoading = showLoading('Mengirim artikel...');
-
-      try {
-        await submitArticle(data);
-        hideLoading();
-        showSuccess('Artikel berhasil dikirim! Tim kami akan review segera.');
-        e.target.reset();
-        quill.setContents([]);
-        updatePreview();
-      } catch (error) {
-        hideLoading();
-        showError('Gagal mengirim artikel. Silakan coba lagi.');
-        console.error('Error:', error);
-      } finally {
-        submitBtn.disabled = false;
-      }
-    });
-
-    // Initial preview
-    updatePreview();
   </script>
 </body>
 </html>
