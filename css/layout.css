@@ -1,6 +1,6 @@
 /**
  * PubGlow - Layout
- * Minimalist Dark Theme
+ * Light Minimalist Theme
  */
 
 /* === NAVBAR === */
@@ -8,7 +8,7 @@
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
-  background-color: var(--bg-primary);
+  background-color: rgba(255, 255, 255, 0.9);
   border-bottom: 1px solid var(--border-color);
   backdrop-filter: blur(10px);
 }
@@ -25,11 +25,12 @@
   font-weight: var(--font-weight-bold);
   color: var(--text-primary);
   text-decoration: none;
-  transition: opacity var(--transition-base);
+  letter-spacing: -0.02em;
+  transition: color var(--transition-base);
 }
 
 .navbar-brand:hover {
-  opacity: 0.8;
+  color: var(--color-primary);
 }
 
 .navbar-menu {
@@ -45,6 +46,7 @@
   color: var(--text-secondary);
   text-decoration: none;
   transition: color var(--transition-base);
+  position: relative;
 }
 
 .navbar-link:hover {
@@ -53,6 +55,16 @@
 
 .navbar-link.active {
   color: var(--text-primary);
+}
+
+.navbar-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-primary);
 }
 
 .navbar-toggle {
@@ -76,9 +88,10 @@
     right: 0;
     flex-direction: column;
     gap: 0;
-    background-color: var(--bg-primary);
+    background-color: var(--bg-card);
     border-bottom: 1px solid var(--border-color);
     padding: var(--space-4) 0;
+    box-shadow: var(--shadow-lg);
     transform: translateY(-100%);
     opacity: 0;
     pointer-events: none;
@@ -94,6 +107,11 @@
   .navbar-link {
     display: block;
     padding: var(--space-3) var(--space-6);
+    width: 100%;
+  }
+  
+  .navbar-link.active::after {
+    display: none;
   }
 }
 
@@ -101,11 +119,12 @@
 .admin-layout {
   display: flex;
   min-height: 100vh;
+  background-color: var(--bg-secondary);
 }
 
 .admin-sidebar {
   width: var(--sidebar-width);
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-card);
   border-right: 1px solid var(--border-color);
   padding: var(--space-6);
   position: fixed;
@@ -113,6 +132,7 @@
   left: 0;
   bottom: 0;
   overflow-y: auto;
+  z-index: var(--z-fixed);
 }
 
 .admin-sidebar-brand {
@@ -122,6 +142,7 @@
   color: var(--text-primary);
   text-decoration: none;
   margin-bottom: var(--space-8);
+  letter-spacing: -0.02em;
 }
 
 .admin-sidebar-nav {
@@ -142,26 +163,30 @@
 
 .admin-sidebar-link:hover {
   color: var(--text-primary);
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-secondary);
 }
 
 .admin-sidebar-link.active {
-  color: var(--text-primary);
-  background-color: var(--bg-tertiary);
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  font-weight: var(--font-weight-semibold);
 }
 
 .admin-main {
   flex: 1;
   margin-left: var(--sidebar-width);
   padding: var(--space-8);
+  max-width: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .admin-sidebar {
-    width: 100%;
-    position: static;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+  }
+  
+  .admin-sidebar.active {
+    transform: translateX(0);
   }
   
   .admin-main {
@@ -171,7 +196,7 @@
 
 /* === FOOTER === */
 .footer {
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-card);
   border-top: 1px solid var(--border-color);
   padding: var(--space-12) 0 var(--space-6);
   margin-top: var(--space-20);
@@ -181,7 +206,7 @@
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: var(--space-12);
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--space-8);
 }
 
 .footer-brand {
@@ -214,7 +239,7 @@
 }
 
 .footer-link:hover {
-  color: var(--text-primary);
+  color: var(--color-primary);
 }
 
 .footer-bottom {
@@ -288,6 +313,9 @@
 .section-header {
   text-align: center;
   margin-bottom: var(--space-12);
+  max-width: 768px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .section-title {
@@ -295,11 +323,13 @@
   font-weight: var(--font-weight-bold);
   color: var(--text-primary);
   margin-bottom: var(--space-3);
+  letter-spacing: -0.02em;
 }
 
 .section-subtitle {
   font-size: var(--font-size-lg);
   color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
 }
 
 @media (max-width: 768px) {
