@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Admin Dashboard - PubGlow">
+  <title>Admin Dashboard - PubGlow</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/pages.css">
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container container-xl navbar-container">
+      <a href="index.html" class="navbar-brand">
+        <span>✨</span>
+        <span>PubGlow</span>
+      </a>
+      
+      <button class="navbar-toggle" id="navbarToggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      
+      <ul class="navbar-menu" id="navbarMenu">
+        <li><a href="index.html" class="navbar-link">Beranda</a></li>
+        <li><a href="jurnal.html" class="navbar-link">List Jurnal</a></li>
+        <li><a href="blog.html" class="navbar-link">Blog</a></li>
+        <li><a href="submit-jurnal.html" class="navbar-link">Usulkan Jurnal</a></li>
+        <li><a href="submit-artikel.html" class="navbar-link">Usulkan Artikel</a></li>
+        <li><a href="admin.html" class="navbar-link active" style="color: var(--color-accent);">Admin</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="section">
+    <div class="container container-2xl">
+      <div class="section-header">
+        <h1 class="section-title">🔐 Admin Dashboard</h1>
+        <p class="section-subtitle">Kelola jurnal, artikel, dan submission</p>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-4 mb-8" id="statsContainer">
+        <div class="stat-card">
+          <div class="stat-icon primary">📚</div>
+          <div class="stat-content">
+            <div class="stat-label">Total Jurnal</div>
+            <div class="stat-value" id="statJurnal">-</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon success">📝</div>
+          <div class="stat-content">
+            <div class="stat-label">Total Artikel</div>
+            <div class="stat-value" id="statArtikel">-</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon warning">⏳</div>
+          <div class="stat-content">
+            <div class="stat-label">Pending Jurnal</div>
+            <div class="stat-value" id="statPendingJurnal">-</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon info">📧</div>
+          <div class="stat-content">
+            <div class="stat-label">Pending Artikel</div>
+            <div class="stat-value" id="statPendingArtikel">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs" style="margin-bottom: 24px;">
+        <button class="tab-btn active" data-tab="pendingJurnal">Pending Jurnal</button>
+        <button class="tab-btn" data-tab="pendingArtikel">Pending Artikel</button>
+        <button class="tab-btn" data-tab="allJurnal">Semua Jurnal</button>
+        <button class="tab-btn" data-tab="allArtikel">Semua Artikel</button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content active" id="pendingJurnalTab">
+        <div class="card">
+          <div class="flex items-center justify-between mb-4">
+            <h3 style="margin: 0;">📋 Pending Jurnal Submissions</h3>
+            <button class="btn btn-sm btn-ghost" onclick="location.reload()">
+              🔄 Refresh
+            </button>
+          </div>
+          <div id="pendingJurnalTable">
+            <div class="text-center" style="padding: 40px;">
+              <div class="loader" style="margin: 0 auto 16px;"></div>
+              <p style="color: var(--text-secondary);">Memuat data...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="pendingArtikelTab">
+        <div class="card">
+          <div class="flex items-center justify-between mb-4">
+            <h3 style="margin: 0;">📋 Pending Artikel Submissions</h3>
+            <button class="btn btn-sm btn-ghost" onclick="location.reload()">
+              🔄 Refresh
+            </button>
+          </div>
+          <div id="pendingArtikelTable">
+            <div class="text-center" style="padding: 40px;">
+              <div class="loader" style="margin: 0 auto 16px;"></div>
+              <p style="color: var(--text-secondary);">Memuat data...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="allJurnalTab">
+        <div class="card">
+          <h3 style="margin-bottom: 16px;">📚 Semua Jurnal</h3>
+          <div id="allJurnalTable">
+            <div class="text-center" style="padding: 40px;">
+              <p style="color: var(--text-secondary);">Klik tab ini untuk memuat data</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="allArtikelTab">
+        <div class="card">
+          <h3 style="margin-bottom: 16px;">📝 Semua Artikel</h3>
+          <div id="allArtikelTable">
+            <div class="text-center" style="padding: 40px;">
+              <p style="color: var(--text-secondary);">Klik tab ini untuk memuat data</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container container-xl">
+      <div class="footer-bottom" style="border: none; padding: 24px 0;">
+        <p>Made with ❤️ by Najma © 2025 PubGlow</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { getAllJournals, approveJournal, rejectJournal } from './js/services/journalService.js';
+    import { getAllArticles, approveArticle, rejectArticle } from './js/services/blogService.js';
+    import { getPendingJournalSubmissions, getPendingArticleSubmissions } from './js/services/submissionService.js';
+    import { formatCurrency, formatDate, formatArray, truncate } from './js/utils/formatter.js';
+    import { showSuccess, showError, showLoading, showConfirm } from './js/utils/notification.js';
+
+    let currentTab = 'pendingJurnal';
+
+    // Navbar toggle
+    document.getElementById('navbarToggle')?.addEventListener('click', () => {
+      document.getElementById('navbarMenu')?.classList.toggle('active');
+    });
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabName = btn.dataset.tab;
+        
+        // Update active states
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        btn.classList.add('active');
+        document.getElementById(tabName + 'Tab').classList.add('active');
+        
+        currentTab = tabName;
+        
+        // Load data for tab if not loaded
+        if (tabName === 'allJurnal') loadAllJournals();
+        if (tabName === 'allArtikel') loadAllArticles();
+      });
+    });
+
+    // Load stats
+    async function loadStats() {
+      try {
+        const [journals, articles, pendingJournals, pendingArticles] = await Promise.all([
+          getAllJournals(),
+          getAllArticles(),
+          getPendingJournalSubmissions(),
+          getPendingArticleSubmissions()
+        ]);
+        
+        document.getElementById('statJurnal').textContent = journals.filter(j => j.status === 'active').length;
+        document.getElementById('statArtikel').textContent = articles.filter(a => a.status === 'published').length;
+        document.getElementById('statPendingJurnal').textContent = pendingJournals.length;
+        document.getElementById('statPendingArtikel').textContent = pendingArticles.length;
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    }
+
+    // Load pending journals
+    async function loadPendingJournals() {
+      const container = document.getElementById('pendingJurnalTable');
+      container.innerHTML = '<div class="text-center" style="padding: 40px;"><div class="loader" style="margin: 0 auto 16px;"></div><p>Memuat...</p></div>';
+      
+      try {
+        const submissions = await getPendingJournalSubmissions();
+        
+        if (submissions.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">✅</div>
+              <div class="empty-state-title">Tidak ada pending submission</div>
+              <div class="empty-state-text">Semua submission jurnal sudah diproses</div>
+            </div>
+          `;
+          return;
+        }
+        
+        let html = '<div class="table-container"><table class="table"><thead><tr>';
+        html += '<th>Tanggal</th><th>Nama Jurnal</th><th>Instansi</th><th>Akreditasi</th><th>Pengusul</th><th>Aksi</th>';
+        html += '</tr></thead><tbody>';
+        
+        submissions.forEach(sub => {
+          html += `<tr>
+            <td><small>${formatDate(sub.tanggalSubmit)}</small></td>
+            <td><strong>${sub.nama}</strong></td>
+            <td>${sub.instansi}</td>
+            <td><span class="badge badge-primary">${sub.akreditasi}</span></td>
+            <td><small>${sub.namaPengusul}<br>${sub.emailPengusul}</small></td>
+            <td>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-sm btn-outline" onclick="viewJournalDetail('${sub.id}')" title="Lihat Detail">
+                  👁️
+                </button>
+                <button class="btn btn-sm" style="background: var(--color-success);" onclick="approveJournalSubmission('${sub.id}')" title="Approve">
+                  ✓
+                </button>
+                <button class="btn btn-sm" style="background: var(--color-danger);" onclick="rejectJournalSubmission('${sub.id}')" title="Reject">
+                  ✕
+                </button>
+              </div>
+            </td>
+          </tr>`;
+        });
+        
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+      } catch (error) {
+        console.error('Error loading pending journals:', error);
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">Gagal memuat data</div></div>';
+      }
+    }
+
+    // Load pending articles
+    async function loadPendingArticles() {
+      const container = document.getElementById('pendingArtikelTable');
+      container.innerHTML = '<div class="text-center" style="padding: 40px;"><div class="loader" style="margin: 0 auto 16px;"></div><p>Memuat...</p></div>';
+      
+      try {
+        const submissions = await getPendingArticleSubmissions();
+        
+        if (submissions.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">✅</div>
+              <div class="empty-state-title">Tidak ada pending submission</div>
+              <div class="empty-state-text">Semua submission artikel sudah diproses</div>
+            </div>
+          `;
+          return;
+        }
+        
+        let html = '<div class="table-container"><table class="table"><thead><tr>';
+        html += '<th>Tanggal</th><th>Judul</th><th>Kategori</th><th>Penulis</th><th>Ringkasan</th><th>Aksi</th>';
+        html += '</tr></thead><tbody>';
+        
+        submissions.forEach(sub => {
+          html += `<tr>
+            <td><small>${formatDate(sub.tanggalSubmit)}</small></td>
+            <td><strong>${truncate(sub.judul, 50)}</strong></td>
+            <td><span class="badge badge-secondary">${sub.kategori}</span></td>
+            <td><small>${sub.penulis}<br>${sub.emailPenulis}</small></td>
+            <td><small>${truncate(sub.ringkasan, 80)}</small></td>
+            <td>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-sm btn-outline" onclick="viewArticleDetail('${sub.id}')" title="Lihat Detail">
+                  👁️
+                </button>
+                <button class="btn btn-sm" style="background: var(--color-success);" onclick="approveArticleSubmission('${sub.id}')" title="Approve">
+                  ✓
+                </button>
+                <button class="btn btn-sm" style="background: var(--color-danger);" onclick="rejectArticleSubmission('${sub.id}')" title="Reject">
+                  ✕
+                </button>
+              </div>
+            </td>
+          </tr>`;
+        });
+        
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+      } catch (error) {
+        console.error('Error loading pending articles:', error);
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">Gagal memuat data</div></div>';
+      }
+    }
+
+    // Load all journals
+    async function loadAllJournals() {
+      const container = document.getElementById('allJurnalTable');
+      container.innerHTML = '<div class="text-center" style="padding: 40px;"><div class="loader" style="margin: 0 auto 16px;"></div><p>Memuat...</p></div>';
+      
+      try {
+        const journals = await getAllJournals();
+        
+        let html = '<div class="table-container"><table class="table"><thead><tr>';
+        html += '<th>Nama</th><th>Instansi</th><th>Akreditasi</th><th>Harga</th><th>Status</th><th>Aksi</th>';
+        html += '</tr></thead><tbody>';
+        
+        journals.forEach(j => {
+          html += `<tr>
+            <td><strong>${j.nama}</strong></td>
+            <td>${j.instansi}</td>
+            <td><span class="badge badge-primary">${j.akreditasi}</span></td>
+            <td>${formatCurrency(j.harga)}</td>
+            <td><span class="badge badge-${j.status === 'active' ? 'success' : 'gray'}">${j.status}</span></td>
+            <td>
+              <button class="btn btn-sm btn-outline" onclick="window.open('${j.tautan}', '_blank')">
+                🔗 Link
+              </button>
+            </td>
+          </tr>`;
+        });
+        
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+      } catch (error) {
+        console.error('Error loading all journals:', error);
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">Gagal memuat data</div></div>';
+      }
+    }
+
+    // Load all articles
+    async function loadAllArticles() {
+      const container = document.getElementById('allArtikelTable');
+      container.innerHTML = '<div class="text-center" style="padding: 40px;"><div class="loader" style="margin: 0 auto 16px;"></div><p>Memuat...</p></div>';
+      
+      try {
+        const articles = await getAllArticles();
+        
+        let html = '<div class="table-container"><table class="table"><thead><tr>';
+        html += '<th>Judul</th><th>Kategori</th><th>Penulis</th><th>Tanggal</th><th>Views</th><th>Status</th><th>Aksi</th>';
+        html += '</tr></thead><tbody>';
+        
+        articles.forEach(a => {
+          html += `<tr>
+            <td><strong>${truncate(a.judul, 60)}</strong></td>
+            <td><span class="badge badge-secondary">${a.kategori}</span></td>
+            <td>${a.penulis}</td>
+            <td><small>${formatDate(a.tanggalPublish || a.tanggalDibuat)}</small></td>
+            <td>${a.views || 0}</td>
+            <td><span class="badge badge-${a.status === 'published' ? 'success' : 'warning'}">${a.status}</span></td>
+            <td>
+              <a href="blog-detail.html?id=${a.id}" class="btn btn-sm btn-outline" target="_blank">
+                👁️ View
+              </a>
+            </td>
+          </tr>`;
+        });
+        
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+      } catch (error) {
+        console.error('Error loading all articles:', error);
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">Gagal memuat data</div></div>';
+      }
+    }
+
+    // Global functions for actions
+    window.viewJournalDetail = (id) => {
+      alert('Detail view coming soon! ID: ' + id);
+    };
+
+    window.viewArticleDetail = (id) => {
+      alert('Detail view coming soon! ID: ' + id);
+    };
+
+    window.approveJournalSubmission = async (id) => {
+      const confirmed = await showConfirm('Approve jurnal submission ini?');
+      if (!confirmed) return;
+      
+      const hideLoading = showLoading('Memproses...');
+      try {
+        await approveJournal(id);
+        hideLoading();
+        showSuccess('Jurnal berhasil di-approve!');
+        loadStats();
+        loadPendingJournals();
+      } catch (error) {
+        console.error('Error approving journal:', error);
+        hideLoading();
+        showError('Gagal approve jurnal');
+      }
+    };
+
+    window.rejectJournalSubmission = async (id) => {
+      const confirmed = await showConfirm('Reject jurnal submission ini?', 'Ya, Reject', 'Batal');
+      if (!confirmed) return;
+      
+      const hideLoading = showLoading('Memproses...');
+      try {
+        await rejectJournal(id);
+        hideLoading();
+        showSuccess('Jurnal berhasil di-reject');
+        loadStats();
+        loadPendingJournals();
+      } catch (error) {
+        console.error('Error rejecting journal:', error);
+        hideLoading();
+        showError('Gagal reject jurnal');
+      }
+    };
+
+    window.approveArticleSubmission = async (id) => {
+      const confirmed = await showConfirm('Approve artikel submission ini?');
+      if (!confirmed) return;
+      
+      const hideLoading = showLoading('Memproses...');
+      try {
+        await approveArticle(id);
+        hideLoading();
+        showSuccess('Artikel berhasil di-approve!');
+        loadStats();
+        loadPendingArticles();
+      } catch (error) {
+        console.error('Error approving article:', error);
+        hideLoading();
+        showError('Gagal approve artikel');
+      }
+    };
+
+    window.rejectArticleSubmission = async (id) => {
+      const confirmed = await showConfirm('Reject artikel submission ini?', 'Ya, Reject', 'Batal');
+      if (!confirmed) return;
+      
+      const hideLoading = showLoading('Memproses...');
+      try {
+        await rejectArticle(id);
+        hideLoading();
+        showSuccess('Artikel berhasil di-reject');
+        loadStats();
+        loadPendingArticles();
+      } catch (error) {
+        console.error('Error rejecting article:', error);
+        hideLoading();
+        showError('Gagal reject artikel');
+      }
+    };
+
+    // Initialize
+    (async () => {
+      await loadStats();
+      await loadPendingJournals();
+      await loadPendingArticles();
+    })();
+  </script>
+
+  <style>
+    .tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid var(--border-color);
+    }
+    .tab-btn {
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--text-secondary);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+    .tab-btn.active {
+      color: var(--color-primary-start);
+      border-bottom-color: var(--color-primary-start);
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+  </style>
+</body>
+</html>
