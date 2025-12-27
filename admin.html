@@ -12,6 +12,21 @@
   <link rel="stylesheet" href="css/pages.css">
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
+  
+  <style>
+    /* Ensure tabs work */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
   <div class="admin-layout">
@@ -21,7 +36,7 @@
       
       <nav>
         <ul class="admin-sidebar-nav">
-          <li><a href="#dashboard" class="admin-sidebar-link" data-tab="dashboard">Dashboard</a></li>
+          <li><a href="#dashboard" class="admin-sidebar-link active" data-tab="dashboard">Dashboard</a></li>
           <li><a href="#pendingJurnal" class="admin-sidebar-link" data-tab="pendingJurnal">Pending Jurnal</a></li>
           <li><a href="#pendingArtikel" class="admin-sidebar-link" data-tab="pendingArtikel">Pending Artikel</a></li>
           <li><a href="#allJurnal" class="admin-sidebar-link" data-tab="allJurnal">Semua Jurnal</a></li>
@@ -166,6 +181,72 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
+  <!-- NAVIGATION SCRIPT - NON-MODULE, RUNS FIRST -->
+  <script>
+    console.log('🎬 Navigation script loaded');
+    
+    let currentTab = 'dashboard';
+    
+    // Tab switching function
+    function switchTab(tabName) {
+      console.log('✅ switchTab called:', tabName);
+      
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+        console.log('  - Hiding tab:', tab.id);
+      });
+      
+      // Show target tab
+      const targetTab = document.getElementById(tabName + 'Tab');
+      if (targetTab) {
+        targetTab.classList.add('active');
+        console.log('  ✅ Showing tab:', targetTab.id);
+      } else {
+        console.error('  ❌ Tab not found:', tabName + 'Tab');
+      }
+      
+      // Update sidebar
+      document.querySelectorAll('.admin-sidebar-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      const activeLink = document.querySelector(`[data-tab="${tabName}"]`);
+      if (activeLink) {
+        activeLink.classList.add('active');
+      }
+      
+      currentTab = tabName;
+      
+      // Trigger data loading (will be defined by module script)
+      if (window.loadTabData) {
+        window.loadTabData(tabName);
+      }
+    }
+    
+    // Make it global
+    window.switchTab = switchTab;
+    
+    // Handle hash changes
+    function handleHashChange() {
+      const hash = window.location.hash.substring(1) || 'dashboard';
+      console.log('🔗 Hash:', hash);
+      switchTab(hash);
+    }
+    
+    // Listen to hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    
+    // Run on load
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', handleHashChange);
+    } else {
+      handleHashChange();
+    }
+    
+    console.log('✅ Navigation system ready');
+  </script>
+
+  <!-- DATA LOADING SCRIPT - MODULE -->
   <script type="module">
     import { getAllJournals, approveJournal, rejectJournal } from './js/services/journalService.js';
     import { getAllArticles, approveArticle, rejectArticle } from './js/services/blogService.js';
@@ -173,54 +254,7 @@
     import { formatCurrency, formatDate, truncate } from './js/utils/formatter.js';
     import { showSuccess, showError, showLoading, showConfirm } from './js/utils/notification.js';
 
-    let currentTab = 'dashboard';
-
-    // Switch tabs based on hash
-    function switchTab(tabName) {
-      console.log('✅ Switching to tab:', tabName);
-      
-      // Update sidebar active state
-      document.querySelectorAll('.admin-sidebar-link').forEach(l => l.classList.remove('active'));
-      const activeLink = document.querySelector(`[data-tab="${tabName}"]`);
-      if (activeLink) {
-        activeLink.classList.add('active');
-      }
-      
-      // Update tab content visibility
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      const tabElement = document.getElementById(tabName + 'Tab');
-      if (tabElement) {
-        tabElement.classList.add('active');
-      }
-      
-      currentTab = tabName;
-      
-      // Load data for the tab
-      if (tabName === 'pendingJurnal') loadPendingJournals();
-      if (tabName === 'pendingArtikel') loadPendingArticles();
-      if (tabName === 'allJurnal') loadAllJournals();
-      if (tabName === 'allArtikel') loadAllArticles();
-      if (tabName === 'dashboard') loadStats();
-    }
-    
-    // Make switchTab global
-    window.switchTab = switchTab;
-
-    // Handle hash changes (main navigation logic)
-    function handleHashChange() {
-      const hash = window.location.hash.substring(1) || 'dashboard';
-      console.log('🔗 Hash changed to:', hash);
-      switchTab(hash);
-    }
-
-    // Listen to hash changes
-    window.addEventListener('hashchange', handleHashChange);
-
-    // Initial load based on hash
-    window.addEventListener('DOMContentLoaded', () => {
-      console.log('📄 Page loaded');
-      handleHashChange();
-    });
+    console.log('📦 Data module loaded');
 
     async function loadStats() {
       try {
@@ -405,6 +439,16 @@
       }
     };
 
+    // Data loading dispatcher
+    window.loadTabData = function(tabName) {
+      console.log('📊 Loading data for:', tabName);
+      if (tabName === 'dashboard') loadStats();
+      if (tabName === 'pendingJurnal') loadPendingJournals();
+      if (tabName === 'pendingArtikel') loadPendingArticles();
+      if (tabName === 'allJurnal') loadAllJournals();
+      if (tabName === 'allArtikel') loadAllArticles();
+    };
+
     window.approveJournalSubmission = async (id) => {
       const confirmed = await showConfirm('Approve jurnal submission ini?');
       if (!confirmed) return;
@@ -476,6 +520,12 @@
         console.error('Error:', error);
       }
     };
+
+    // Initial data load
+    loadStats();
+    loadPendingJournals();
+    
+    console.log('✅ Data module ready');
   </script>
 </body>
 </html>
