@@ -3,26 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Usulkan jurnal baru untuk ditambahkan ke PubGlow">
   <title>Usulkan Jurnal - PubGlow</title>
   
-  <!-- CSS -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/pages.css">
   
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
 </head>
 <body>
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="container container-xl navbar-container">
-      <a href="index.html" class="navbar-brand">
-        <span>✨</span>
-        <span>PubGlow</span>
-      </a>
+      <a href="index.html" class="navbar-brand">PubGlow</a>
       
       <button class="navbar-toggle" id="navbarToggle">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -34,262 +28,221 @@
       
       <ul class="navbar-menu" id="navbarMenu">
         <li><a href="index.html" class="navbar-link">Beranda</a></li>
-        <li><a href="jurnal.html" class="navbar-link">List Jurnal</a></li>
+        <li><a href="jurnal.html" class="navbar-link">Jurnal</a></li>
         <li><a href="blog.html" class="navbar-link">Blog</a></li>
         <li><a href="submit-jurnal.html" class="navbar-link active">Usulkan Jurnal</a></li>
         <li><a href="submit-artikel.html" class="navbar-link">Usulkan Artikel</a></li>
-        <li><a href="admin.html" class="navbar-link" style="color: var(--color-accent);">Admin</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Main Content -->
-  <main class="section">
-    <div class="container container-md">
-      <div class="section-header">
-        <h1 class="section-title">📚 Usulkan Jurnal</h1>
-        <p class="section-subtitle">Bantu kami melengkapi database jurnal dengan usulan Anda</p>
-      </div>
+  <div class="container container-md" style="padding-top: var(--space-8); padding-bottom: var(--space-12);">
+    <div class="page-header">
+      <h1 class="page-title">Usulkan Jurnal</h1>
+      <p class="page-subtitle">Bantu komunitas dengan menambahkan jurnal yang belum terdaftar</p>
+    </div>
 
-      <!-- Info Card -->
-      <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-bottom: 32px;">
-        <h3 style="color: white; margin-bottom: 12px;">💡 Tips Mengusulkan Jurnal</h3>
-        <ul style="margin: 0; padding-left: 20px; color: rgba(255,255,255,0.95);">
-          <li>Pastikan jurnal yang diusulkan belum ada di database kami</li>
-          <li>Isi semua informasi dengan lengkap dan akurat</li>
-          <li>Sertakan link resmi jurnal yang valid</li>
-          <li>Usulan Anda akan direview oleh admin sebelum dipublikasikan</li>
-        </ul>
-      </div>
-
-      <!-- Form -->
-      <form id="submitJournalForm" class="card">
-        <h3 style="margin-bottom: 24px;">Informasi Jurnal</h3>
-        
-        <!-- Nama Jurnal -->
+    <div class="card">
+      <form id="submitJurnalForm">
         <div class="input-group">
           <label class="input-label required">Nama Jurnal</label>
-          <input type="text" class="input" name="nama" placeholder="Contoh: Jurnal Teknik Informatika" required>
+          <input type="text" name="nama" class="input" required placeholder="Contoh: Jurnal Teknologi Informasi">
         </div>
-        
-        <!-- Instansi -->
+
         <div class="input-group">
           <label class="input-label required">Instansi Penerbit</label>
-          <input type="text" class="input" name="instansi" placeholder="Contoh: Universitas Indonesia" required>
+          <input type="text" name="instansi" class="input" required placeholder="Universitas atau institusi penerbit">
         </div>
-        
-        <!-- Akreditasi -->
-        <div class="input-group">
-          <label class="input-label required">Akreditasi</label>
-          <select class="select input" name="akreditasi" required>
-            <option value="">Pilih Akreditasi</option>
-            <option value="SINTA 1">SINTA 1</option>
-            <option value="SINTA 2">SINTA 2</option>
-            <option value="SINTA 3">SINTA 3</option>
-            <option value="SINTA 4">SINTA 4</option>
-            <option value="SINTA 5">SINTA 5</option>
-            <option value="SINTA 6">SINTA 6</option>
-          </select>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+          <div class="input-group">
+            <label class="input-label required">Akreditasi</label>
+            <select name="akreditasi" class="select" required>
+              <option value="">Pilih akreditasi</option>
+              <option value="Sinta 1">Sinta 1</option>
+              <option value="Sinta 2">Sinta 2</option>
+              <option value="Sinta 3">Sinta 3</option>
+              <option value="Sinta 4">Sinta 4</option>
+              <option value="Sinta 5">Sinta 5</option>
+              <option value="Sinta 6">Sinta 6</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label required">Scope</label>
+            <select name="scope" class="select" required>
+              <option value="">Pilih scope</option>
+              <option value="Nasional">Nasional</option>
+              <option value="Internasional">Internasional</option>
+            </select>
+          </div>
         </div>
-        
-        <!-- Scope -->
-        <div class="input-group">
-          <label class="input-label required">Scope / Bidang (pisahkan dengan koma)</label>
-          <input type="text" class="input" name="scope" placeholder="Contoh: Teknik Informatika, Machine Learning, AI" required>
-          <small style="color: var(--text-tertiary); font-size: 13px;">Pisahkan setiap bidang dengan koma</small>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+          <div class="input-group">
+            <label class="input-label required">Harga (Rp)</label>
+            <input type="number" name="harga" class="input" required placeholder="0" min="0">
+            <small style="color: var(--text-tertiary); font-size: var(--font-size-xs);">Isi 0 jika gratis</small>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">Frekuensi Terbit</label>
+            <select name="frekuensi" class="select">
+              <option value="">Pilih frekuensi</option>
+              <option value="Bulanan">Bulanan</option>
+              <option value="Triwulan">Triwulan</option>
+              <option value="Semester">Semester</option>
+              <option value="Tahunan">Tahunan</option>
+            </select>
+          </div>
         </div>
-        
-        <!-- Harga -->
-        <div class="input-group">
-          <label class="input-label required">Biaya Publikasi (Rp)</label>
-          <input type="number" class="input" name="harga" placeholder="0" min="0" required>
-        </div>
-        
-        <!-- Frekuensi Terbit -->
-        <div class="input-group">
-          <label class="input-label required">Frekuensi Terbit</label>
-          <select class="select input" name="frekuensi" required>
-            <option value="">Pilih Frekuensi</option>
-            <option value="Bulanan">Bulanan</option>
-            <option value="2 Bulan">2 Bulan</option>
-            <option value="3 Bulan">3 Bulan (Quarterly)</option>
-            <option value="4 Bulan">4 Bulan</option>
-            <option value="6 Bulan">6 Bulan (Semi-Annual)</option>
-            <option value="Tahunan">Tahunan</option>
-          </select>
-        </div>
-        
-        <!-- Waktu Review -->
-        <div class="input-group">
-          <label class="input-label required">Waktu Review (bulan)</label>
-          <input type="number" class="input" name="waktuReview" placeholder="3" min="1" max="24" required>
-        </div>
-        
-        <!-- Fast Track -->
+
         <div class="input-group">
           <label class="checkbox">
-            <input type="checkbox" name="fastTrackTersedia" id="fastTrackCheckbox">
-            <span>Tersedia Fast Track</span>
+            <input type="checkbox" name="fastTrack" id="fastTrackCheck">
+            <span>Menyediakan Fast Track</span>
           </label>
         </div>
-        
-        <!-- Fast Track Details (conditional) -->
-        <div id="fastTrackDetails" style="display: none; padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-md); margin-bottom: 24px;">
-          <div class="input-group">
-            <label class="input-label">Biaya Fast Track (Rp)</label>
-            <input type="number" class="input" name="fastTrackBiaya" placeholder="0" min="0">
+
+        <div id="fastTrackFields" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+            <div class="input-group">
+              <label class="input-label">Harga Fast Track (Rp)</label>
+              <input type="number" name="hargaFastTrack" class="input" placeholder="0" min="0">
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Durasi Fast Track (hari)</label>
+              <input type="number" name="durasiFastTrack" class="input" placeholder="30" min="1">
+            </div>
           </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Link Website Jurnal</label>
+          <input type="url" name="link" class="input" placeholder="https://">
+        </div>
+
+        <div style="border-top: 1px solid var(--border-color); margin: var(--space-6) 0; padding-top: var(--space-6);">
+          <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--space-4);">Informasi Pengusul</h3>
           
-          <div class="input-group" style="margin-bottom: 0;">
-            <label class="input-label">Durasi Fast Track (bulan)</label>
-            <input type="number" class="input" name="fastTrackDurasi" placeholder="1" min="1" max="12">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+            <div class="input-group">
+              <label class="input-label required">Nama Anda</label>
+              <input type="text" name="namaPengusul" class="input" required placeholder="Nama lengkap">
+            </div>
+
+            <div class="input-group">
+              <label class="input-label required">Email</label>
+              <input type="email" name="emailPengusul" class="input" required placeholder="email@example.com">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">Catatan Tambahan</label>
+            <textarea name="catatan" class="textarea" placeholder="Informasi tambahan tentang jurnal (opsional)"></textarea>
           </div>
         </div>
-        
-        <!-- Link Jurnal -->
-        <div class="input-group">
-          <label class="input-label required">Link Website Jurnal</label>
-          <input type="url" class="input" name="tautan" placeholder="https://jurnal.example.com" required>
-        </div>
-        
-        <!-- Kontak Pengusul -->
-        <h3 style="margin: 32px 0 24px;">Informasi Pengusul</h3>
-        
-        <div class="input-group">
-          <label class="input-label required">Nama Anda</label>
-          <input type="text" class="input" name="namaPengusul" placeholder="Nama lengkap" required>
-        </div>
-        
-        <div class="input-group">
-          <label class="input-label required">Email Anda</label>
-          <input type="email" class="input" name="emailPengusul" placeholder="email@example.com" required>
-        </div>
-        
-        <div class="input-group">
-          <label class="input-label">Catatan Tambahan (opsional)</label>
-          <textarea class="textarea" name="catatan" rows="4" placeholder="Informasi tambahan yang ingin Anda sampaikan..."></textarea>
-        </div>
-        
-        <!-- Submit Button -->
-        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 32px;">
-          <button type="reset" class="btn btn-ghost">Reset Form</button>
-          <button type="submit" class="btn btn-primary" id="submitBtn">
-            <span>📤</span>
-            <span>Kirim Usulan</span>
-          </button>
+
+        <div style="display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-6);">
+          <button type="button" class="btn btn-outline" onclick="history.back()">Batal</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Submit Usulan</button>
         </div>
       </form>
     </div>
-  </main>
+  </div>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="container container-xl">
-      <div class="footer-bottom" style="border: none; padding: 24px 0;">
-        <p>Made with ❤️ by Najma © 2025 PubGlow</p>
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">PubGlow</div>
+          <p style="color: var(--text-secondary); font-size: 14px; margin-top: 12px; max-width: 320px; line-height: 1.6;">
+            Platform modern untuk menemukan jurnal ilmiah yang tepat.
+          </p>
+        </div>
+        
+        <div>
+          <h4 class="footer-section-title">Navigasi</h4>
+          <ul class="footer-links">
+            <li><a href="index.html" class="footer-link">Beranda</a></li>
+            <li><a href="jurnal.html" class="footer-link">Jurnal</a></li>
+            <li><a href="blog.html" class="footer-link">Blog</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-section-title">Kontribusi</h4>
+          <ul class="footer-links">
+            <li><a href="submit-jurnal.html" class="footer-link">Usulkan Jurnal</a></li>
+            <li><a href="submit-artikel.html" class="footer-link">Usulkan Artikel</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-section-title">Lainnya</h4>
+          <ul class="footer-links">
+            <li><a href="admin.html" class="footer-link">Admin Dashboard</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 PubGlow. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script type="module">
-    import { submitJournalProposal } from './js/services/submissionService.js';
-    import { sendSubmissionNotification } from './js/services/emailService.js';
-    import { validateForm, showValidationErrors, clearValidationErrors } from './js/utils/validation.js';
+    import { submitJournal } from './js/services/submissionService.js';
     import { showSuccess, showError, showLoading } from './js/utils/notification.js';
 
-    // Navbar toggle
     document.getElementById('navbarToggle')?.addEventListener('click', () => {
       document.getElementById('navbarMenu')?.classList.toggle('active');
     });
 
-    // Toggle fast track details
-    document.getElementById('fastTrackCheckbox').addEventListener('change', (e) => {
-      const details = document.getElementById('fastTrackDetails');
-      details.style.display = e.target.checked ? 'block' : 'none';
-      
-      // Reset fast track fields if unchecked
-      if (!e.target.checked) {
-        document.querySelector('[name="fastTrackBiaya"]').value = '';
-        document.querySelector('[name="fastTrackDurasi"]').value = '';
-      }
+    // Fast track toggle
+    document.getElementById('fastTrackCheck').addEventListener('change', (e) => {
+      document.getElementById('fastTrackFields').style.display = e.target.checked ? 'block' : 'none';
     });
 
-    // Form submission
-    document.getElementById('submitJournalForm').addEventListener('submit', async (e) => {
+    // Form submit
+    document.getElementById('submitJurnalForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      clearValidationErrors();
       
       const formData = new FormData(e.target);
       const data = {
         nama: formData.get('nama'),
         instansi: formData.get('instansi'),
         akreditasi: formData.get('akreditasi'),
-        scope: formData.get('scope').split(',').map(s => s.trim()).filter(s => s),
-        harga: parseFloat(formData.get('harga')),
+        scope: formData.get('scope'),
+        harga: parseInt(formData.get('harga')) || 0,
         frekuensi: formData.get('frekuensi'),
-        waktuReview: parseInt(formData.get('waktuReview')),
-        fastTrack: formData.get('fastTrackTersedia') ? {
-          tersedia: true,
-          biaya: parseFloat(formData.get('fastTrackBiaya')) || 0,
-          durasi: parseInt(formData.get('fastTrackDurasi')) || 0
-        } : {
-          tersedia: false
-        },
-        tautan: formData.get('tautan'),
+        fastTrack: formData.get('fastTrack') === 'on',
+        hargaFastTrack: parseInt(formData.get('hargaFastTrack')) || 0,
+        durasiFastTrack: parseInt(formData.get('durasiFastTrack')) || 0,
+        link: formData.get('link'),
         namaPengusul: formData.get('namaPengusul'),
         emailPengusul: formData.get('emailPengusul'),
-        catatan: formData.get('catatan') || ''
+        catatan: formData.get('catatan')
       };
-      
-      // Validation rules
-      const rules = {
-        nama: { required: true, minLength: 3 },
-        instansi: { required: true, minLength: 3 },
-        akreditasi: { required: true },
-        scope: { required: true },
-        harga: { required: true, number: true, positive: true },
-        frekuensi: { required: true },
-        waktuReview: { required: true, number: true, positive: true },
-        tautan: { required: true, url: true },
-        namaPengusul: { required: true, minLength: 3 },
-        emailPengusul: { required: true, email: true }
-      };
-      
-      const validation = validateForm(data, rules);
-      
-      if (!validation.valid) {
-        showValidationErrors(validation.errors);
-        showError('Mohon lengkapi semua field yang wajib diisi');
-        return;
-      }
-      
-      const hideLoading = showLoading('Mengirim usulan jurnal...');
-      
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      const hideLoading = showLoading('Mengirim usulan...');
+
       try {
-        // Submit to Firestore
-        const submissionId = await submitJournalProposal(data);
-        
-        // Send email notification (optional, won't block if fails)
-        try {
-          await sendSubmissionNotification('jurnal', data);
-        } catch (emailError) {
-          console.warn('Email notification failed:', emailError);
-        }
-        
+        await submitJournal(data);
         hideLoading();
-        showSuccess('Usulan jurnal berhasil dikirim! Terima kasih atas kontribusinya.');
-        
-        // Reset form after 2 seconds
-        setTimeout(() => {
-          e.target.reset();
-          document.getElementById('fastTrackDetails').style.display = 'none';
-        }, 2000);
-        
+        showSuccess('Usulan jurnal berhasil dikirim! Tim kami akan review segera.');
+        e.target.reset();
+        document.getElementById('fastTrackFields').style.display = 'none';
       } catch (error) {
-        console.error('Error submitting journal:', error);
         hideLoading();
         showError('Gagal mengirim usulan. Silakan coba lagi.');
+        console.error('Error:', error);
+      } finally {
+        submitBtn.disabled = false;
       }
     });
   </script>
