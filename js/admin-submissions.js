@@ -29,31 +29,91 @@ async function loadJournalSubmissions() {
       const data = d.data();
       const scopes = Array.isArray(data.scope) ? data.scope : [data.scope];
       const scopeBadges = scopes.map(s => `<span class="badge bg-secondary" style="font-size:11px">${s}</span>`).join(' ');
-      const submittedDate = data.submittedAt ? new Date(data.submittedAt.toMillis()).toLocaleString('id-ID') : 'N/A';
+      const submittedDate = data.submittedAt ? new Date(data.submittedAt.toDate()).toLocaleString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }) : 'N/A';
+      
+      // Fast Track info
+      let fastTrackInfo = 'Tidak Ada';
+      if (data.fastTrack === 'Ada') {
+        fastTrackInfo = data.fastTrackBiaya ? `Ada - Rp ${data.fastTrackBiaya.toLocaleString('id-ID')}` : 'Ada';
+      }
+      
       html += `
         <div class="card mb-3">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-3">
               <h5 class="mb-0">${data.nama}</h5>
-              <span class="badge bg-warning text-dark">Pending</span>
+              <span class="badge bg-warning text-dark">Pending Review</span>
             </div>
+            
+            <!-- CONTRIBUTOR INFO -->
             <div class="contributor-box">
-              <strong>Kontributor:</strong><br>
-              Nama: ${data.contributor?.name || 'N/A'}<br>
-              Email: ${data.contributor?.email || 'N/A'}<br>
-              Dikirim: ${submittedDate}
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div>
+                  <strong>Kontributor:</strong><br>
+                  ${data.contributor?.nama || 'N/A'}<br>
+                  <a href="mailto:${data.contributor?.email || ''}">${data.contributor?.email || 'N/A'}</a>
+                </div>
+                <div style="text-align:right">
+                  <strong>Tanggal & Waktu Kirim:</strong><br>
+                  ${submittedDate}
+                </div>
+              </div>
             </div>
-            <p style="font-size:13px;color:#6c757d" class="mb-1"><strong>Instansi:</strong> ${data.instansi}</p>
-            <p style="font-size:13px;color:#6c757d" class="mb-1"><strong>Scope:</strong> ${scopeBadges}</p>
-            <p style="font-size:13px;color:#6c757d" class="mb-1"><strong>Akreditasi:</strong> <span class="badge bg-success">${data.akreditasi}</span></p>
-            <p style="font-size:13px;color:#6c757d" class="mb-1"><strong>Biaya:</strong> Rp ${data.harga?.toLocaleString('id-ID')}</p>
-            <p style="font-size:13px;color:#6c757d" class="mb-3"><strong>Website:</strong> <a href="${data.tautan}" target="_blank">${data.tautan}</a></p>
-            <div class="action-buttons">
+            
+            <!-- JOURNAL DATA -->
+            <div style="border-top:1px solid #dee2e6;padding-top:12px;margin-top:12px">
+              <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
+                <div style="color:#6c757d;font-weight:500">Instansi:</div>
+                <div>${data.instansi}</div>
+              </div>
+              <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
+                <div style="color:#6c757d;font-weight:500">Akreditasi:</div>
+                <div><span class="badge bg-success">${data.akreditasi}</span></div>
+              </div>
+              <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
+                <div style="color:#6c757d;font-weight:500">Scope:</div>
+                <div>${scopeBadges}</div>
+              </div>
+              <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
+                <div style="color:#6c757d;font-weight:500">Biaya Publikasi:</div>
+                <div>Rp ${data.harga?.toLocaleString('id-ID')}</div>
+              </div>
+              <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
+                <div style="color:#6c757d;font-weight:500">Waktu Review:</div>
+                <div>${data.waktuReview}</div>
+              </div>
+              <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
+                <div style="color:#6c757d;font-weight:500">Frekuensi:</div>
+                <div>${data.frekuensi}</div>
+              </div>
+              <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
+                <div style="color:#6c757d;font-weight:500">Fast Track:</div>
+                <div>${fastTrackInfo}</div>
+              </div>
+              <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
+                <div style="color:#6c757d;font-weight:500">Website:</div>
+                <div><a href="${data.tautan}" target="_blank">${data.tautan}</a></div>
+              </div>
+              ${data.catatan ? `
+                <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
+                  <div style="color:#6c757d;font-weight:500">Catatan:</div>
+                  <div style="color:#6c757d;font-style:italic">${data.catatan}</div>
+                </div>
+              ` : ''}
+            </div>
+            
+            <div class="action-buttons" style="margin-top:16px">
               <button class="btn btn-success btn-sm approve-journal" data-id="${d.id}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                Approve
+                Approve & Publish
               </button>
               <button class="btn btn-danger btn-sm reject-journal" data-id="${d.id}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -70,12 +130,12 @@ async function loadJournalSubmissions() {
     document.getElementById('journalsList').innerHTML = html;
     document.querySelectorAll('.approve-journal').forEach(btn => {
       btn.addEventListener('click', () => {
-        if (confirm('Approve jurnal ini?')) approveJournal(btn.dataset.id);
+        if (confirm('Approve dan publish jurnal ini ke website?')) approveJournal(btn.dataset.id);
       });
     });
     document.querySelectorAll('.reject-journal').forEach(btn => {
       btn.addEventListener('click', () => {
-        if (confirm('Reject submission ini?')) rejectSubmission('journal_submissions', btn.dataset.id);
+        if (confirm('Reject submission ini? Data akan dihapus permanen.')) rejectSubmission('journal_submissions', btn.dataset.id);
       });
     });
   } catch (error) {
@@ -90,6 +150,8 @@ async function approveJournal(id) {
     let submissionData = null;
     submissionDoc.forEach(d => { if (d.id === id) submissionData = d.data(); });
     if (!submissionData) return;
+    
+    // Create journal with all data from submission
     const journalData = {
       nama: submissionData.nama,
       instansi: submissionData.instansi,
@@ -99,14 +161,16 @@ async function approveJournal(id) {
       frekuensi: submissionData.frekuensi,
       waktuReview: submissionData.waktuReview,
       fastTrack: submissionData.fastTrack,
+      fastTrackBiaya: submissionData.fastTrackBiaya,
       tautan: submissionData.tautan,
       status: 'aktif',
       timestamp: serverTimestamp(),
       contributedBy: submissionData.contributor
     };
+    
     await addDoc(collection(db, 'journals'), journalData);
     await deleteDoc(doc(db, 'journal_submissions', id));
-    showToast('Berhasil', 'Jurnal dipublikasikan!');
+    showToast('Berhasil', 'Jurnal berhasil dipublikasikan!');
     loadJournalSubmissions();
   } catch (error) {
     showToast('Error', error.message, 'error');
@@ -125,30 +189,63 @@ async function loadArticleSubmissions() {
     let html = '';
     snapshot.forEach(d => {
       const data = d.data();
-      const submittedDate = data.submittedAt ? new Date(data.submittedAt.toMillis()).toLocaleString('id-ID') : 'N/A';
+      const submittedDate = data.submittedAt ? new Date(data.submittedAt.toDate()).toLocaleString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }) : 'N/A';
+      
       html += `
         <div class="card mb-3">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-3">
               <h5 class="mb-0">${data.judul}</h5>
-              <span class="badge bg-warning text-dark">Pending</span>
+              <span class="badge bg-warning text-dark">Pending Review</span>
             </div>
+            
+            <!-- CONTRIBUTOR INFO -->
             <div class="contributor-box">
-              <strong>Kontributor:</strong><br>
-              Nama: ${data.contributor?.name || 'N/A'}<br>
-              Email: ${data.contributor?.email || 'N/A'}<br>
-              Dikirim: ${submittedDate}
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div>
+                  <strong>Kontributor:</strong><br>
+                  ${data.contributor?.nama || 'N/A'}<br>
+                  <a href="mailto:${data.contributor?.email || ''}">${data.contributor?.email || 'N/A'}</a>
+                </div>
+                <div style="text-align:right">
+                  <strong>Tanggal & Waktu Kirim:</strong><br>
+                  ${submittedDate}
+                </div>
+              </div>
             </div>
-            <p style="font-size:13px;color:#6c757d" class="mb-1"><strong>Kategori:</strong> <span class="badge bg-secondary">${data.kategori}</span></p>
-            <p style="font-size:13px;color:#6c757d" class="mb-1"><strong>Penulis:</strong> ${data.penulis}</p>
-            <p style="font-size:13px;color:#6c757d" class="mb-2"><strong>Slug:</strong> <code>${data.slug}</code></p>
-            <div class="content-preview" style="font-size:12px;color:#495057;margin-bottom:15px">${data.konten}</div>
-            <div class="action-buttons">
+            
+            <!-- ARTICLE DATA -->
+            <div style="border-top:1px solid #dee2e6;padding-top:12px;margin-top:12px">
+              <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
+                <div style="color:#6c757d;font-weight:500">Kategori:</div>
+                <div><span class="badge bg-secondary">${data.kategori}</span></div>
+              </div>
+              <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
+                <div style="color:#6c757d;font-weight:500">Penulis:</div>
+                <div>${data.penulis}</div>
+              </div>
+              <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:12px">
+                <div style="color:#6c757d;font-weight:500">Slug:</div>
+                <div><code>${data.slug}</code></div>
+              </div>
+              <div style="font-size:13px;margin-bottom:6px">
+                <div style="color:#6c757d;font-weight:500;margin-bottom:8px">Konten Preview:</div>
+                <div class="content-preview" style="font-size:12px;color:#495057">${data.konten}</div>
+              </div>
+            </div>
+            
+            <div class="action-buttons" style="margin-top:16px">
               <button class="btn btn-success btn-sm approve-article" data-id="${d.id}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                Approve
+                Approve & Publish
               </button>
               <button class="btn btn-danger btn-sm reject-article" data-id="${d.id}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -165,12 +262,12 @@ async function loadArticleSubmissions() {
     document.getElementById('articlesList').innerHTML = html;
     document.querySelectorAll('.approve-article').forEach(btn => {
       btn.addEventListener('click', () => {
-        if (confirm('Approve artikel ini?')) approveArticle(btn.dataset.id);
+        if (confirm('Approve dan publish artikel ini ke website?')) approveArticle(btn.dataset.id);
       });
     });
     document.querySelectorAll('.reject-article').forEach(btn => {
       btn.addEventListener('click', () => {
-        if (confirm('Reject submission ini?')) rejectSubmission('article_submissions', btn.dataset.id);
+        if (confirm('Reject submission ini? Data akan dihapus permanen.')) rejectSubmission('article_submissions', btn.dataset.id);
       });
     });
   } catch (error) {
@@ -185,6 +282,7 @@ async function approveArticle(id) {
     let submissionData = null;
     submissionDoc.forEach(d => { if (d.id === id) submissionData = d.data(); });
     if (!submissionData) return;
+    
     const articleData = {
       judul: submissionData.judul,
       slug: submissionData.slug,
@@ -196,9 +294,10 @@ async function approveArticle(id) {
       views: 0,
       contributedBy: submissionData.contributor
     };
+    
     await addDoc(collection(db, 'articles'), articleData);
     await deleteDoc(doc(db, 'article_submissions', id));
-    showToast('Berhasil', 'Artikel dipublikasikan!');
+    showToast('Berhasil', 'Artikel berhasil dipublikasikan!');
     loadArticleSubmissions();
   } catch (error) {
     showToast('Error', error.message, 'error');
@@ -208,7 +307,7 @@ async function approveArticle(id) {
 async function rejectSubmission(collectionName, id) {
   try {
     await deleteDoc(doc(db, collectionName, id));
-    showToast('Berhasil', 'Submission ditolak.');
+    showToast('Berhasil', 'Submission ditolak dan dihapus.');
     if (collectionName === 'journal_submissions') loadJournalSubmissions();
     else loadArticleSubmissions();
   } catch (error) {
