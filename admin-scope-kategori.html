@@ -4,354 +4,185 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kelola Scope & Kategori - PubGlow Admin</title>
-  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .card {
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      margin-bottom: 30px;
-    }
-    
-    .card-header {
-      border-radius: 12px 12px 0 0 !important;
-      padding: 20px;
-    }
-    
-    .loading-spinner {
-      text-align: center;
-      padding: 50px;
-    }
-    
-    .table-container {
-      max-height: 400px;
-      overflow-y: auto;
-    }
-  </style>
+  <link href="css/admin-theme.css" rel="stylesheet">
 </head>
 <body>
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col-12">
-        <h1>🔧 Kelola Scope & Kategori</h1>
-        <p class="text-muted">Manage scope jurnal dan kategori artikel</p>
-        <hr>
-      </div>
-    </div>
-
-    <!-- SCOPE MANAGEMENT -->
-    <div class="row mb-5">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">📚 Scope Jurnal</h3>
-            <small>Scope bisa dipilih lebih dari 1 saat menambah jurnal (checkbox)</small>
-          </div>
-          <div class="card-body">
-            <!-- Form Tambah Scope -->
-            <div class="row mb-4">
-              <div class="col-md-8">
-                <input 
-                  type="text" 
-                  id="inputScope" 
-                  class="form-control" 
-                  placeholder="Masukkan nama scope baru (misal: Teknik Informatika)"
-                >
-              </div>
-              <div class="col-md-4">
-                <button id="btnAddScope" class="btn btn-success w-100">
-                  ➕ Tambah Scope
-                </button>
-              </div>
-            </div>
-
-            <!-- List Scope -->
-            <div id="scopeTableContainer">
-              <div class="loading-spinner">
-                <div class="spinner-border text-primary" role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- KATEGORI ARTIKEL MANAGEMENT -->
-    <div class="row mb-5">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header bg-info text-white">
-            <h3 class="mb-0">📰 Kategori Artikel</h3>
-            <small>Kategori hanya bisa dipilih 1 saat menambah artikel (dropdown)</small>
-          </div>
-          <div class="card-body">
-            <!-- Form Tambah Kategori -->
-            <div class="row mb-4">
-              <div class="col-md-8">
-                <input 
-                  type="text" 
-                  id="inputKategori" 
-                  class="form-control" 
-                  placeholder="Masukkan nama kategori baru (misal: Tips Publikasi)"
-                >
-              </div>
-              <div class="col-md-4">
-                <button id="btnAddKategori" class="btn btn-success w-100">
-                  ➕ Tambah Kategori
-                </button>
-              </div>
-            </div>
-
-            <!-- List Kategori -->
-            <div id="kategoriTableContainer">
-              <div class="loading-spinner">
-                <div class="spinner-border text-primary" role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Back Button -->
-    <div class="row mb-5">
-      <div class="col-12">
-        <a href="admin.html" class="btn btn-secondary">
-          ← Kembali ke Dashboard
-        </a>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-brand">PubGlow Admin</div>
+    <div class="sidebar-menu">
+      <div class="menu-label">Main Menu</div>
+      <a href="admin.html" class="menu-item">Dashboard</a>
+      <div class="menu-label">Management</div>
+      <a href="admin-scope-kategori.html" class="menu-item active">Scope & Kategori</a>
+      <a href="admin-journals.html" class="menu-item">Kelola Jurnal</a>
+      <a href="admin-articles.html" class="menu-item">Kelola Artikel</a>
+      <a href="admin-submissions.html" class="menu-item">Submissions</a>
+      <div class="menu-label">Other</div>
+      <a href="index.html" class="menu-item">View Website</a>
+      <div class="logout-item">
+        <a href="login.html" class="menu-item">Logout</a>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification -->
-  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="page-header">
+      <h1>Kelola Scope & Kategori</h1>
+      <p>Manage scope jurnal dan kategori artikel</p>
+    </div>
+
+    <!-- Scope Section -->
+    <div class="card mb-4">
+      <div class="card-header">Scope Jurnal</div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-9">
+            <input type="text" id="inputScope" class="form-control" placeholder="Masukkan nama scope baru">
+          </div>
+          <div class="col-md-3">
+            <button id="btnAddScope" class="btn btn-primary w-100">Tambah Scope</button>
+          </div>
+        </div>
+        <div id="scopeTableContainer">
+          <div style="text-align:center;padding:30px"><div class="spinner-border spinner-border-sm"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kategori Section -->
+    <div class="card mb-4">
+      <div class="card-header">Kategori Artikel</div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-9">
+            <input type="text" id="inputKategori" class="form-control" placeholder="Masukkan nama kategori baru">
+          </div>
+          <div class="col-md-3">
+            <button id="btnAddKategori" class="btn btn-primary w-100">Tambah Kategori</button>
+          </div>
+        </div>
+        <div id="kategoriTableContainer">
+          <div style="text-align:center;padding:30px"><div class="spinner-border spinner-border-sm"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index:11">
     <div id="toast" class="toast" role="alert">
       <div class="toast-header">
         <strong class="me-auto" id="toastTitle">Notifikasi</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
       </div>
-      <div class="toast-body" id="toastBody">
-        Pesan notifikasi
-      </div>
+      <div class="toast-body" id="toastBody"></div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
   <script type="module">
     import { protectAdminPage } from './js/auth.js';
-    import { 
-      loadScopes, 
-      addScope, 
-      updateScope, 
-      deleteScope,
-      loadKategoriArtikel,
-      addKategoriArtikel,
-      updateKategoriArtikel,
-      deleteKategoriArtikel,
-      renderScopeTable,
-      renderKategoriTable
-    } from './js/admin-scope-kategori.js';
-
-    // Protect admin page
+    import { loadScopes, addScope, updateScope, deleteScope, loadKategoriArtikel, addKategoriArtikel, updateKategoriArtikel, deleteKategoriArtikel, renderScopeTable, renderKategoriTable } from './js/admin-scope-kategori.js';
+    
     await protectAdminPage();
-
-    // Toast helper
+    
     function showToast(title, message, type = 'success') {
       const toast = new bootstrap.Toast(document.getElementById('toast'));
       document.getElementById('toastTitle').textContent = title;
       document.getElementById('toastBody').textContent = message;
-      
       const toastEl = document.getElementById('toast');
       toastEl.className = 'toast';
       if (type === 'success') toastEl.classList.add('bg-success', 'text-white');
       if (type === 'error') toastEl.classList.add('bg-danger', 'text-white');
-      
       toast.show();
     }
-
-    // ========================================
-    // SCOPE MANAGEMENT
-    // ========================================
-
+    
     let scopesData = [];
-
     async function refreshScopes() {
       try {
         scopesData = await loadScopes();
         document.getElementById('scopeTableContainer').innerHTML = renderScopeTable(scopesData);
-        attachScopeEventListeners();
+        document.querySelectorAll('.edit-scope').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const newName = prompt('Edit nama scope:', btn.dataset.name);
+            if (newName && newName.trim() !== '' && newName !== btn.dataset.name) {
+              await updateScope(btn.dataset.id, newName);
+              showToast('Berhasil', 'Scope diupdate!');
+              refreshScopes();
+            }
+          });
+        });
+        document.querySelectorAll('.delete-scope').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            if (confirm(`Yakin hapus scope "${btn.dataset.name}"?`)) {
+              await deleteScope(btn.dataset.id);
+              showToast('Berhasil', 'Scope dihapus!');
+              refreshScopes();
+            }
+          });
+        });
       } catch (error) {
-        console.error('Error loading scopes:', error);
-        document.getElementById('scopeTableContainer').innerHTML = `
-          <div class="alert alert-warning">
-            <p class="mb-0">Gagal load scope. Collection mungkin belum ada. Tambahkan scope pertama!</p>
-          </div>
-        `;
+        document.getElementById('scopeTableContainer').innerHTML = '<div class="alert alert-warning">Gagal load scope. Tambahkan scope pertama!</div>';
       }
     }
-
-    function attachScopeEventListeners() {
-      // Edit scope
-      document.querySelectorAll('.edit-scope').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const id = btn.dataset.id;
-          const currentName = btn.dataset.name;
-          const newName = prompt('Edit nama scope:', currentName);
-          
-          if (newName && newName.trim() !== '' && newName !== currentName) {
-            try {
-              await updateScope(id, newName);
-              showToast('Berhasil', 'Scope berhasil diupdate!');
-              refreshScopes();
-            } catch (error) {
-              showToast('Error', error.message, 'error');
-            }
-          }
-        });
-      });
-
-      // Delete scope
-      document.querySelectorAll('.delete-scope').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const id = btn.dataset.id;
-          const name = btn.dataset.name;
-          
-          if (confirm(`Yakin hapus scope "${name}"?\n\nPeringatan: Jurnal yang menggunakan scope ini masih akan memiliki scope tersebut di data mereka.`)) {
-            try {
-              await deleteScope(id);
-              showToast('Berhasil', 'Scope berhasil dihapus!');
-              refreshScopes();
-            } catch (error) {
-              showToast('Error', error.message, 'error');
-            }
-          }
-        });
-      });
-    }
-
-    // Add scope
-    document.getElementById('btnAddScope').addEventListener('click', async () => {
-      const input = document.getElementById('inputScope');
-      const nama = input.value.trim();
-      
-      if (!nama) {
-        showToast('Peringatan', 'Nama scope tidak boleh kosong!', 'error');
-        return;
-      }
-      
-      try {
-        await addScope(nama);
-        showToast('Berhasil', `Scope "${nama}" berhasil ditambahkan!`);
-        input.value = '';
-        refreshScopes();
-      } catch (error) {
-        showToast('Error', error.message, 'error');
-      }
-    });
-
-    // Enter key untuk add scope
-    document.getElementById('inputScope').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        document.getElementById('btnAddScope').click();
-      }
-    });
-
-    // ========================================
-    // KATEGORI MANAGEMENT
-    // ========================================
-
+    
     let kategoriData = [];
-
     async function refreshKategori() {
       try {
         kategoriData = await loadKategoriArtikel();
         document.getElementById('kategoriTableContainer').innerHTML = renderKategoriTable(kategoriData);
-        attachKategoriEventListeners();
+        document.querySelectorAll('.edit-kategori').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const newName = prompt('Edit nama kategori:', btn.dataset.name);
+            if (newName && newName.trim() !== '' && newName !== btn.dataset.name) {
+              await updateKategoriArtikel(btn.dataset.id, newName);
+              showToast('Berhasil', 'Kategori diupdate!');
+              refreshKategori();
+            }
+          });
+        });
+        document.querySelectorAll('.delete-kategori').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            if (confirm(`Yakin hapus kategori "${btn.dataset.name}"?`)) {
+              await deleteKategoriArtikel(btn.dataset.id);
+              showToast('Berhasil', 'Kategori dihapus!');
+              refreshKategori();
+            }
+          });
+        });
       } catch (error) {
-        console.error('Error loading kategori:', error);
-        document.getElementById('kategoriTableContainer').innerHTML = `
-          <div class="alert alert-warning">
-            <p class="mb-0">Gagal load kategori. Collection mungkin belum ada. Tambahkan kategori pertama!</p>
-          </div>
-        `;
+        document.getElementById('kategoriTableContainer').innerHTML = '<div class="alert alert-warning">Gagal load kategori. Tambahkan kategori pertama!</div>';
       }
     }
-
-    function attachKategoriEventListeners() {
-      // Edit kategori
-      document.querySelectorAll('.edit-kategori').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const id = btn.dataset.id;
-          const currentName = btn.dataset.name;
-          const newName = prompt('Edit nama kategori:', currentName);
-          
-          if (newName && newName.trim() !== '' && newName !== currentName) {
-            try {
-              await updateKategoriArtikel(id, newName);
-              showToast('Berhasil', 'Kategori berhasil diupdate!');
-              refreshKategori();
-            } catch (error) {
-              showToast('Error', error.message, 'error');
-            }
-          }
-        });
-      });
-
-      // Delete kategori
-      document.querySelectorAll('.delete-kategori').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const id = btn.dataset.id;
-          const name = btn.dataset.name;
-          
-          if (confirm(`Yakin hapus kategori "${name}"?\n\nPeringatan: Artikel yang menggunakan kategori ini masih akan memiliki kategori tersebut di data mereka.`)) {
-            try {
-              await deleteKategoriArtikel(id);
-              showToast('Berhasil', 'Kategori berhasil dihapus!');
-              refreshKategori();
-            } catch (error) {
-              showToast('Error', error.message, 'error');
-            }
-          }
-        });
-      });
-    }
-
-    // Add kategori
+    
+    document.getElementById('btnAddScope').addEventListener('click', async () => {
+      const nama = document.getElementById('inputScope').value.trim();
+      if (!nama) { showToast('Peringatan', 'Nama scope kosong!', 'error'); return; }
+      await addScope(nama);
+      showToast('Berhasil', `Scope "${nama}" ditambahkan!`);
+      document.getElementById('inputScope').value = '';
+      refreshScopes();
+    });
+    
+    document.getElementById('inputScope').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') document.getElementById('btnAddScope').click();
+    });
+    
     document.getElementById('btnAddKategori').addEventListener('click', async () => {
-      const input = document.getElementById('inputKategori');
-      const nama = input.value.trim();
-      
-      if (!nama) {
-        showToast('Peringatan', 'Nama kategori tidak boleh kosong!', 'error');
-        return;
-      }
-      
-      try {
-        await addKategoriArtikel(nama);
-        showToast('Berhasil', `Kategori "${nama}" berhasil ditambahkan!`);
-        input.value = '';
-        refreshKategori();
-      } catch (error) {
-        showToast('Error', error.message, 'error');
-      }
+      const nama = document.getElementById('inputKategori').value.trim();
+      if (!nama) { showToast('Peringatan', 'Nama kategori kosong!', 'error'); return; }
+      await addKategoriArtikel(nama);
+      showToast('Berhasil', `Kategori "${nama}" ditambahkan!`);
+      document.getElementById('inputKategori').value = '';
+      refreshKategori();
     });
-
-    // Enter key untuk add kategori
+    
     document.getElementById('inputKategori').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        document.getElementById('btnAddKategori').click();
-      }
+      if (e.key === 'Enter') document.getElementById('btnAddKategori').click();
     });
-
-    // ========================================
-    // INIT
-    // ========================================
-
+    
     refreshScopes();
     refreshKategori();
   </script>

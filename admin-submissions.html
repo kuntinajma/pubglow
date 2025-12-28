@@ -4,129 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Review Submissions - PubGlow Admin</title>
-  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/admin-theme.css" rel="stylesheet">
   <style>
-    .submission-card {
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 20px;
-      background: white;
-      transition: all 0.3s;
-    }
-    
-    .submission-card:hover {
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    
-    .submission-card h5 {
-      color: #667eea;
-      margin-bottom: 15px;
-    }
-    
-    .submission-info {
-      font-size: 0.95rem;
-      color: #666;
-      line-height: 1.8;
-    }
-    
-    .contributor-box {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 8px;
-      margin: 15px 0;
-    }
-    
-    .loading-spinner {
-      text-align: center;
-      padding: 50px;
-    }
-    
-    .nav-tabs .nav-link {
-      color: #666;
-      font-weight: 600;
-    }
-    
-    .nav-tabs .nav-link.active {
-      color: #667eea;
-      border-color: #dee2e6 #dee2e6 #fff;
-    }
-    
-    .badge-pending {
-      background: #ffc107;
-      color: #000;
-    }
-    
-    .content-preview {
-      max-height: 150px;
-      overflow: hidden;
-      position: relative;
-    }
-    
-    .content-preview::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 40px;
-      background: linear-gradient(transparent, white);
-    }
+    .nav-tabs .nav-link { color: #6c757d; font-weight: 500; font-size: 13px; }
+    .nav-tabs .nav-link.active { color: #1a1d29; border-color: #dee2e6 #dee2e6 #fff; }
+    .contributor-box { background: #f8f9fa; padding: 15px; border-radius: 6px; margin: 15px 0; font-size: 13px; }
+    .content-preview { max-height: 150px; overflow: hidden; position: relative; border: 1px solid #e9ecef; padding: 12px; border-radius: 6px; background: #f8f9fa; }
   </style>
 </head>
 <body>
-  <div class="container mt-4">
-    <div class="row mb-4">
-      <div class="col">
-        <h1>📋 Review Submissions</h1>
-        <p class="text-muted">Review dan approve kontribusi dari pengguna</p>
-      </div>
-      <div class="col-auto">
-        <a href="admin.html" class="btn btn-secondary">← Kembali ke Dashboard</a>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-brand">PubGlow Admin</div>
+    <div class="sidebar-menu">
+      <div class="menu-label">Main Menu</div>
+      <a href="admin.html" class="menu-item">Dashboard</a>
+      <div class="menu-label">Management</div>
+      <a href="admin-scope-kategori.html" class="menu-item">Scope & Kategori</a>
+      <a href="admin-journals.html" class="menu-item">Kelola Jurnal</a>
+      <a href="admin-articles.html" class="menu-item">Kelola Artikel</a>
+      <a href="admin-submissions.html" class="menu-item active">Submissions</a>
+      <div class="menu-label">Other</div>
+      <a href="index.html" class="menu-item">View Website</a>
+      <div class="logout-item">
+        <a href="login.html" class="menu-item">Logout</a>
       </div>
     </div>
+  </div>
 
-    <!-- Tabs -->
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="page-header">
+      <h1>Review Submissions</h1>
+      <p>Review dan approve kontribusi dari pengguna</p>
+    </div>
+
     <ul class="nav nav-tabs mb-4" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="journals-tab" data-bs-toggle="tab" data-bs-target="#journals" type="button">
-          📚 Jurnal (<span id="journalCount">0</span>)
-        </button>
+      <li class="nav-item">
+        <button class="nav-link active" id="journals-tab" data-bs-toggle="tab" data-bs-target="#journals" type="button">Jurnal (<span id="journalCount">0</span>)</button>
       </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="articles-tab" data-bs-toggle="tab" data-bs-target="#articles" type="button">
-          📰 Artikel (<span id="articleCount">0</span>)
-        </button>
+      <li class="nav-item">
+        <button class="nav-link" id="articles-tab" data-bs-toggle="tab" data-bs-target="#articles" type="button">Artikel (<span id="articleCount">0</span>)</button>
       </li>
     </ul>
 
-    <!-- Tab Content -->
     <div class="tab-content">
-      <!-- Journals Tab -->
-      <div class="tab-pane fade show active" id="journals" role="tabpanel">
+      <div class="tab-pane fade show active" id="journals">
         <div id="journalsList">
-          <div class="loading-spinner">
-            <div class="spinner-border text-primary" role="status"></div>
-            <p class="mt-2">Memuat submissions...</p>
-          </div>
+          <div style="text-align:center;padding:50px"><div class="spinner-border"></div><p class="mt-2">Loading...</p></div>
         </div>
       </div>
-
-      <!-- Articles Tab -->
-      <div class="tab-pane fade" id="articles" role="tabpanel">
+      <div class="tab-pane fade" id="articles">
         <div id="articlesList">
-          <div class="loading-spinner">
-            <div class="spinner-border text-primary" role="status"></div>
-            <p class="mt-2">Memuat submissions...</p>
-          </div>
+          <div style="text-align:center;padding:50px"><div class="spinner-border"></div><p class="mt-2">Loading...</p></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification -->
-  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index:11">
     <div id="toast" class="toast" role="alert">
       <div class="toast-header">
         <strong class="me-auto" id="toastTitle">Notifikasi</strong>
@@ -137,374 +74,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <script type="module">
-    import { protectAdminPage } from './js/auth.js';
-    import { db } from './js/firebase.js';
-    import { 
-      collection, 
-      addDoc,
-      deleteDoc, 
-      doc, 
-      getDocs,
-      query,
-      where,
-      serverTimestamp
-    } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
-
-    // Protect page
-    await protectAdminPage();
-
-    // Toast helper
-    function showToast(title, message, type = 'success') {
-      const toast = new bootstrap.Toast(document.getElementById('toast'));
-      document.getElementById('toastTitle').textContent = title;
-      document.getElementById('toastBody').textContent = message;
-      
-      const toastEl = document.getElementById('toast');
-      toastEl.className = 'toast';
-      if (type === 'success') toastEl.classList.add('bg-success', 'text-white');
-      if (type === 'error') toastEl.classList.add('bg-danger', 'text-white');
-      
-      toast.show();
-    }
-
-    // Load journal submissions
-    async function loadJournalSubmissions() {
-      try {
-        const q = query(collection(db, 'journal_submissions'), where('status', '==', 'pending'));
-        const snapshot = await getDocs(q);
-        
-        document.getElementById('journalCount').textContent = snapshot.size;
-
-        if (snapshot.empty) {
-          document.getElementById('journalsList').innerHTML = `
-            <div class="alert alert-info">
-              <h5>✅ Semua Selesai!</h5>
-              <p class="mb-0">Tidak ada submission jurnal yang perlu direview.</p>
-            </div>
-          `;
-          return;
-        }
-
-        let html = '';
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          html += renderJournalCard(doc.id, data);
-        });
-
-        document.getElementById('journalsList').innerHTML = html;
-        attachJournalEventListeners();
-      } catch (error) {
-        console.error('Error loading journal submissions:', error);
-        document.getElementById('journalsList').innerHTML = `
-          <div class="alert alert-warning">
-            <p class="mb-0">Belum ada submission jurnal atau collection belum dibuat.</p>
-          </div>
-        `;
-        document.getElementById('journalCount').textContent = '0';
-      }
-    }
-
-    function renderJournalCard(id, data) {
-      const scopes = Array.isArray(data.scope) ? data.scope : [data.scope];
-      const scopeBadges = scopes.map(s => `<span class="badge bg-info">${s}</span>`).join(' ');
-      const fastTrackText = data.fastTrack?.tersedia ? 
-        `✅ Fast Track (Rp ${data.fastTrack.biaya?.toLocaleString('id-ID')})` : 
-        '❌ Tidak ada fast track';
-      
-      const submittedDate = data.submittedAt ? 
-        new Date(data.submittedAt.toMillis()).toLocaleString('id-ID') : 
-        'Tanggal tidak tersedia';
-
-      return `
-        <div class="submission-card" data-id="${id}">
-          <div class="d-flex justify-content-between align-items-start mb-3">
-            <h5>${data.nama}</h5>
-            <span class="badge badge-pending">Pending Review</span>
-          </div>
-
-          <div class="contributor-box">
-            <strong>👤 Kontributor:</strong><br>
-            Nama: ${data.contributor?.name || 'N/A'}<br>
-            Email: <a href="mailto:${data.contributor?.email}">${data.contributor?.email || 'N/A'}</a><br>
-            Dikirim: ${submittedDate}
-          </div>
-
-          <div class="submission-info">
-            <p class="mb-2">
-              <strong>🏛️ Instansi:</strong> ${data.instansi}
-            </p>
-            <p class="mb-2">
-              <strong>📖 Scope:</strong> ${scopeBadges}
-            </p>
-            <p class="mb-2">
-              <strong>📊 Akreditasi:</strong> <span class="badge bg-success">${data.akreditasi}</span>
-            </p>
-            <p class="mb-2">
-              <strong>💰 Biaya:</strong> Rp ${data.harga?.toLocaleString('id-ID')}
-            </p>
-            <p class="mb-2">
-              <strong>⏱️ Waktu Review:</strong> ${data.waktuReview} bulan
-            </p>
-            <p class="mb-2">
-              <strong>📅 Frekuensi Terbit:</strong> ${data.frekuensi}
-            </p>
-            <p class="mb-2">
-              <strong>⚡ Fast Track:</strong> ${fastTrackText}
-            </p>
-            <p class="mb-0">
-              <strong>🔗 Website:</strong> <a href="${data.tautan}" target="_blank">${data.tautan}</a>
-            </p>
-          </div>
-
-          <div class="mt-3">
-            <button class="btn btn-success approve-journal" data-id="${id}">
-              ✅ Approve & Publikasikan
-            </button>
-            <button class="btn btn-danger reject-journal" data-id="${id}">
-              ❌ Reject
-            </button>
-          </div>
-        </div>
-      `;
-    }
-
-    function attachJournalEventListeners() {
-      // Approve
-      document.querySelectorAll('.approve-journal').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const id = btn.dataset.id;
-          if (confirm('Approve dan publikasikan jurnal ini?')) {
-            await approveJournal(id);
-          }
-        });
-      });
-
-      // Reject
-      document.querySelectorAll('.reject-journal').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const id = btn.dataset.id;
-          if (confirm('Reject submission ini? Data akan dihapus.')) {
-            await rejectSubmission('journal_submissions', id);
-          }
-        });
-      });
-    }
-
-    async function approveJournal(id) {
-      try {
-        // Get submission data
-        const submissionDoc = await getDocs(query(collection(db, 'journal_submissions')));
-        let submissionData = null;
-        submissionDoc.forEach(doc => {
-          if (doc.id === id) submissionData = doc.data();
-        });
-
-        if (!submissionData) return;
-
-        // Copy to journals collection
-        const journalData = {
-          nama: submissionData.nama,
-          instansi: submissionData.instansi,
-          scope: submissionData.scope,
-          akreditasi: submissionData.akreditasi,
-          harga: submissionData.harga,
-          frekuensi: submissionData.frekuensi,
-          waktuReview: submissionData.waktuReview,
-          fastTrack: submissionData.fastTrack,
-          tautan: submissionData.tautan,
-          status: 'aktif',
-          timestamp: serverTimestamp(),
-          contributedBy: submissionData.contributor
-        };
-
-        await addDoc(collection(db, 'journals'), journalData);
-
-        // Delete from submissions
-        await deleteDoc(doc(db, 'journal_submissions', id));
-
-        showToast('Berhasil', 'Jurnal berhasil dipublikasikan!');
-        loadJournalSubmissions();
-      } catch (error) {
-        console.error('Error approving journal:', error);
-        showToast('Error', error.message, 'error');
-      }
-    }
-
-    // Load article submissions
-    async function loadArticleSubmissions() {
-      try {
-        const q = query(collection(db, 'article_submissions'), where('status', '==', 'pending'));
-        const snapshot = await getDocs(q);
-        
-        document.getElementById('articleCount').textContent = snapshot.size;
-
-        if (snapshot.empty) {
-          document.getElementById('articlesList').innerHTML = `
-            <div class="alert alert-info">
-              <h5>✅ Semua Selesai!</h5>
-              <p class="mb-0">Tidak ada submission artikel yang perlu direview.</p>
-            </div>
-          `;
-          return;
-        }
-
-        let html = '';
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          html += renderArticleCard(doc.id, data);
-        });
-
-        document.getElementById('articlesList').innerHTML = html;
-        attachArticleEventListeners();
-      } catch (error) {
-        console.error('Error loading article submissions:', error);
-        document.getElementById('articlesList').innerHTML = `
-          <div class="alert alert-warning">
-            <p class="mb-0">Belum ada submission artikel atau collection belum dibuat.</p>
-          </div>
-        `;
-        document.getElementById('articleCount').textContent = '0';
-      }
-    }
-
-    function renderArticleCard(id, data) {
-      const submittedDate = data.submittedAt ? 
-        new Date(data.submittedAt.toMillis()).toLocaleString('id-ID') : 
-        'Tanggal tidak tersedia';
-      
-      const publishNameInfo = data.contributor?.publishName ? 
-        `✅ Nama akan dipublikasikan sebagai: <strong>${data.penulis}</strong>` : 
-        `❌ Anonim (akan tampil sebagai "Tim PubGlow")`;
-
-      return `
-        <div class="submission-card" data-id="${id}">
-          <div class="d-flex justify-content-between align-items-start mb-3">
-            <h5>${data.judul}</h5>
-            <span class="badge badge-pending">Pending Review</span>
-          </div>
-
-          <div class="contributor-box">
-            <strong>👤 Kontributor:</strong><br>
-            Nama: ${data.contributor?.name || 'N/A'}<br>
-            Email: <a href="mailto:${data.contributor?.email}">${data.contributor?.email || 'N/A'}</a><br>
-            ${publishNameInfo}<br>
-            Dikirim: ${submittedDate}
-          </div>
-
-          <div class="submission-info">
-            <p class="mb-2">
-              <strong>📂 Kategori:</strong> <span class="badge bg-info">${data.kategori}</span>
-            </p>
-            <p class="mb-2">
-              <strong>✍️ Penulis (akan tampil):</strong> ${data.penulis}
-            </p>
-            <p class="mb-2">
-              <strong>🔗 Slug:</strong> <code>${data.slug}</code>
-            </p>
-            <p class="mb-2">
-              <strong>📖 Konten:</strong>
-            </p>
-            <div class="content-preview border rounded p-3">
-              ${data.konten}
-            </div>
-          </div>
-
-          <div class="mt-3">
-            <button class="btn btn-success approve-article" data-id="${id}">
-              ✅ Approve & Publikasikan
-            </button>
-            <button class="btn btn-danger reject-article" data-id="${id}">
-              ❌ Reject
-            </button>
-          </div>
-        </div>
-      `;
-    }
-
-    function attachArticleEventListeners() {
-      // Approve
-      document.querySelectorAll('.approve-article').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const id = btn.dataset.id;
-          if (confirm('Approve dan publikasikan artikel ini?')) {
-            await approveArticle(id);
-          }
-        });
-      });
-
-      // Reject
-      document.querySelectorAll('.reject-article').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const id = btn.dataset.id;
-          if (confirm('Reject submission ini? Data akan dihapus.')) {
-            await rejectSubmission('article_submissions', id);
-          }
-        });
-      });
-    }
-
-    async function approveArticle(id) {
-      try {
-        // Get submission data
-        const submissionDoc = await getDocs(query(collection(db, 'article_submissions')));
-        let submissionData = null;
-        submissionDoc.forEach(doc => {
-          if (doc.id === id) submissionData = doc.data();
-        });
-
-        if (!submissionData) return;
-
-        // Copy to articles collection
-        const articleData = {
-          judul: submissionData.judul,
-          slug: submissionData.slug,
-          kategori: submissionData.kategori,
-          penulis: submissionData.penulis,
-          konten: submissionData.konten,
-          status: 'published',
-          tanggalPublish: serverTimestamp(),
-          views: 0,
-          contributedBy: submissionData.contributor
-        };
-
-        await addDoc(collection(db, 'articles'), articleData);
-
-        // Delete from submissions
-        await deleteDoc(doc(db, 'article_submissions', id));
-
-        showToast('Berhasil', 'Artikel berhasil dipublikasikan!');
-        loadArticleSubmissions();
-      } catch (error) {
-        console.error('Error approving article:', error);
-        showToast('Error', error.message, 'error');
-      }
-    }
-
-    async function rejectSubmission(collectionName, id) {
-      try {
-        await deleteDoc(doc(db, collectionName, id));
-        showToast('Berhasil', 'Submission ditolak dan dihapus.');
-        
-        if (collectionName === 'journal_submissions') {
-          loadJournalSubmissions();
-        } else {
-          loadArticleSubmissions();
-        }
-      } catch (error) {
-        console.error('Error rejecting submission:', error);
-        showToast('Error', error.message, 'error');
-      }
-    }
-
-    // Initial load
-    loadJournalSubmissions();
-
-    // Load articles when tab is clicked
-    document.getElementById('articles-tab').addEventListener('click', () => {
-      loadArticleSubmissions();
-    });
-  </script>
+  <script type="module" src="js/admin-submissions.js"></script>
 </body>
 </html>
