@@ -37,6 +37,9 @@ async function loadJournalSubmissions() {
         minute: '2-digit'
       }) : 'N/A';
       
+      // Jadwal Terbit
+      const jadwalTerbit = Array.isArray(data.jadwalTerbit) ? data.jadwalTerbit.join(', ') : (data.frekuensi || data.jadwalTerbit || 'N/A');
+      
       // Fast Track info
       let fastTrackInfo = 'Tidak Ada';
       if (data.fastTrack === 'Ada') {
@@ -89,8 +92,8 @@ async function loadJournalSubmissions() {
                 <div>${data.waktuReview}</div>
               </div>
               <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
-                <div style="color:#6c757d;font-weight:500">Frekuensi:</div>
-                <div>${data.frekuensi}</div>
+                <div style="color:#6c757d;font-weight:500">Jadwal Terbit:</div>
+                <div>${jadwalTerbit}</div>
               </div>
               <div style="display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:13px;margin-bottom:6px">
                 <div style="color:#6c757d;font-weight:500">Fast Track:</div>
@@ -158,7 +161,7 @@ async function approveJournal(id) {
       scope: submissionData.scope,
       akreditasi: submissionData.akreditasi,
       harga: submissionData.harga,
-      frekuensi: submissionData.frekuensi,
+      jadwalTerbit: submissionData.jadwalTerbit || [],
       waktuReview: submissionData.waktuReview,
       fastTrack: submissionData.fastTrack,
       fastTrackBiaya: submissionData.fastTrackBiaya,

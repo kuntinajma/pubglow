@@ -43,6 +43,10 @@ function getSelectedScopes() {
   return Array.from(document.querySelectorAll('.scope-checkbox:checked')).map(cb => cb.value);
 }
 
+function getSelectedMonths() {
+  return Array.from(document.querySelectorAll('.month-checkbox:checked')).map(cb => cb.value);
+}
+
 loadScopesForForm();
 
 async function loadJournals() {
@@ -60,6 +64,9 @@ async function loadJournals() {
       const scopeBadges = scopes.map(s => `<span class="badge bg-secondary" style="font-size:11px">${s}</span>`).join(' ');
       const isAktif = data.status === 'aktif';
       const statusBadge = isAktif ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-secondary">Hidden</span>';
+      
+      // Handle Jadwal Terbit
+      const jadwalTerbit = Array.isArray(data.jadwalTerbit) ? data.jadwalTerbit.join(', ') : (data.frekuensi || data.jadwalTerbit || 'N/A');
       
       // Handle Fast Track
       let fastTrackText = 'No Fast Track';
@@ -79,7 +86,7 @@ async function loadJournals() {
                   <strong>${data.instansi}</strong> | <span class="badge bg-success">${data.akreditasi}</span> | ${statusBadge}
                 </p>
                 <p class="mb-1" style="font-size:12px;color:#6c757d">Scope: ${scopeBadges}</p>
-                <p class="mb-1" style="font-size:12px;color:#6c757d">Rp ${data.harga?.toLocaleString('id-ID')} | ${data.waktuReview} | ${data.frekuensi}</p>
+                <p class="mb-1" style="font-size:12px;color:#6c757d">Rp ${data.harga?.toLocaleString('id-ID')} | ${data.waktuReview} | ${jadwalTerbit}</p>
                 <p class="mb-1" style="font-size:12px;color:#6c757d">${fastTrackText}</p>
                 <p class="mb-0" style="font-size:12px"><a href="${data.tautan}" target="_blank">${data.tautan}</a></p>
               </div>
@@ -135,7 +142,6 @@ async function editJournal(id) {
     document.getElementById('instansi').value = journalData.instansi;
     document.getElementById('akreditasi').value = journalData.akreditasi;
     document.getElementById('harga').value = journalData.harga;
-    document.getElementById('frekuensi').value = journalData.frekuensi || '';
     document.getElementById('waktuReview').value = journalData.waktuReview;
     document.getElementById('tautan').value = journalData.tautan;
     document.getElementById('status').value = journalData.status;
@@ -153,6 +159,14 @@ async function editJournal(id) {
     const scopes = Array.isArray(journalData.scope) ? journalData.scope : [journalData.scope];
     scopes.forEach(scope => {
       const checkbox = document.querySelector(`.scope-checkbox[value="${scope}"]`);
+      if (checkbox) checkbox.checked = true;
+    });
+    
+    // Check months
+    const months = Array.isArray(journalData.jadwalTerbit) ? journalData.jadwalTerbit : [];
+    document.querySelectorAll('.month-checkbox').forEach(cb => cb.checked = false);
+    months.forEach(month => {
+      const checkbox = document.querySelector(`.month-checkbox[value="${month}"]`);
       if (checkbox) checkbox.checked = true;
     });
     
@@ -185,6 +199,12 @@ document.getElementById('btnSaveJournal').addEventListener('click', async () => 
     return; 
   }
   
+  const selectedMonths = getSelectedMonths();
+  if (selectedMonths.length === 0) { 
+    showToast('Error', 'Pilih minimal 1 bulan jadwal terbit!', 'error'); 
+    return; 
+  }
+  
   const fastTrackChecked = document.getElementById('fastTrack').checked;
   const fastTrackBiaya = fastTrackChecked ? parseInt(document.getElementById('fastTrackBiaya').value || 0) : null;
   
@@ -194,7 +214,7 @@ document.getElementById('btnSaveJournal').addEventListener('click', async () => 
     scope: selectedScopes,
     akreditasi: document.getElementById('akreditasi').value,
     harga: parseInt(document.getElementById('harga').value),
-    frekuensi: document.getElementById('frekuensi').value,
+    jadwalTerbit: selectedMonths,
     waktuReview: document.getElementById('waktuReview').value,
     fastTrack: fastTrackChecked ? 'Ada' : 'Tidak Ada',
     fastTrackBiaya: fastTrackBiaya,
@@ -226,6 +246,7 @@ document.getElementById('modalJurnal').addEventListener('hidden.bs.modal', () =>
   document.getElementById('journalId').value = '';
   document.getElementById('modalTitle').textContent = 'Tambah Jurnal Baru';
   document.getElementById('fastTrackPriceWrapper').classList.remove('show');
+  document.querySelectorAll('.month-checkbox').forEach(cb => cb.checked = false);
   loadScopesForForm();
 });
 
