@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Artikel - PubGlow Admin</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <style>
+    .article-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      background: white;
+      transition: all 0.3s;
+    }
+    
+    .article-card:hover {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+    
+    .article-card h5 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+    
+    .article-info {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .loading-spinner {
+      text-align: center;
+      padding: 50px;
+    }
+    
+    #konten {
+      min-height: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="row mb-4">
+      <div class="col">
+        <h1>📰 Kelola Artikel</h1>
+        <p class="text-muted">Tambah, edit, dan hapus artikel blog</p>
+      </div>
+      <div class="col-auto">
+        <a href="admin.html" class="btn btn-secondary">← Kembali ke Dashboard</a>
+      </div>
+    </div>
+
+    <!-- Button Add New -->
+    <div class="mb-4">
+      <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalArticle">
+        ➕ Tulis Artikel Baru
+      </button>
+    </div>
+
+    <!-- List Articles -->
+    <div id="articlesList">
+      <div class="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Memuat data artikel...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Add/Edit Article -->
+  <div class="modal fade" id="modalArticle" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">➕ Tulis Artikel Baru</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formArticle">
+            <input type="hidden" id="articleId">
+            
+            <!-- Judul -->
+            <div class="mb-3">
+              <label for="judul" class="form-label">Judul Artikel *</label>
+              <input type="text" class="form-control" id="judul" required
+                placeholder="5 Tips Sukses Publikasi di Jurnal Internasional">
+            </div>
+
+            <!-- Slug (Auto-generated) -->
+            <div class="mb-3">
+              <label for="slug" class="form-label">Slug (URL) *</label>
+              <input type="text" class="form-control" id="slug" required
+                placeholder="tips-publikasi-jurnal-internasional">
+              <small class="form-text text-muted">Auto-generate dari judul (lowercase, hyphen)</small>
+            </div>
+
+            <!-- Kategori (Single Dropdown) -->
+            <div class="mb-3">
+              <label for="kategori" class="form-label">Kategori *</label>
+              <select class="form-select" id="kategori" required>
+                <option value="">-- Pilih Kategori --</option>
+              </select>
+            </div>
+
+            <!-- Penulis -->
+            <div class="mb-3">
+              <label for="penulis" class="form-label">Penulis *</label>
+              <input type="text" class="form-control" id="penulis" required
+                placeholder="Tim PubGlow">
+            </div>
+
+            <!-- Ringkasan -->
+            <div class="mb-3">
+              <label for="ringkasan" class="form-label">Ringkasan (150-200 karakter) *</label>
+              <textarea class="form-control" id="ringkasan" rows="2" required
+                maxlength="200" placeholder="Ringkasan singkat artikel untuk preview"></textarea>
+              <small class="form-text text-muted"><span id="ringkasanCount">0</span>/200 karakter</small>
+            </div>
+
+            <!-- Konten (HTML Editor) -->
+            <div class="mb-3">
+              <label for="konten" class="form-label">Konten Artikel (HTML) *</label>
+              <textarea class="form-control" id="konten" rows="10" required
+                placeholder="<h2>Heading 2</h2>\n<p>Paragraf konten...</p>\n<ul>\n  <li>List item</li>\n</ul>"></textarea>
+              <small class="form-text text-muted">
+                Gunakan HTML tags: &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;
+              </small>
+            </div>
+
+            <!-- Status -->
+            <div class="mb-3">
+              <label for="status" class="form-label">Status *</label>
+              <select class="form-select" id="status" required>
+                <option value="published">Published (Tampil di public)</option>
+                <option value="draft">Draft (Tidak tampil)</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-primary" id="btnSaveArticle">
+            <span id="btnSaveText">💾 Simpan</span>
+            <span id="btnSaveSpinner" class="d-none">
+              <span class="spinner-border spinner-border-sm"></span> Menyimpan...
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toast" class="toast" role="alert">
+      <div class="toast-header">
+        <strong class="me-auto" id="toastTitle">Notifikasi</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body" id="toastBody"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script type="module">
+    import { protectAdminPage } from './js/auth.js';
+    import { db } from './js/firebase.js';
+    import { 
+      collection, 
+      addDoc, 
+      updateDoc, 
+      deleteDoc, 
+      doc, 
+      getDocs,
+      serverTimestamp,
+      query,
+      orderBy
+    } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { loadKategoriArtikel, renderKategoriDropdown } from './js/admin-scope-kategori.js';
+
+    // Protect page
+    await protectAdminPage();
+
+    // Toast helper
+    function showToast(title, message, type = 'success') {
+      const toast = new bootstrap.Toast(document.getElementById('toast'));
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastBody').textContent = message;
+      
+      const toastEl = document.getElementById('toast');
+      toastEl.className = 'toast';
+      if (type === 'success') toastEl.classList.add('bg-success', 'text-white');
+      if (type === 'error') toastEl.classList.add('bg-danger', 'text-white');
+      
+      toast.show();
+    }
+
+    // Auto-generate slug from judul
+    document.getElementById('judul').addEventListener('input', (e) => {
+      const slug = e.target.value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      document.getElementById('slug').value = slug;
+    });
+
+    // Ringkasan character count
+    document.getElementById('ringkasan').addEventListener('input', (e) => {
+      document.getElementById('ringkasanCount').textContent = e.target.value.length;
+    });
+
+    // Load kategori for form
+    async function loadKategoriForForm() {
+      try {
+        const kategori = await loadKategoriArtikel();
+        document.getElementById('kategori').innerHTML = renderKategoriDropdown(kategori);
+      } catch (error) {
+        document.getElementById('kategori').innerHTML = 
+          '<option value="">Error loading kategori</option>';
+      }
+    }
+
+    loadKategoriForForm();
+
+    // Load articles
+    async function loadArticles() {
+      try {
+        const q = query(collection(db, 'articles'), orderBy('tanggalPublish', 'desc'));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+          document.getElementById('articlesList').innerHTML = `
+            <div class="alert alert-info">
+              <h5>Belum ada artikel</h5>
+              <p>Klik tombol "Tulis Artikel Baru" untuk menambahkan artikel pertama Anda!</p>
+            </div>
+          `;
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          html += renderArticleCard(doc.id, data);
+        });
+
+        document.getElementById('articlesList').innerHTML = html;
+        attachEventListeners();
+      } catch (error) {
+        console.error('Error loading articles:', error);
+        document.getElementById('articlesList').innerHTML = `
+          <div class="alert alert-warning">
+            <h5>Collection belum ada</h5>
+            <p>Tambahkan artikel pertama untuk membuat collection "articles"</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderArticleCard(id, data) {
+      const statusBadge = data.status === 'published' ? 
+        '<span class="badge bg-success">Published</span>' : 
+        '<span class="badge bg-secondary">Draft</span>';
+      
+      const kontenPreview = data.konten ? 
+        data.konten.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : 
+        'No content';
+
+      return `
+        <div class="article-card" data-id="${id}">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <h5>${data.judul}</h5>
+              <p class="article-info mb-2">
+                <strong>✍️ ${data.penulis}</strong> | 
+                <span class="badge bg-info">${data.kategori}</span> | 
+                ${statusBadge}
+              </p>
+              <p class="article-info mb-2">
+                <strong>Ringkasan:</strong> ${data.ringkasan || 'No summary'}
+              </p>
+              <p class="article-info mb-1 text-muted">
+                ${kontenPreview}
+              </p>
+              <p class="article-info mb-0">
+                👁️ ${data.views || 0} views | 
+                🔗 <code>${data.slug}</code>
+              </p>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-warning edit-article" data-id="${id}">
+                ✏️ Edit
+              </button>
+              <button class="btn btn-sm btn-danger delete-article" data-id="${id}">
+                🗑️ Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function attachEventListeners() {
+      // Edit
+      document.querySelectorAll('.edit-article').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.id;
+          await editArticle(id);
+        });
+      });
+
+      // Delete
+      document.querySelectorAll('.delete-article').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.id;
+          if (confirm('Yakin hapus artikel ini?')) {
+            await deleteArticle(id);
+          }
+        });
+      });
+    }
+
+    async function editArticle(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'articles')));
+        let articleData = null;
+        docSnap.forEach(doc => {
+          if (doc.id === id) articleData = doc.data();
+        });
+
+        if (!articleData) return;
+
+        // Fill form
+        document.getElementById('articleId').value = id;
+        document.getElementById('modalTitle').textContent = '✏️ Edit Artikel';
+        document.getElementById('judul').value = articleData.judul;
+        document.getElementById('slug').value = articleData.slug;
+        document.getElementById('penulis').value = articleData.penulis;
+        document.getElementById('ringkasan').value = articleData.ringkasan || '';
+        document.getElementById('ringkasanCount').textContent = (articleData.ringkasan || '').length;
+        document.getElementById('konten').value = articleData.konten;
+        document.getElementById('status').value = articleData.status;
+
+        // Load kategori and select
+        await loadKategoriForForm();
+        document.getElementById('kategori').value = articleData.kategori;
+
+        // Open modal
+        new bootstrap.Modal(document.getElementById('modalArticle')).show();
+      } catch (error) {
+        showToast('Error', error.message, 'error');
+      }
+    }
+
+    async function deleteArticle(id) {
+      try {
+        await deleteDoc(doc(db, 'articles', id));
+        showToast('Berhasil', 'Artikel berhasil dihapus!');
+        loadArticles();
+      } catch (error) {
+        showToast('Error', error.message, 'error');
+      }
+    }
+
+    // Save article
+    document.getElementById('btnSaveArticle').addEventListener('click', async () => {
+      const form = document.getElementById('formArticle');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const data = {
+        judul: document.getElementById('judul').value.trim(),
+        slug: document.getElementById('slug').value.trim(),
+        kategori: document.getElementById('kategori').value,
+        penulis: document.getElementById('penulis').value.trim(),
+        ringkasan: document.getElementById('ringkasan').value.trim(),
+        konten: document.getElementById('konten').value.trim(),
+        status: document.getElementById('status').value,
+        tanggalPublish: serverTimestamp(),
+        views: 0
+      };
+
+      // Show loading
+      document.getElementById('btnSaveText').classList.add('d-none');
+      document.getElementById('btnSaveSpinner').classList.remove('d-none');
+      document.getElementById('btnSaveArticle').disabled = true;
+
+      try {
+        const articleId = document.getElementById('articleId').value;
+        
+        if (articleId) {
+          // Update (keep existing views)
+          const docSnap = await getDocs(query(collection(db, 'articles')));
+          let existingViews = 0;
+          docSnap.forEach(doc => {
+            if (doc.id === articleId) existingViews = doc.data().views || 0;
+          });
+          data.views = existingViews;
+          
+          await updateDoc(doc(db, 'articles', articleId), data);
+          showToast('Berhasil', 'Artikel berhasil diupdate!');
+        } else {
+          // Create
+          await addDoc(collection(db, 'articles'), data);
+          showToast('Berhasil', 'Artikel berhasil dipublikasi!');
+        }
+
+        // Close modal and reload
+        bootstrap.Modal.getInstance(document.getElementById('modalArticle')).hide();
+        form.reset();
+        document.getElementById('articleId').value = '';
+        loadArticles();
+      } catch (error) {
+        showToast('Error', error.message, 'error');
+      } finally {
+        document.getElementById('btnSaveText').classList.remove('d-none');
+        document.getElementById('btnSaveSpinner').classList.add('d-none');
+        document.getElementById('btnSaveArticle').disabled = false;
+      }
+    });
+
+    // Reset form on modal close
+    document.getElementById('modalArticle').addEventListener('hidden.bs.modal', () => {
+      document.getElementById('formArticle').reset();
+      document.getElementById('articleId').value = '';
+      document.getElementById('modalTitle').textContent = '➕ Tulis Artikel Baru';
+      document.getElementById('ringkasanCount').textContent = '0';
+      loadKategoriForForm();
+    });
+
+    // Initial load
+    loadArticles();
+  </script>
+</body>
+</html>

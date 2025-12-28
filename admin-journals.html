@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Jurnal - PubGlow Admin</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <style>
+    .scope-checkbox-group {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      background: #f9f9f9;
+    }
+    
+    .form-check {
+      padding: 8px 0;
+    }
+    
+    .badge {
+      margin: 2px;
+    }
+    
+    .journal-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      background: white;
+      transition: all 0.3s;
+    }
+    
+    .journal-card:hover {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+    
+    .journal-card h5 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+    
+    .journal-info {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .loading-spinner {
+      text-align: center;
+      padding: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="row mb-4">
+      <div class="col">
+        <h1>📚 Kelola Jurnal</h1>
+        <p class="text-muted">Tambah, edit, dan hapus data jurnal</p>
+      </div>
+      <div class="col-auto">
+        <a href="admin.html" class="btn btn-secondary">← Kembali ke Dashboard</a>
+      </div>
+    </div>
+
+    <!-- Button Add New -->
+    <div class="mb-4">
+      <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalJournal">
+        ➕ Tambah Jurnal Baru
+      </button>
+    </div>
+
+    <!-- List Journals -->
+    <div id="journalsList">
+      <div class="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Memuat data jurnal...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Add/Edit Journal -->
+  <div class="modal fade" id="modalJournal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">➕ Tambah Jurnal Baru</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formJournal">
+            <input type="hidden" id="journalId">
+            
+            <!-- Nama Jurnal -->
+            <div class="mb-3">
+              <label for="nama" class="form-label">Nama Jurnal *</label>
+              <input type="text" class="form-control" id="nama" required
+                placeholder="Jurnal Teknik Informatika dan Sistem Informasi">
+            </div>
+
+            <!-- Instansi -->
+            <div class="mb-3">
+              <label for="instansi" class="form-label">Instansi/Universitas *</label>
+              <input type="text" class="form-control" id="instansi" required
+                placeholder="Universitas Indonesia">
+            </div>
+
+            <!-- Scope (Multiple Checkbox) -->
+            <div class="mb-3">
+              <label class="form-label">Scope (Pilih 1 atau lebih) *</label>
+              <div id="scopeCheckboxContainer" class="scope-checkbox-group">
+                <div class="text-center text-muted">
+                  <span class="spinner-border spinner-border-sm"></span> Loading scopes...
+                </div>
+              </div>
+            </div>
+
+            <!-- Akreditasi -->
+            <div class="mb-3">
+              <label for="akreditasi" class="form-label">Akreditasi *</label>
+              <select class="form-select" id="akreditasi" required>
+                <option value="">-- Pilih Akreditasi --</option>
+                <option value="SINTA 1">SINTA 1</option>
+                <option value="SINTA 2">SINTA 2</option>
+                <option value="SINTA 3">SINTA 3</option>
+                <option value="SINTA 4">SINTA 4</option>
+                <option value="SINTA 5">SINTA 5</option>
+                <option value="SINTA 6">SINTA 6</option>
+              </select>
+            </div>
+
+            <!-- Harga -->
+            <div class="mb-3">
+              <label for="harga" class="form-label">Harga Publikasi (Rp) *</label>
+              <input type="number" class="form-control" id="harga" required
+                placeholder="500000" min="0" step="1000">
+            </div>
+
+            <!-- Frekuensi Terbit -->
+            <div class="mb-3">
+              <label for="frekuensi" class="form-label">Frekuensi Terbit *</label>
+              <input type="text" class="form-control" id="frekuensi" required
+                placeholder="Januari, April, Juli, Oktober">
+              <small class="form-text text-muted">Contoh: "Januari, April, Juli, Oktober" atau "Setiap bulan"</small>
+            </div>
+
+            <!-- Waktu Review -->
+            <div class="mb-3">
+              <label for="waktuReview" class="form-label">Waktu Review (bulan) *</label>
+              <input type="number" class="form-control" id="waktuReview" required
+                placeholder="3" min="0.5" max="24" step="0.5">
+              <small class="form-text text-muted">Estimasi waktu review dalam bulan</small>
+            </div>
+
+            <!-- Fast Track -->
+            <div class="mb-3">
+              <label class="form-label">Fast Track</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="fastTrackTersedia">
+                <label class="form-check-label" for="fastTrackTersedia">
+                  Tersedia Fast Track
+                </label>
+              </div>
+            </div>
+
+            <!-- Fast Track Biaya (conditional) -->
+            <div class="mb-3" id="fastTrackBiayaContainer" style="display: none;">
+              <label for="fastTrackBiaya" class="form-label">Biaya Fast Track (Rp)</label>
+              <input type="number" class="form-control" id="fastTrackBiaya"
+                placeholder="1000000" min="0" step="1000">
+            </div>
+
+            <!-- Tautan -->
+            <div class="mb-3">
+              <label for="tautan" class="form-label">Tautan Website *</label>
+              <input type="url" class="form-control" id="tautan" required
+                placeholder="https://journal.example.com">
+            </div>
+
+            <!-- Status -->
+            <div class="mb-3">
+              <label for="status" class="form-label">Status *</label>
+              <select class="form-select" id="status" required>
+                <option value="aktif">Aktif (Tampil di public)</option>
+                <option value="hidden">Hidden (Tidak tampil)</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-primary" id="btnSaveJournal">
+            <span id="btnSaveText">💾 Simpan</span>
+            <span id="btnSaveSpinner" class="d-none">
+              <span class="spinner-border spinner-border-sm"></span> Menyimpan...
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toast" class="toast" role="alert">
+      <div class="toast-header">
+        <strong class="me-auto" id="toastTitle">Notifikasi</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body" id="toastBody"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script type="module">
+    import { protectAdminPage } from './js/auth.js';
+    import { db } from './js/firebase.js';
+    import { 
+      collection, 
+      addDoc, 
+      updateDoc, 
+      deleteDoc, 
+      doc, 
+      getDocs,
+      serverTimestamp,
+      query,
+      orderBy
+    } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { loadScopes, renderScopeCheckboxes, getSelectedScopes } from './js/admin-scope-kategori.js';
+
+    // Protect page
+    await protectAdminPage();
+
+    // Toast helper
+    function showToast(title, message, type = 'success') {
+      const toast = new bootstrap.Toast(document.getElementById('toast'));
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastBody').textContent = message;
+      
+      const toastEl = document.getElementById('toast');
+      toastEl.className = 'toast';
+      if (type === 'success') toastEl.classList.add('bg-success', 'text-white');
+      if (type === 'error') toastEl.classList.add('bg-danger', 'text-white');
+      
+      toast.show();
+    }
+
+    // Fast Track toggle
+    document.getElementById('fastTrackTersedia').addEventListener('change', (e) => {
+      const container = document.getElementById('fastTrackBiayaContainer');
+      container.style.display = e.target.checked ? 'block' : 'none';
+    });
+
+    // Load scopes for form
+    let scopesData = [];
+    async function loadScopesForForm() {
+      try {
+        scopesData = await loadScopes();
+        document.getElementById('scopeCheckboxContainer').innerHTML = renderScopeCheckboxes(scopesData);
+      } catch (error) {
+        document.getElementById('scopeCheckboxContainer').innerHTML = 
+          '<p class="text-danger">Error loading scopes. <a href="admin-scope-kategori.html">Add scopes</a></p>';
+      }
+    }
+
+    loadScopesForForm();
+
+    // Load journals
+    async function loadJournals() {
+      try {
+        const q = query(collection(db, 'journals'), orderBy('timestamp', 'desc'));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+          document.getElementById('journalsList').innerHTML = `
+            <div class="alert alert-info">
+              <h5>Belum ada jurnal</h5>
+              <p>Klik tombol "Tambah Jurnal Baru" untuk menambahkan jurnal pertama Anda!</p>
+            </div>
+          `;
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          html += renderJournalCard(doc.id, data);
+        });
+
+        document.getElementById('journalsList').innerHTML = html;
+        attachEventListeners();
+      } catch (error) {
+        console.error('Error loading journals:', error);
+        document.getElementById('journalsList').innerHTML = `
+          <div class="alert alert-warning">
+            <h5>Collection belum ada</h5>
+            <p>Tambahkan jurnal pertama untuk membuat collection "journals"</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderJournalCard(id, data) {
+      const scopes = Array.isArray(data.scope) ? data.scope : [data.scope];
+      const scopeBadges = scopes.map(s => `<span class="badge bg-info">${s}</span>`).join(' ');
+      const fastTrackText = data.fastTrack?.tersedia ? 
+        `✅ Fast Track (Rp ${data.fastTrack.biaya?.toLocaleString('id-ID')})` : 
+        '❌ Tidak ada fast track';
+      const statusBadge = data.status === 'aktif' ? 
+        '<span class="badge bg-success">Aktif</span>' : 
+        '<span class="badge bg-secondary">Hidden</span>';
+
+      return `
+        <div class="journal-card" data-id="${id}">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <h5>${data.nama}</h5>
+              <p class="journal-info mb-2">
+                <strong>🏛️ ${data.instansi}</strong> | 
+                <strong>${data.akreditasi}</strong> | 
+                ${statusBadge}
+              </p>
+              <p class="journal-info mb-2">
+                ${scopeBadges}
+              </p>
+              <p class="journal-info mb-1">
+                💰 Rp ${data.harga?.toLocaleString('id-ID')} | 
+                ⏱️ ${data.waktuReview} bulan | 
+                📅 ${data.frekuensi}
+              </p>
+              <p class="journal-info mb-1">
+                ${fastTrackText}
+              </p>
+              <p class="journal-info mb-0">
+                🔗 <a href="${data.tautan}" target="_blank">${data.tautan}</a>
+              </p>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-warning edit-journal" data-id="${id}">
+                ✏️ Edit
+              </button>
+              <button class="btn btn-sm btn-danger delete-journal" data-id="${id}">
+                🗑️ Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function attachEventListeners() {
+      // Edit
+      document.querySelectorAll('.edit-journal').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.id;
+          await editJournal(id);
+        });
+      });
+
+      // Delete
+      document.querySelectorAll('.delete-journal').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.id;
+          if (confirm('Yakin hapus jurnal ini?')) {
+            await deleteJournal(id);
+          }
+        });
+      });
+    }
+
+    async function editJournal(id) {
+      try {
+        const docSnap = await getDocs(query(collection(db, 'journals')));
+        let journalData = null;
+        docSnap.forEach(doc => {
+          if (doc.id === id) journalData = doc.data();
+        });
+
+        if (!journalData) return;
+
+        // Fill form
+        document.getElementById('journalId').value = id;
+        document.getElementById('modalTitle').textContent = '✏️ Edit Jurnal';
+        document.getElementById('nama').value = journalData.nama;
+        document.getElementById('instansi').value = journalData.instansi;
+        document.getElementById('akreditasi').value = journalData.akreditasi;
+        document.getElementById('harga').value = journalData.harga;
+        document.getElementById('frekuensi').value = journalData.frekuensi;
+        document.getElementById('waktuReview').value = journalData.waktuReview;
+        document.getElementById('fastTrackTersedia').checked = journalData.fastTrack?.tersedia || false;
+        document.getElementById('fastTrackBiaya').value = journalData.fastTrack?.biaya || '';
+        document.getElementById('fastTrackBiayaContainer').style.display = 
+          journalData.fastTrack?.tersedia ? 'block' : 'none';
+        document.getElementById('tautan').value = journalData.tautan;
+        document.getElementById('status').value = journalData.status;
+
+        // Load scopes and check selected
+        await loadScopesForForm();
+        const scopes = Array.isArray(journalData.scope) ? journalData.scope : [journalData.scope];
+        scopes.forEach(scope => {
+          const checkbox = Array.from(document.querySelectorAll('.scope-checkbox'))
+            .find(cb => cb.value === scope);
+          if (checkbox) checkbox.checked = true;
+        });
+
+        // Open modal
+        new bootstrap.Modal(document.getElementById('modalJournal')).show();
+      } catch (error) {
+        showToast('Error', error.message, 'error');
+      }
+    }
+
+    async function deleteJournal(id) {
+      try {
+        await deleteDoc(doc(db, 'journals', id));
+        showToast('Berhasil', 'Jurnal berhasil dihapus!');
+        loadJournals();
+      } catch (error) {
+        showToast('Error', error.message, 'error');
+      }
+    }
+
+    // Save journal
+    document.getElementById('btnSaveJournal').addEventListener('click', async () => {
+      const form = document.getElementById('formJournal');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const selectedScopes = getSelectedScopes();
+      if (selectedScopes.length === 0) {
+        showToast('Error', 'Pilih minimal 1 scope!', 'error');
+        return;
+      }
+
+      const data = {
+        nama: document.getElementById('nama').value.trim(),
+        instansi: document.getElementById('instansi').value.trim(),
+        scope: selectedScopes,
+        akreditasi: document.getElementById('akreditasi').value,
+        harga: parseInt(document.getElementById('harga').value),
+        frekuensi: document.getElementById('frekuensi').value.trim(),
+        waktuReview: parseFloat(document.getElementById('waktuReview').value),
+        fastTrack: {
+          tersedia: document.getElementById('fastTrackTersedia').checked,
+          biaya: document.getElementById('fastTrackTersedia').checked ? 
+            parseInt(document.getElementById('fastTrackBiaya').value || 0) : 0
+        },
+        tautan: document.getElementById('tautan').value.trim(),
+        status: document.getElementById('status').value,
+        timestamp: serverTimestamp()
+      };
+
+      // Show loading
+      document.getElementById('btnSaveText').classList.add('d-none');
+      document.getElementById('btnSaveSpinner').classList.remove('d-none');
+      document.getElementById('btnSaveJournal').disabled = true;
+
+      try {
+        const journalId = document.getElementById('journalId').value;
+        
+        if (journalId) {
+          // Update
+          await updateDoc(doc(db, 'journals', journalId), data);
+          showToast('Berhasil', 'Jurnal berhasil diupdate!');
+        } else {
+          // Create
+          await addDoc(collection(db, 'journals'), data);
+          showToast('Berhasil', 'Jurnal berhasil ditambahkan!');
+        }
+
+        // Close modal and reload
+        bootstrap.Modal.getInstance(document.getElementById('modalJournal')).hide();
+        form.reset();
+        document.getElementById('journalId').value = '';
+        loadJournals();
+      } catch (error) {
+        showToast('Error', error.message, 'error');
+      } finally {
+        document.getElementById('btnSaveText').classList.remove('d-none');
+        document.getElementById('btnSaveSpinner').classList.add('d-none');
+        document.getElementById('btnSaveJournal').disabled = false;
+      }
+    });
+
+    // Reset form on modal close
+    document.getElementById('modalJournal').addEventListener('hidden.bs.modal', () => {
+      document.getElementById('formJournal').reset();
+      document.getElementById('journalId').value = '';
+      document.getElementById('modalTitle').textContent = '➕ Tambah Jurnal Baru';
+      document.getElementById('fastTrackBiayaContainer').style.display = 'none';
+      loadScopesForForm();
+    });
+
+    // Initial load
+    loadJournals();
+  </script>
+</body>
+</html>
