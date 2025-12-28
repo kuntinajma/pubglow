@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kontribusi Jurnal - PubGlow</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 60px 0;
+      margin-bottom: 40px;
+    }
+    
+    .header h1 {
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    
+    .form-container {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      max-width: 800px;
+      margin: 0 auto 40px;
+    }
+    
+    .form-label {
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .scope-checkbox-group {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      background: #f9f9fa;
+    }
+    
+    .btn-submit {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border: none;
+      color: white;
+      padding: 12px 40px;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: transform 0.3s;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      color: white;
+    }
+    
+    .alert-success {
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="container text-center">
+      <h1>📚 Kontribusi Data Jurnal</h1>
+      <p class="mb-0">Bantu kami melengkapi database jurnal dengan mengirimkan informasi jurnal yang Anda ketahui</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="form-container">
+      <div class="alert alert-info mb-4">
+        <strong>📝 Informasi:</strong> Data jurnal yang Anda kirimkan akan direview oleh admin sebelum dipublikasikan.
+      </div>
+
+      <!-- Success Message -->
+      <div id="successMessage" class="alert alert-success d-none" role="alert">
+        <h5>✅ Berhasil Terkirim!</h5>
+        <p class="mb-0">Terima kasih atas kontribusi Anda. Data jurnal akan segera direview oleh tim kami.</p>
+      </div>
+
+      <!-- Form -->
+      <form id="formSubmit">
+        <h4 class="mb-4">Informasi Kontributor</h4>
+        
+        <!-- Nama Kontributor -->
+        <div class="mb-3">
+          <label for="contributorName" class="form-label">Nama Lengkap *</label>
+          <input type="text" class="form-control" id="contributorName" required
+            placeholder="Nama lengkap Anda">
+        </div>
+
+        <!-- Email Kontributor -->
+        <div class="mb-3">
+          <label for="contributorEmail" class="form-label">Email *</label>
+          <input type="email" class="form-control" id="contributorEmail" required
+            placeholder="email@example.com">
+          <small class="form-text text-muted">Email untuk notifikasi status review</small>
+        </div>
+
+        <hr class="my-4">
+        <h4 class="mb-4">Informasi Jurnal</h4>
+
+        <!-- Nama Jurnal -->
+        <div class="mb-3">
+          <label for="nama" class="form-label">Nama Jurnal *</label>
+          <input type="text" class="form-control" id="nama" required
+            placeholder="Jurnal Teknik Informatika dan Sistem Informasi">
+        </div>
+
+        <!-- Instansi -->
+        <div class="mb-3">
+          <label for="instansi" class="form-label">Instansi/Universitas *</label>
+          <input type="text" class="form-control" id="instansi" required
+            placeholder="Universitas Indonesia">
+        </div>
+
+        <!-- Scope (Multiple Checkbox) -->
+        <div class="mb-3">
+          <label class="form-label">Scope (Pilih 1 atau lebih) *</label>
+          <div id="scopeCheckboxContainer" class="scope-checkbox-group">
+            <div class="text-center text-muted">
+              <span class="spinner-border spinner-border-sm"></span> Loading scopes...
+            </div>
+          </div>
+        </div>
+
+        <!-- Akreditasi -->
+        <div class="mb-3">
+          <label for="akreditasi" class="form-label">Akreditasi *</label>
+          <select class="form-select" id="akreditasi" required>
+            <option value="">-- Pilih Akreditasi --</option>
+            <option value="SINTA 1">SINTA 1</option>
+            <option value="SINTA 2">SINTA 2</option>
+            <option value="SINTA 3">SINTA 3</option>
+            <option value="SINTA 4">SINTA 4</option>
+            <option value="SINTA 5">SINTA 5</option>
+            <option value="SINTA 6">SINTA 6</option>
+          </select>
+        </div>
+
+        <!-- Harga -->
+        <div class="mb-3">
+          <label for="harga" class="form-label">Harga Publikasi (Rp) *</label>
+          <input type="number" class="form-control" id="harga" required
+            placeholder="500000" min="0" step="1000">
+        </div>
+
+        <!-- Frekuensi Terbit -->
+        <div class="mb-3">
+          <label for="frekuensi" class="form-label">Frekuensi Terbit *</label>
+          <input type="text" class="form-control" id="frekuensi" required
+            placeholder="Januari, April, Juli, Oktober">
+          <small class="form-text text-muted">Contoh: "Januari, April, Juli, Oktober" atau "Setiap bulan"</small>
+        </div>
+
+        <!-- Waktu Review -->
+        <div class="mb-3">
+          <label for="waktuReview" class="form-label">Waktu Review (bulan) *</label>
+          <input type="number" class="form-control" id="waktuReview" required
+            placeholder="3" min="0.5" max="24" step="0.5">
+          <small class="form-text text-muted">Estimasi waktu review dalam bulan</small>
+        </div>
+
+        <!-- Fast Track -->
+        <div class="mb-3">
+          <label class="form-label">Fast Track</label>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="fastTrackTersedia">
+            <label class="form-check-label" for="fastTrackTersedia">
+              Tersedia Fast Track
+            </label>
+          </div>
+        </div>
+
+        <!-- Fast Track Biaya (conditional) -->
+        <div class="mb-3" id="fastTrackBiayaContainer" style="display: none;">
+          <label for="fastTrackBiaya" class="form-label">Biaya Fast Track (Rp)</label>
+          <input type="number" class="form-control" id="fastTrackBiaya"
+            placeholder="1000000" min="0" step="1000">
+        </div>
+
+        <!-- Tautan -->
+        <div class="mb-3">
+          <label for="tautan" class="form-label">Tautan Website *</label>
+          <input type="url" class="form-control" id="tautan" required
+            placeholder="https://journal.example.com">
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-submit" id="btnSubmit">
+            <span id="btnText">📤 Kirim Kontribusi</span>
+            <span id="btnSpinner" class="d-none">
+              <span class="spinner-border spinner-border-sm"></span> Mengirim...
+            </span>
+          </button>
+          <a href="index.html" class="btn btn-secondary">Batal</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { db } from './js/firebase.js';
+    import { collection, addDoc, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+    // Fast Track toggle
+    document.getElementById('fastTrackTersedia').addEventListener('change', (e) => {
+      const container = document.getElementById('fastTrackBiayaContainer');
+      container.style.display = e.target.checked ? 'block' : 'none';
+    });
+
+    // Load scopes
+    async function loadScopes() {
+      try {
+        const snapshot = await getDocs(collection(db, 'scopes'));
+        
+        if (snapshot.empty) {
+          document.getElementById('scopeCheckboxContainer').innerHTML = 
+            '<p class="text-danger mb-0">Scope belum tersedia</p>';
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+          const scope = doc.data().nama;
+          html += `
+            <div class="form-check">
+              <input class="form-check-input scope-checkbox" type="checkbox" value="${scope}" id="scope_${doc.id}">
+              <label class="form-check-label" for="scope_${doc.id}">
+                ${scope}
+              </label>
+            </div>
+          `;
+        });
+        document.getElementById('scopeCheckboxContainer').innerHTML = html;
+      } catch (error) {
+        console.error('Error loading scopes:', error);
+        document.getElementById('scopeCheckboxContainer').innerHTML = 
+          '<p class="text-danger mb-0">Error loading scopes</p>';
+      }
+    }
+
+    function getSelectedScopes() {
+      const checkboxes = document.querySelectorAll('.scope-checkbox:checked');
+      return Array.from(checkboxes).map(cb => cb.value);
+    }
+
+    loadScopes();
+
+    // Handle submit
+    document.getElementById('formSubmit').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const selectedScopes = getSelectedScopes();
+      if (selectedScopes.length === 0) {
+        alert('Pilih minimal 1 scope!');
+        return;
+      }
+
+      const data = {
+        // Contributor info
+        contributor: {
+          name: document.getElementById('contributorName').value.trim(),
+          email: document.getElementById('contributorEmail').value.trim()
+        },
+        // Journal info
+        nama: document.getElementById('nama').value.trim(),
+        instansi: document.getElementById('instansi').value.trim(),
+        scope: selectedScopes,
+        akreditasi: document.getElementById('akreditasi').value,
+        harga: parseInt(document.getElementById('harga').value),
+        frekuensi: document.getElementById('frekuensi').value.trim(),
+        waktuReview: parseFloat(document.getElementById('waktuReview').value),
+        fastTrack: {
+          tersedia: document.getElementById('fastTrackTersedia').checked,
+          biaya: document.getElementById('fastTrackTersedia').checked ? 
+            parseInt(document.getElementById('fastTrackBiaya').value || 0) : 0
+        },
+        tautan: document.getElementById('tautan').value.trim(),
+        // Submission metadata
+        status: 'pending',
+        submittedAt: serverTimestamp()
+      };
+
+      // Show loading
+      document.getElementById('btnText').classList.add('d-none');
+      document.getElementById('btnSpinner').classList.remove('d-none');
+      document.getElementById('btnSubmit').disabled = true;
+
+      try {
+        await addDoc(collection(db, 'journal_submissions'), data);
+        
+        // Show success
+        document.getElementById('formSubmit').classList.add('d-none');
+        document.getElementById('successMessage').classList.remove('d-none');
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Redirect after 3 seconds
+        setTimeout(() => {
+          window.location.href = 'journals.html';
+        }, 3000);
+      } catch (error) {
+        console.error('Error submitting:', error);
+        alert('Gagal mengirim data. Silakan coba lagi.');
+        
+        // Reset button
+        document.getElementById('btnText').classList.remove('d-none');
+        document.getElementById('btnSpinner').classList.add('d-none');
+        document.getElementById('btnSubmit').disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
