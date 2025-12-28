@@ -7,7 +7,7 @@
   <link href="css/main-theme.css" rel="stylesheet">
   <style>
     .hero {
-      padding: 80px 0;
+      padding: 60px 0 80px;
       text-align: center;
       border-bottom: 1px solid var(--color-border);
     }
@@ -17,6 +17,7 @@
       font-weight: 700;
       margin-bottom: 16px;
       letter-spacing: -1px;
+      animation: fadeIn 0.8s ease;
     }
     
     .hero p {
@@ -26,6 +27,7 @@
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
+      animation: fadeIn 1s ease;
     }
     
     .hero-buttons {
@@ -33,60 +35,29 @@
       gap: 16px;
       justify-content: center;
       flex-wrap: wrap;
+      margin-bottom: 60px;
+      animation: fadeIn 1.2s ease;
     }
     
-    .features {
-      padding: 80px 0;
-    }
-    
-    .features h2 {
-      font-size: 32px;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 48px;
-      letter-spacing: -0.5px;
-    }
-    
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 32px;
-    }
-    
-    .feature-item {
-      text-align: center;
-      padding: 32px 24px;
-    }
-    
-    .feature-item h3 {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-    
-    .feature-item p {
-      color: var(--color-text-light);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-    
-    .stats {
-      padding: 64px 0;
-      background: var(--color-bg-light);
-      border-top: 1px solid var(--color-border);
-      border-bottom: 1px solid var(--color-border);
-    }
-    
-    .stats-grid {
+    .hero-stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 48px;
-      text-align: center;
+      gap: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+      padding-top: 40px;
     }
     
-    .stat-item {
-      padding: 24px;
+    .hero-stat-item {
+      padding: 20px;
+      animation: scaleIn 0.6s ease;
+      animation-fill-mode: both;
     }
+    
+    .hero-stat-item:nth-child(1) { animation-delay: 0.2s; }
+    .hero-stat-item:nth-child(2) { animation-delay: 0.3s; }
+    .hero-stat-item:nth-child(3) { animation-delay: 0.4s; }
+    .hero-stat-item:nth-child(4) { animation-delay: 0.5s; }
     
     .stat-number {
       font-size: 40px;
@@ -102,6 +73,47 @@
       font-weight: 500;
     }
     
+    .features {
+      padding: 80px 0;
+    }
+    
+    .features h2 {
+      font-size: 32px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 48px;
+      letter-spacing: -0.5px;
+      animation: fadeIn 0.8s ease;
+    }
+    
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+    }
+    
+    .feature-item {
+      text-align: center;
+      padding: 32px 24px;
+      transition: all 0.3s ease;
+    }
+    
+    .feature-item:hover {
+      transform: translateY(-8px);
+    }
+    
+    .feature-item h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .feature-item p {
+      color: var(--color-text-light);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    
     .contribute {
       padding: 80px 0;
     }
@@ -112,6 +124,7 @@
       text-align: center;
       margin-bottom: 16px;
       letter-spacing: -0.5px;
+      animation: fadeIn 0.8s ease;
     }
     
     .contribute-intro {
@@ -122,6 +135,7 @@
       max-width: 700px;
       margin-left: auto;
       margin-right: auto;
+      animation: fadeIn 1s ease;
     }
     
     .contribute-grid {
@@ -137,13 +151,18 @@
       border-radius: 8px;
       padding: 40px 32px;
       text-align: center;
-      transition: var(--transition);
+      transition: all 0.4s ease;
+      animation: scaleIn 0.6s ease;
+      animation-fill-mode: both;
     }
     
+    .contribute-card:nth-child(1) { animation-delay: 0.2s; }
+    .contribute-card:nth-child(2) { animation-delay: 0.3s; }
+    
     .contribute-card:hover {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
       border-color: var(--color-primary);
-      transform: translateY(-4px);
+      transform: translateY(-8px);
     }
     
     .contribute-card h3 {
@@ -164,6 +183,7 @@
       background: var(--color-bg-light);
       border-top: 1px solid var(--color-border);
       text-align: center;
+      animation: fadeIn 0.8s ease;
     }
     
     .cta h2 {
@@ -195,6 +215,11 @@
         font-size: 16px;
       }
       
+      .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+      }
+      
       .features h2,
       .contribute h2,
       .cta h2 {
@@ -222,7 +247,7 @@
     </div>
   </nav>
 
-  <!-- Hero Section -->
+  <!-- Hero Section with Stats -->
   <section class="hero">
     <div class="container">
       <h1>Platform Publikasi Jurnal & Artikel Ilmiah</h1>
@@ -230,6 +255,26 @@
       <div class="hero-buttons">
         <a href="journals.html" class="btn btn-primary">Jelajahi Jurnal</a>
         <a href="articles.html" class="btn btn-outline">Baca Artikel</a>
+      </div>
+      
+      <!-- Stats in Hero -->
+      <div class="hero-stats">
+        <div class="hero-stat-item">
+          <span class="stat-number" id="statJournals">-</span>
+          <span class="stat-label">Jurnal Terakreditasi</span>
+        </div>
+        <div class="hero-stat-item">
+          <span class="stat-number" id="statArticles">-</span>
+          <span class="stat-label">Artikel Edukatif</span>
+        </div>
+        <div class="hero-stat-item">
+          <span class="stat-number" id="statScopes">-</span>
+          <span class="stat-label">Bidang Ilmu</span>
+        </div>
+        <div class="hero-stat-item">
+          <span class="stat-number">24/7</span>
+          <span class="stat-label">Akses Gratis</span>
+        </div>
       </div>
     </div>
   </section>
@@ -262,30 +307,6 @@
         <div class="feature-item">
           <h3>Gratis & Terbuka</h3>
           <p>Semua fitur dapat diakses gratis untuk mendukung ekosistem penelitian Indonesia</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Stats Section -->
-  <section class="stats">
-    <div class="container">
-      <div class="stats-grid">
-        <div class="stat-item">
-          <span class="stat-number" id="statJournals">-</span>
-          <span class="stat-label">Jurnal Terakreditasi</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number" id="statArticles">-</span>
-          <span class="stat-label">Artikel Edukatif</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number" id="statScopes">-</span>
-          <span class="stat-label">Bidang Ilmu</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">24/7</span>
-          <span class="stat-label">Akses Gratis</span>
         </div>
       </div>
     </div>
