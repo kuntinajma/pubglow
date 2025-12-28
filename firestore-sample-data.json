@@ -1,0 +1,135 @@
+{
+  "journals": [
+    {
+      "nama": "Jurnal Teknik Informatika dan Sistem Informasi",
+      "instansi": "Universitas Indonesia",
+      "scope": ["Teknik Informatika", "Sistem Informasi", "AI"],
+      "akreditasi": "SINTA 2",
+      "harga": 750000,
+      "frekuensi": "Januari, April, Juli, Oktober",
+      "waktuReview": 3,
+      "fastTrack": {
+        "tersedia": true,
+        "biaya": 1500000
+      },
+      "tautan": "https://jtisi.ui.ac.id",
+      "status": "aktif"
+    },
+    {
+      "nama": "Jurnal Kesehatan Masyarakat Indonesia",
+      "instansi": "Universitas Gadjah Mada",
+      "scope": ["Kesehatan", "Epidemiologi", "Kesehatan Masyarakat"],
+      "akreditasi": "SINTA 1",
+      "harga": 1000000,
+      "frekuensi": "Maret, Juni, September, Desember",
+      "waktuReview": 4,
+      "fastTrack": {
+        "tersedia": true,
+        "biaya": 2000000
+      },
+      "tautan": "https://jkmi.ugm.ac.id",
+      "status": "aktif"
+    },
+    {
+      "nama": "Jurnal Ekonomi dan Bisnis",
+      "instansi": "Institut Teknologi Bandung",
+      "scope": ["Ekonomi", "Manajemen", "Bisnis"],
+      "akreditasi": "SINTA 2",
+      "harga": 600000,
+      "frekuensi": "Februari, Mei, Agustus, November",
+      "waktuReview": 3,
+      "fastTrack": {
+        "tersedia": false,
+        "biaya": 0
+      },
+      "tautan": "https://jeb.itb.ac.id",
+      "status": "aktif"
+    },
+    {
+      "nama": "Jurnal Pendidikan dan Pembelajaran",
+      "instansi": "Universitas Negeri Malang",
+      "scope": ["Pendidikan", "Pembelajaran", "Kurikulum"],
+      "akreditasi": "SINTA 3",
+      "harga": 500000,
+      "frekuensi": "Januari, Mei, September",
+      "waktuReview": 2,
+      "fastTrack": {
+        "tersedia": true,
+        "biaya": 900000
+      },
+      "tautan": "https://jpp.um.ac.id",
+      "status": "aktif"
+    },
+    {
+      "nama": "Jurnal Pengabdian kepada Masyarakat",
+      "instansi": "Universitas Brawijaya",
+      "scope": ["Pengabdian Masyarakat", "Pemberdayaan"],
+      "akreditasi": "SINTA 4",
+      "harga": 400000,
+      "frekuensi": "April, Oktober",
+      "waktuReview": 2,
+      "fastTrack": {
+        "tersedia": false,
+        "biaya": 0
+      },
+      "tautan": "https://jpkm.ub.ac.id",
+      "status": "aktif"
+    }
+  ],
+  "articles": [
+    {
+      "judul": "5 Tips Sukses Publikasi di Jurnal Internasional",
+      "slug": "tips-publikasi-jurnal-internasional",
+      "konten": "<h2>1. Pilih Jurnal yang Tepat</h2><p>Memilih jurnal yang sesuai dengan topik penelitian Anda adalah langkah pertama yang krusial. Pastikan scope jurnal sejalan dengan tema riset Anda.</p><h2>2. Perhatikan Format Penulisan</h2><p>Setiap jurnal memiliki guideline penulisan yang berbeda. Baca dengan teliti author guidelines sebelum submit.</p><h2>3. Pastikan Originalitas Riset</h2><p>Jurnal internasional sangat memperhatikan originalitas penelitian. Pastikan kontribusi riset Anda jelas dan signifikan.</p><h2>4. Peer Review adalah Teman</h2><p>Mintalah rekan sejawat untuk mereview draft artikel Anda sebelum submit. Feedback konstruktif sangat membantu.</p><h2>5. Sabar dalam Proses Review</h2><p>Proses review bisa memakan waktu 3-6 bulan, bahkan lebih. Gunakan waktu ini untuk menyiapkan riset berikutnya.</p>",
+      "ringkasan": "Panduan lengkap untuk meningkatkan peluang artikel Anda diterima di jurnal internasional bereputasi. Lima tips praktis dari pemilihan jurnal hingga menghadapi proses review.",
+      "kategori": "Tips",
+      "penulis": "Tim PubGlow",
+      "views": 0,
+      "status": "published"
+    },
+    {
+      "judul": "Memahami Sistem Akreditasi Jurnal: SINTA 1 hingga SINTA 6",
+      "slug": "sistem-akreditasi-jurnal-sinta",
+      "konten": "<h2>Apa itu SINTA?</h2><p>SINTA (Science and Technology Index) adalah portal yang mengintegrasikan informasi tentang kinerja riset di Indonesia, termasuk akreditasi jurnal ilmiah.</p><h2>Tingkatan Akreditasi SINTA</h2><p>SINTA memiliki 6 tingkatan akreditasi, dari SINTA 1 (tertinggi) hingga SINTA 6 (terendah). Akreditasi ini mempengaruhi nilai angka kredit dosen.</p><h2>SINTA 1 & 2: Jurnal Berkualitas Tinggi</h2><p>Jurnal dengan akreditasi SINTA 1 dan 2 adalah yang terbaik di Indonesia. Biasanya memiliki impact factor tinggi dan proses review ketat.</p><h2>Memilih Jurnal yang Tepat</h2><p>Pilih jurnal sesuai kualitas riset Anda. Jangan terlalu memaksakan ke SINTA 1 jika riset belum matang, lebih baik mulai dari SINTA 3-4.</p>",
+      "ringkasan": "Panduan memahami sistem akreditasi jurnal nasional Indonesia melalui SINTA. Pelajari perbedaan SINTA 1 hingga SINTA 6 dan cara memilih jurnal yang tepat untuk publikasi Anda.",
+      "kategori": "Riset & Akademik",
+      "penulis": "Dr. Ahmad Fauzi",
+      "views": 0,
+      "status": "published"
+    },
+    {
+      "judul": "PubGlow Resmi Diluncurkan: Platform Publikasi Jurnal Terpadu",
+      "slug": "pubglow-diluncurkan-platform-publikasi",
+      "konten": "<p>Jakarta, 28 Desember 2025 - PubGlow resmi diluncurkan sebagai platform yang memudahkan peneliti dalam mencari dan mempublikasikan artikel di jurnal ilmiah terakreditasi.</p><p>Platform ini menyediakan database jurnal lengkap dengan filter berdasarkan bidang ilmu, akreditasi, dan biaya publikasi. Peneliti dapat dengan mudah membandingkan berbagai jurnal dan memilih yang paling sesuai dengan kebutuhan mereka.</p><p>\"Kami memahami bahwa proses publikasi jurnal bisa sangat membingungkan, terutama bagi peneliti pemula,\" ujar Founder PubGlow. \"PubGlow hadir untuk menyederhanakan proses tersebut.\"</p><p>Fitur unggulan PubGlow meliputi pencarian jurnal cerdas, informasi detail setiap jurnal, sistem tracking submission, dan konsultasi publikasi. Platform ini juga menyediakan artikel edukatif tentang tips publikasi dan riset akademik.</p><p>PubGlow dapat diakses gratis di pubglow.vercel.app.</p>",
+      "ringkasan": "PubGlow hadir sebagai solusi terpadu untuk membantu peneliti menemukan jurnal yang tepat dan mempublikasikan karya ilmiah. Platform ini menyediakan database lengkap jurnal terakreditasi dengan fitur pencarian cerdas.",
+      "kategori": "Berita",
+      "penulis": "Redaksi PubGlow",
+      "views": 0,
+      "status": "published"
+    }
+  ],
+  "scopes": [
+    { "nama": "Teknik Informatika" },
+    { "nama": "Sistem Informasi" },
+    { "nama": "AI" },
+    { "nama": "Data Science" },
+    { "nama": "Kesehatan" },
+    { "nama": "Epidemiologi" },
+    { "nama": "Kesehatan Masyarakat" },
+    { "nama": "Ekonomi" },
+    { "nama": "Manajemen" },
+    { "nama": "Bisnis" },
+    { "nama": "Pendidikan" },
+    { "nama": "Pembelajaran" },
+    { "nama": "Kurikulum" },
+    { "nama": "Pengabdian Masyarakat" },
+    { "nama": "Pemberdayaan" }
+  ],
+  "kategori_artikel": [
+    { "nama": "Tips" },
+    { "nama": "Berita" },
+    { "nama": "Tutorial" },
+    { "nama": "Riset & Akademik" },
+    { "nama": "Opini" }
+  ]
+}

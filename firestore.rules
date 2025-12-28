@@ -13,9 +13,9 @@ service cloud.firestore {
              get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin';
     }
     
-    // Journals - Public read, authenticated write
+    // Journals - Public read aktif only, authenticated write
     match /journals/{journalId} {
-      allow read: if true;
+      allow read: if resource.data.status == 'aktif' || isAuthenticated();
       allow create, update, delete: if isAuthenticated();
     }
     
