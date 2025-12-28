@@ -131,6 +131,73 @@
       opacity: 0.9;
     }
     
+    /* Contribute Section */
+    .contribute {
+      padding: 80px 0;
+      background: #f8f9fa;
+    }
+    
+    .contribute h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    
+    .contribute p {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 40px;
+    }
+    
+    .contribute-card {
+      text-align: center;
+      padding: 40px 30px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s;
+      height: 100%;
+    }
+    
+    .contribute-card:hover {
+      transform: translateY(-10px);
+    }
+    
+    .contribute-card .icon {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+    }
+    
+    .contribute-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    
+    .contribute-card p {
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+    
+    .contribute-card .btn {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      border: none;
+      padding: 10px 30px;
+      border-radius: 25px;
+      font-weight: 600;
+      transition: transform 0.3s;
+    }
+    
+    .contribute-card .btn:hover {
+      transform: scale(1.05);
+    }
+    
     /* CTA Section */
     .cta {
       padding: 80px 0;
@@ -278,6 +345,33 @@
           <div class="stat-item">
             <span class="number">24/7</span>
             <span class="label">Akses Gratis</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Contribute Section -->
+  <section class="contribute">
+    <div class="container">
+      <h2>🤝 Berkontribusi</h2>
+      <p>Bantu kami melengkapi database dengan menambahkan informasi jurnal atau menulis artikel</p>
+      
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-5">
+          <div class="contribute-card">
+            <div class="icon">📚</div>
+            <h3>Tambah Data Jurnal</h3>
+            <p>Ketahui jurnal yang belum terdaftar? Bantu kami dengan mengirimkan informasinya!</p>
+            <a href="submit-journal.html" class="btn">Kirim Jurnal →</a>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="contribute-card">
+            <div class="icon">✍️</div>
+            <h3>Tulis Artikel</h3>
+            <p>Punya pengalaman atau tips publikasi? Bagikan dalam bentuk artikel untuk membantu yang lain!</p>
+            <a href="submit-article.html" class="btn">Kirim Artikel →</a>
           </div>
         </div>
       </div>
