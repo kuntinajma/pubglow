@@ -4,135 +4,204 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Artikel - PubGlow</title>
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/main-theme.css" rel="stylesheet">
   <style>
-    :root {
-      --primary: #667eea;
-      --secondary: #764ba2;
-    }
-    
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f7fa;
-    }
-    
-    .header {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      color: white;
-      padding: 60px 0;
-      margin-bottom: 40px;
+    .article-header {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px 24px 32px;
     }
     
     .article-title {
-      font-size: 2.5rem;
+      font-size: 36px;
       font-weight: 700;
+      line-height: 1.3;
       margin-bottom: 20px;
+      letter-spacing: -0.5px;
     }
     
     .article-meta {
       display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 14px;
+      color: var(--color-text-light);
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--color-border);
       align-items: center;
-      gap: 20px;
-      font-size: 1rem;
-      opacity: 0.95;
+    }
+    
+    .article-body {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
     }
     
     .article-content {
-      background: white;
-      padding: 50px;
-      border-radius: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      margin-bottom: 40px;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--color-text);
     }
     
     .article-content h2 {
-      color: var(--primary);
-      margin-top: 30px;
-      margin-bottom: 15px;
-      font-weight: 700;
+      font-size: 24px;
+      font-weight: 600;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
     }
     
     .article-content h3 {
-      color: #555;
-      margin-top: 25px;
-      margin-bottom: 12px;
+      font-size: 20px;
       font-weight: 600;
+      margin-top: 32px;
+      margin-bottom: 12px;
     }
     
     .article-content p {
-      line-height: 1.8;
-      color: #333;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
     
     .article-content ul,
     .article-content ol {
-      line-height: 1.8;
-      color: #333;
       margin-bottom: 20px;
+      padding-left: 24px;
     }
     
     .article-content li {
       margin-bottom: 8px;
     }
     
-    .article-content strong {
-      color: var(--primary);
-    }
-    
     .article-content a {
-      color: var(--primary);
+      color: var(--color-primary);
       text-decoration: underline;
     }
     
-    .loading {
-      text-align: center;
-      padding: 100px 0;
+    .article-content strong {
+      font-weight: 600;
+    }
+    
+    .article-content blockquote {
+      border-left: 3px solid var(--color-primary);
+      padding-left: 20px;
+      margin: 24px 0;
+      font-style: italic;
+      color: var(--color-text-light);
+    }
+    
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-text-light);
+      text-decoration: none;
+      font-size: 14px;
+      margin-bottom: 32px;
+      transition: var(--transition);
+    }
+    
+    .back-link:hover {
+      color: var(--color-primary);
     }
     
     @media (max-width: 768px) {
       .article-title {
-        font-size: 1.8rem;
+        font-size: 28px;
       }
       
       .article-content {
-        padding: 30px 20px;
+        font-size: 15px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <div class="header">
-    <div class="container">
-      <a href="articles.html" class="btn btn-light mb-4">← Kembali ke Daftar Artikel</a>
+  <nav class="main-navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-brand">PubGlow</a>
+      <button class="navbar-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="navbar-menu" id="navMenu">
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="journals.html">Jurnal</a></li>
+        <li><a href="articles.html" class="active">Artikel</a></li>
+        <li><a href="index.html#contribute">Kontributor</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="article-header">
+      <a href="articles.html" class="back-link">
+        <span>←</span>
+        <span>Kembali ke Artikel</span>
+      </a>
       <div id="articleHeader">
-        <div class="loading">
-          <div class="spinner-border text-white" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
+        <div style="text-align:center;padding:60px 0">
+          <div style="width:24px;height:24px;border:2px solid var(--color-border);border-top-color:var(--color-primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto"></div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="container">
-    <div class="article-content" id="articleContent">
-      <div class="loading">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-          <span class="visually-hidden">Loading...</span>
+    <div class="article-body">
+      <div class="article-content" id="articleContent">
+        <div style="text-align:center;padding:40px 0">
+          <p style="color:var(--color-text-light);font-size:14px">Memuat konten...</p>
         </div>
-        <p class="mt-3">Memuat artikel...</p>
       </div>
     </div>
   </div>
 
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">PubGlow</div>
+          <p class="footer-description">Platform terpadu untuk publikasi jurnal dan artikel ilmiah.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Platform</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="journals.html">Jurnal</a></li>
+            <li><a href="articles.html">Artikel</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Lainnya</h4>
+          <ul class="footer-links">
+            <li><a href="submit-journal.html">Submit Jurnal</a></li>
+            <li><a href="submit-article.html">Submit Artikel</a></li>
+            <li><a href="login.html">Admin</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">&copy; 2025 PubGlow</div>
+    </div>
+  </footer>
+
+  <style>
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
   <script type="module">
     import { db } from './js/firebase.js';
     import { doc, getDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { trackVisitor } from './js/visitor-tracker.js';
 
-    // Get article ID from URL
+    trackVisitor();
+
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navMenu').classList.toggle('active');
+    });
+
     const urlParams = new URLSearchParams(window.location.search);
     const articleId = urlParams.get('id');
 
@@ -140,20 +209,14 @@
       window.location.href = 'articles.html';
     }
 
-    // Load article
     async function loadArticle() {
       try {
         const docRef = doc(db, 'articles', articleId);
         const docSnap = await getDoc(docRef);
 
         if (!docSnap.exists()) {
-          document.getElementById('articleHeader').innerHTML = `
-            <h1>😔 Artikel Tidak Ditemukan</h1>
-          `;
-          document.getElementById('articleContent').innerHTML = `
-            <p>Artikel yang Anda cari tidak ditemukan atau sudah dihapus.</p>
-            <a href="articles.html" class="btn btn-primary">← Kembali ke Daftar Artikel</a>
-          `;
+          document.getElementById('articleHeader').innerHTML = '<h1 class="article-title">Artikel Tidak Ditemukan</h1>';
+          document.getElementById('articleContent').innerHTML = '<p style="color:var(--color-text-light)">Artikel tidak ditemukan atau sudah dihapus.</p>';
           return;
         }
 
@@ -165,41 +228,32 @@
             year: 'numeric',
             month: 'long',
             day: 'numeric'
-          }) : 'Tanggal tidak tersedia';
+          }) : 'N/A';
 
-        // Render header
         document.getElementById('articleHeader').innerHTML = `
           <h1 class="article-title">${article.judul}</h1>
           <div class="article-meta">
-            <span>✍️ ${article.penulis}</span>
+            <span>${article.penulis}</span>
             <span>•</span>
-            <span>📅 ${date}</span>
+            <span>${date}</span>
             <span>•</span>
-            <span class="badge bg-light text-dark">${article.kategori}</span>
+            <span class="badge">${article.kategori}</span>
             <span>•</span>
-            <span>👁️ ${(article.views || 0) + 1} views</span>
+            <span>${(article.views || 0) + 1} views</span>
           </div>
         `;
 
-        // Render content
         document.getElementById('articleContent').innerHTML = article.konten || '<p>Konten tidak tersedia.</p>';
 
-        // Increment views
         try {
-          await updateDoc(docRef, {
-            views: increment(1)
-          });
+          await updateDoc(docRef, { views: increment(1) });
         } catch (error) {
-          console.log('Could not increment views:', error);
+          console.log('Could not increment views');
         }
       } catch (error) {
-        console.error('Error loading article:', error);
-        document.getElementById('articleHeader').innerHTML = `
-          <h1>⚠️ Error</h1>
-        `;
-        document.getElementById('articleContent').innerHTML = `
-          <p>Gagal memuat artikel. Silakan refresh halaman.</p>
-        `;
+        console.error(error);
+        document.getElementById('articleHeader').innerHTML = '<h1 class="article-title">Error</h1>';
+        document.getElementById('articleContent').innerHTML = '<p style="color:var(--color-text-light)">Gagal memuat artikel.</p>';
       }
     }
 
