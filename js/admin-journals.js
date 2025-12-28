@@ -1,7 +1,6 @@
 import { protectAdminPage } from './auth.js';
 import { db } from './firebase.js';
 import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
-import { loadScopes, renderScopeCheckboxes } from './admin-scope-kategori.js';
 
 await protectAdminPage();
 
@@ -16,25 +15,32 @@ function showToast(title, message, type = 'success') {
   toast.show();
 }
 
-document.getElementById('fastTrackTersedia').addEventListener('change', (e) => {
-  document.getElementById('fastTrackBiayaContainer').style.display = e.target.checked ? 'block' : 'none';
-});
-
 async function loadScopesForForm() {
   try {
-    const scopes = await loadScopes();
-    document.getElementById('scopeCheckboxContainer').innerHTML = renderScopeCheckboxes(scopes);
+    const snapshot = await getDocs(collection(db, 'scopes'));
+    if (snapshot.empty) {
+      document.getElementById('scopeContainer').innerHTML = '<p class="text-muted mb-0">Belum ada scope. Tambahkan di Scope & Kategori</p>';
+      return;
+    }
+    let html = '<div style="max-height:150px;overflow-y:auto;border:1px solid #dee2e6;border-radius:6px;padding:12px">';
+    snapshot.forEach(doc => {
+      const scope = doc.data().nama;
+      html += `
+        <div class="form-check">
+          <input class="form-check-input scope-checkbox" type="checkbox" value="${scope}" id="scope_${doc.id}">
+          <label class="form-check-label" for="scope_${doc.id}">${scope}</label>
+        </div>
+      `;
+    });
+    html += '</div>';
+    document.getElementById('scopeContainer').innerHTML = html;
   } catch (error) {
-    document.getElementById('scopeCheckboxContainer').innerHTML = '<p class="text-danger mb-0">Error loading scopes</p>';
+    document.getElementById('scopeContainer').innerHTML = '<p class="text-danger mb-0">Error loading scopes</p>';
   }
 }
 
 function getSelectedScopes() {
   return Array.from(document.querySelectorAll('.scope-checkbox:checked')).map(cb => cb.value);
-}
-
-function getSelectedMonths() {
-  return Array.from(document.querySelectorAll('.month-checkbox:checked')).map(cb => cb.value);
 }
 
 loadScopesForForm();
@@ -54,8 +60,15 @@ async function loadJournals() {
       const scopeBadges = scopes.map(s => `<span class="badge bg-secondary" style="font-size:11px">${s}</span>`).join(' ');
       const isAktif = data.status === 'aktif';
       const statusBadge = isAktif ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-secondary">Hidden</span>';
-      const fastTrackText = data.fastTrack?.tersedia ? `Fast Track: Rp ${data.fastTrack.biaya?.toLocaleString('id-ID')}` : 'No fast track';
-      let frekuensiText = Array.isArray(data.frekuensi) ? data.frekuensi.join(', ') : data.frekuensi || 'N/A';
+      
+      // Handle Fast Track
+      let fastTrackText = 'No Fast Track';
+      if (data.fastTrack === 'Ada' && data.fastTrackBiaya) {
+        fastTrackText = `Fast Track: Rp ${data.fastTrackBiaya.toLocaleString('id-ID')}`;
+      } else if (data.fastTrack === 'Ada') {
+        fastTrackText = 'Fast Track: Tersedia';
+      }
+      
       html += `
         <div class="card mb-3" data-id="${doc.id}">
           <div class="card-body">
@@ -66,7 +79,7 @@ async function loadJournals() {
                   <strong>${data.instansi}</strong> | <span class="badge bg-success">${data.akreditasi}</span> | ${statusBadge}
                 </p>
                 <p class="mb-1" style="font-size:12px;color:#6c757d">Scope: ${scopeBadges}</p>
-                <p class="mb-1" style="font-size:12px;color:#6c757d">Rp ${data.harga?.toLocaleString('id-ID')} | ${data.waktuReview} bulan | ${frekuensiText}</p>
+                <p class="mb-1" style="font-size:12px;color:#6c757d">Rp ${data.harga?.toLocaleString('id-ID')} | ${data.waktuReview} | ${data.frekuensi}</p>
                 <p class="mb-1" style="font-size:12px;color:#6c757d">${fastTrackText}</p>
                 <p class="mb-0" style="font-size:12px"><a href="${data.tautan}" target="_blank">${data.tautan}</a></p>
               </div>
@@ -115,31 +128,35 @@ async function editJournal(id) {
     let journalData = null;
     docSnap.forEach(d => { if (d.id === id) journalData = d.data(); });
     if (!journalData) return;
+    
     document.getElementById('journalId').value = id;
     document.getElementById('modalTitle').textContent = 'Edit Jurnal';
     document.getElementById('nama').value = journalData.nama;
     document.getElementById('instansi').value = journalData.instansi;
     document.getElementById('akreditasi').value = journalData.akreditasi;
     document.getElementById('harga').value = journalData.harga;
+    document.getElementById('frekuensi').value = journalData.frekuensi || '';
     document.getElementById('waktuReview').value = journalData.waktuReview;
     document.getElementById('tautan').value = journalData.tautan;
     document.getElementById('status').value = journalData.status;
-    const fastTrackChecked = journalData.fastTrack?.tersedia || false;
-    document.getElementById('fastTrackTersedia').checked = fastTrackChecked;
-    document.getElementById('fastTrackBiayaContainer').style.display = fastTrackChecked ? 'block' : 'none';
-    if (fastTrackChecked) document.getElementById('fastTrackBiaya').value = journalData.fastTrack.biaya || 0;
+    
+    // Handle Fast Track checkbox
+    const fastTrackChecked = journalData.fastTrack === 'Ada';
+    document.getElementById('fastTrack').checked = fastTrackChecked;
+    document.getElementById('fastTrackPriceWrapper').classList.toggle('show', fastTrackChecked);
+    if (fastTrackChecked && journalData.fastTrackBiaya) {
+      document.getElementById('fastTrackBiaya').value = journalData.fastTrackBiaya;
+    }
+    
+    // Load scopes and check
     await loadScopesForForm();
     const scopes = Array.isArray(journalData.scope) ? journalData.scope : [journalData.scope];
     scopes.forEach(scope => {
       const checkbox = document.querySelector(`.scope-checkbox[value="${scope}"]`);
       if (checkbox) checkbox.checked = true;
     });
-    const months = Array.isArray(journalData.frekuensi) ? journalData.frekuensi : [];
-    months.forEach(month => {
-      const checkbox = document.querySelector(`.month-checkbox[value="${month}"]`);
-      if (checkbox) checkbox.checked = true;
-    });
-    new bootstrap.Modal(document.getElementById('modalJournal')).show();
+    
+    new bootstrap.Modal(document.getElementById('modalJurnal')).show();
   } catch (error) {
     showToast('Error', error.message, 'error');
   }
@@ -156,28 +173,36 @@ async function deleteJournal(id) {
 }
 
 document.getElementById('btnSaveJournal').addEventListener('click', async () => {
-  const form = document.getElementById('formJournal');
-  if (!form.checkValidity()) { form.reportValidity(); return; }
+  const form = document.getElementById('formJurnal');
+  if (!form.checkValidity()) { 
+    form.reportValidity(); 
+    return; 
+  }
+  
   const selectedScopes = getSelectedScopes();
-  if (selectedScopes.length === 0) { showToast('Error', 'Pilih minimal 1 scope!', 'error'); return; }
-  const selectedMonths = getSelectedMonths();
-  if (selectedMonths.length === 0) { showToast('Error', 'Pilih minimal 1 bulan!', 'error'); return; }
+  if (selectedScopes.length === 0) { 
+    showToast('Error', 'Pilih minimal 1 scope!', 'error'); 
+    return; 
+  }
+  
+  const fastTrackChecked = document.getElementById('fastTrack').checked;
+  const fastTrackBiaya = fastTrackChecked ? parseInt(document.getElementById('fastTrackBiaya').value || 0) : null;
+  
   const data = {
     nama: document.getElementById('nama').value.trim(),
     instansi: document.getElementById('instansi').value.trim(),
     scope: selectedScopes,
     akreditasi: document.getElementById('akreditasi').value,
     harga: parseInt(document.getElementById('harga').value),
-    frekuensi: selectedMonths,
-    waktuReview: parseFloat(document.getElementById('waktuReview').value),
-    fastTrack: {
-      tersedia: document.getElementById('fastTrackTersedia').checked,
-      biaya: document.getElementById('fastTrackTersedia').checked ? parseInt(document.getElementById('fastTrackBiaya').value || 0) : 0
-    },
+    frekuensi: document.getElementById('frekuensi').value,
+    waktuReview: document.getElementById('waktuReview').value,
+    fastTrack: fastTrackChecked ? 'Ada' : 'Tidak Ada',
+    fastTrackBiaya: fastTrackBiaya,
     tautan: document.getElementById('tautan').value.trim(),
     status: document.getElementById('status').value,
     timestamp: serverTimestamp()
   };
+  
   try {
     const journalId = document.getElementById('journalId').value;
     if (journalId) {
@@ -187,7 +212,7 @@ document.getElementById('btnSaveJournal').addEventListener('click', async () => 
       await addDoc(collection(db, 'journals'), data);
       showToast('Berhasil', 'Jurnal ditambahkan!');
     }
-    bootstrap.Modal.getInstance(document.getElementById('modalJournal')).hide();
+    bootstrap.Modal.getInstance(document.getElementById('modalJurnal')).hide();
     form.reset();
     document.getElementById('journalId').value = '';
     loadJournals();
@@ -196,11 +221,11 @@ document.getElementById('btnSaveJournal').addEventListener('click', async () => 
   }
 });
 
-document.getElementById('modalJournal').addEventListener('hidden.bs.modal', () => {
-  document.getElementById('formJournal').reset();
+document.getElementById('modalJurnal').addEventListener('hidden.bs.modal', () => {
+  document.getElementById('formJurnal').reset();
   document.getElementById('journalId').value = '';
   document.getElementById('modalTitle').textContent = 'Tambah Jurnal Baru';
-  document.getElementById('fastTrackBiayaContainer').style.display = 'none';
+  document.getElementById('fastTrackPriceWrapper').classList.remove('show');
   loadScopesForForm();
 });
 
