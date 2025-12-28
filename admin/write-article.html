@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tulis Artikel - Admin PubGlow</title>
+  <link href="../css/main-theme.css" rel="stylesheet">
+  
+  <!-- Quill WYSIWYG Editor -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  
+  <style>
+    .form-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding-bottom: 80px;
+    }
+    
+    .form-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 40px;
+    }
+    
+    .success-message {
+      text-align: center;
+      padding: 60px 40px;
+    }
+    
+    .success-message h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--color-primary);
+    }
+    
+    .success-message p {
+      color: var(--color-text-light);
+      margin-bottom: 24px;
+    }
+    
+    /* Quill Editor Styling */
+    #editor-container {
+      height: 500px;
+      background: white;
+      border-radius: 6px;
+    }
+    
+    .ql-container {
+      font-size: 15px;
+      font-family: inherit;
+    }
+    
+    .ql-editor {
+      min-height: 450px;
+    }
+    
+    .ql-toolbar {
+      border-radius: 6px 6px 0 0;
+      background: var(--color-bg-light);
+    }
+    
+    .editor-wrapper {
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    .form-hint {
+      font-size: 12px;
+      color: var(--color-text-light);
+      margin-top: 6px;
+      display: block;
+    }
+    
+    .admin-badge {
+      display: inline-block;
+      background: var(--color-primary);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 12px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="main-navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        PubGlow
+        <span class="admin-badge">Admin</span>
+      </a>
+      <button class="navbar-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="navbar-menu" id="navMenu">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="manage-journals.html">Jurnal</a></li>
+        <li><a href="manage-articles.html">Artikel</a></li>
+        <li><a href="write-article.html" class="active">Tulis Artikel</a></li>
+        <li><a href="#" id="logoutBtn">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Tulis Artikel Baru</h1>
+      <p>Publikasikan artikel edukatif untuk komunitas peneliti</p>
+    </div>
+  </div>
+
+  <div class="container form-wrapper">
+    <div class="form-card" id="formContainer">
+      <form id="articleForm">
+        <div class="form-group">
+          <label class="form-label">Judul Artikel *</label>
+          <input type="text" class="form-control" id="title" required placeholder="Masukkan judul artikel yang menarik">
+          <span class="form-hint">Buat judul yang informatif dan SEO-friendly</span>
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group">
+            <label class="form-label">Kategori *</label>
+            <select class="form-select" id="category" required>
+              <option value="">Pilih kategori</option>
+              <option value="Tips Publikasi">Tips Publikasi</option>
+              <option value="Panduan Riset">Panduan Riset</option>
+              <option value="Pengalaman">Pengalaman</option>
+              <option value="Tutorial">Tutorial</option>
+              <option value="Berita">Berita</option>
+              <option value="Opini">Opini</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Author</label>
+            <input type="text" class="form-control" id="author" placeholder="Nama penulis (default: Admin PubGlow)">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Ringkasan Artikel *</label>
+          <textarea class="form-control" id="excerpt" rows="3" required placeholder="Tulis ringkasan singkat artikel (2-3 kalimat)"></textarea>
+          <span class="form-hint">Ringkasan akan ditampilkan di halaman daftar artikel</span>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Konten Artikel *</label>
+          <div class="editor-wrapper">
+            <div id="editor-container"></div>
+          </div>
+          <span class="form-hint">Gunakan toolbar untuk memformat teks, menambahkan link, list, dan lainnya</span>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Tags</label>
+          <input type="text" class="form-control" id="tags" placeholder="Pisahkan dengan koma. Contoh: publikasi, jurnal, scopus">
+          <span class="form-hint">Tags membantu SEO dan memudahkan pencarian</span>
+        </div>
+        
+        <div style="display:flex;gap:12px;margin-top:32px">
+          <button type="submit" class="btn btn-primary" style="flex:1" id="btnPublish">Publikasikan Artikel</button>
+          <a href="manage-articles.html" class="btn btn-outline">Batal</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">PubGlow Admin</div>
+          <p class="footer-description">Platform manajemen jurnal dan artikel ilmiah.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">&copy; 2025 PubGlow</div>
+    </div>
+  </footer>
+
+  <!-- Quill JS -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  
+  <script type="module">
+    import { auth, db } from '../js/firebase.js';
+    import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+    import { collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+    // Check auth
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = '../login.html';
+      }
+    });
+
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navMenu').classList.toggle('active');
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (confirm('Logout dari admin panel?')) {
+        await signOut(auth);
+        window.location.href = '../login.html';
+      }
+    });
+
+    // Initialize Quill WYSIWYG Editor
+    const quill = new Quill('#editor-container', {
+      theme: 'snow',
+      placeholder: 'Tulis konten artikel Anda di sini...',
+      modules: {
+        toolbar: [
+          [{ 'header': [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'indent': '-1'}, { 'indent': '+1' }],
+          ['link', 'image'],
+          [{ 'align': [] }],
+          ['blockquote', 'code-block'],
+          [{ 'color': [] }, { 'background': [] }],
+          ['clean']
+        ]
+      }
+    });
+
+    document.getElementById('articleForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnPublish');
+      btn.disabled = true;
+      btn.textContent = 'Mempublikasikan...';
+      
+      // Get content from Quill editor
+      const content = quill.root.innerHTML;
+      const plainText = quill.getText().trim();
+      
+      // Validate content
+      if (plainText.length < 100) {
+        alert('Konten artikel minimal 100 karakter!');
+        btn.disabled = false;
+        btn.textContent = 'Publikasikan Artikel';
+        return;
+      }
+      
+      // Parse tags
+      const tagsInput = document.getElementById('tags').value.trim();
+      const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [];
+      
+      // Get author
+      const authorInput = document.getElementById('author').value.trim();
+      const author = authorInput || 'Admin PubGlow';
+      
+      try {
+        await addDoc(collection(db, 'articles'), {
+          title: document.getElementById('title').value.trim(),
+          category: document.getElementById('category').value,
+          excerpt: document.getElementById('excerpt').value.trim(),
+          content: content,
+          tags: tags,
+          author: author,
+          authorAffiliation: null,
+          publishedAt: new Date(),
+          status: 'published',
+          views: 0
+        });
+        
+        document.getElementById('formContainer').innerHTML = `
+          <div class="success-message">
+            <h2>✓ Artikel Berhasil Dipublikasikan!</h2>
+            <p>Artikel telah ditambahkan ke database dan dapat dilihat oleh pengunjung.</p>
+            <a href="manage-articles.html" class="btn btn-primary">Kelola Artikel</a>
+            <a href="write-article.html" class="btn btn-outline" style="margin-left:8px">Tulis Lagi</a>
+          </div>
+        `;
+      } catch (error) {
+        alert('Gagal mempublikasikan artikel. Silakan coba lagi.');
+        console.error(error);
+        btn.disabled = false;
+        btn.textContent = 'Publikasikan Artikel';
+      }
+    });
+  </script>
+</body>
+</html>
