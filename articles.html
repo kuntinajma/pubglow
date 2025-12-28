@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artikel - PubGlow</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 40px 0;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .filters {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+    
+    .article-card {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    
+    .article-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    
+    .article-card h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+    
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .article-excerpt {
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    
+    .btn-read {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border: none;
+      color: white;
+      padding: 10px 25px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform 0.3s;
+    }
+    
+    .btn-read:hover {
+      transform: translateY(-2px);
+      color: white;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 100px 0;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1>📰 Artikel</h1>
+          <p class="mb-0">Tips, panduan, dan berita seputar publikasi ilmiah</p>
+        </div>
+        <a href="index.html" class="btn btn-light">← Beranda</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Filters -->
+    <div class="filters">
+      <div class="row g-3">
+        <div class="col-md-8">
+          <label class="form-label">🔍 Cari Artikel</label>
+          <input type="text" class="form-control" id="searchInput" placeholder="Cari judul atau konten artikel...">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">📂 Kategori</label>
+          <select class="form-select" id="filterKategori">
+            <option value="">Semua Kategori</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="mb-3">
+      <p class="text-muted"><strong id="resultCount">0</strong> artikel ditemukan</p>
+    </div>
+
+    <!-- Articles List -->
+    <div id="articlesList">
+      <div class="loading">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Memuat artikel...</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { db } from './js/firebase.js';
+    import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+    let allArticles = [];
+    let allKategori = [];
+
+    // Load kategori for filter
+    async function loadKategori() {
+      try {
+        const snapshot = await getDocs(collection(db, 'kategori_artikel'));
+        allKategori = [];
+        snapshot.forEach(doc => {
+          allKategori.push(doc.data().nama);
+        });
+        
+        // Populate kategori filter
+        const filterKategori = document.getElementById('filterKategori');
+        allKategori.forEach(kategori => {
+          const option = document.createElement('option');
+          option.value = kategori;
+          option.textContent = kategori;
+          filterKategori.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error loading kategori:', error);
+      }
+    }
+
+    // Load articles
+    async function loadArticles() {
+      try {
+        const q = query(collection(db, 'articles'), where('status', '==', 'published'));
+        const snapshot = await getDocs(q);
+        
+        allArticles = [];
+        snapshot.forEach(doc => {
+          allArticles.push({ id: doc.id, ...doc.data() });
+        });
+
+        // Sort by date (newest first)
+        allArticles.sort((a, b) => {
+          const dateA = a.tanggalPublish?.toMillis() || 0;
+          const dateB = b.tanggalPublish?.toMillis() || 0;
+          return dateB - dateA;
+        });
+
+        if (allArticles.length === 0) {
+          document.getElementById('articlesList').innerHTML = `
+            <div class="no-results">
+              <h3>😔 Belum Ada Artikel</h3>
+              <p>Belum ada artikel yang tersedia saat ini. Silakan cek kembali nanti!</p>
+            </div>
+          `;
+          document.getElementById('resultCount').textContent = '0';
+          return;
+        }
+
+        renderArticles(allArticles);
+      } catch (error) {
+        console.error('Error loading articles:', error);
+        document.getElementById('articlesList').innerHTML = `
+          <div class="no-results">
+            <h3>⚠️ Error</h3>
+            <p>Gagal memuat artikel. Silakan refresh halaman.</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderArticles(articles) {
+      if (articles.length === 0) {
+        document.getElementById('articlesList').innerHTML = `
+          <div class="no-results">
+            <h3>🔍 Tidak Ditemukan</h3>
+            <p>Tidak ada artikel yang sesuai dengan pencarian Anda.</p>
+          </div>
+        `;
+        document.getElementById('resultCount').textContent = '0';
+        return;
+      }
+
+      document.getElementById('resultCount').textContent = articles.length;
+
+      const html = articles.map(article => {
+        // Get excerpt from content (strip HTML, take first 200 chars)
+        const excerpt = article.konten ? 
+          article.konten.replace(/<[^>]*>/g, '').substring(0, 200) + '...' : 
+          'Baca artikel lengkap untuk mengetahui lebih lanjut.';
+
+        const date = article.tanggalPublish ? 
+          new Date(article.tanggalPublish.toMillis()).toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }) : 'Tanggal tidak tersedia';
+
+        return `
+          <div class="article-card" onclick="window.location.href='article-detail.html?id=${article.id}'">
+            <h3>${article.judul}</h3>
+            
+            <div class="article-meta">
+              <span>✍️ ${article.penulis}</span>
+              <span>•</span>
+              <span>📅 ${date}</span>
+              <span>•</span>
+              <span class="badge bg-info">${article.kategori}</span>
+              <span>•</span>
+              <span>👁️ ${article.views || 0} views</span>
+            </div>
+
+            <p class="article-excerpt">${excerpt}</p>
+
+            <a href="article-detail.html?id=${article.id}" class="btn-read" onclick="event.stopPropagation()">
+              📖 Baca Selengkapnya
+            </a>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('articlesList').innerHTML = html;
+    }
+
+    // Filter function
+    function filterArticles() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const kategori = document.getElementById('filterKategori').value;
+
+      let filtered = allArticles;
+
+      // Search filter
+      if (search) {
+        filtered = filtered.filter(a => 
+          a.judul.toLowerCase().includes(search) || 
+          a.konten?.toLowerCase().includes(search) ||
+          a.penulis.toLowerCase().includes(search)
+        );
+      }
+
+      // Kategori filter
+      if (kategori) {
+        filtered = filtered.filter(a => a.kategori === kategori);
+      }
+
+      renderArticles(filtered);
+    }
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('keyup', filterArticles);
+    document.getElementById('filterKategori').addEventListener('change', filterArticles);
+
+    // Initial load
+    await loadKategori();
+    await loadArticles();
+  </script>
+</body>
+</html>

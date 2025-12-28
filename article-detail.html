@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artikel - PubGlow</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 60px 0;
+      margin-bottom: 40px;
+    }
+    
+    .article-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 1rem;
+      opacity: 0.95;
+    }
+    
+    .article-content {
+      background: white;
+      padding: 50px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 40px;
+    }
+    
+    .article-content h2 {
+      color: var(--primary);
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+    
+    .article-content h3 {
+      color: #555;
+      margin-top: 25px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    
+    .article-content p {
+      line-height: 1.8;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    
+    .article-content ul,
+    .article-content ol {
+      line-height: 1.8;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    
+    .article-content li {
+      margin-bottom: 8px;
+    }
+    
+    .article-content strong {
+      color: var(--primary);
+    }
+    
+    .article-content a {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 100px 0;
+    }
+    
+    @media (max-width: 768px) {
+      .article-title {
+        font-size: 1.8rem;
+      }
+      
+      .article-content {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="container">
+      <a href="articles.html" class="btn btn-light mb-4">← Kembali ke Daftar Artikel</a>
+      <div id="articleHeader">
+        <div class="loading">
+          <div class="spinner-border text-white" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="article-content" id="articleContent">
+      <div class="loading">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Memuat artikel...</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { db } from './js/firebase.js';
+    import { doc, getDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+    // Get article ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const articleId = urlParams.get('id');
+
+    if (!articleId) {
+      window.location.href = 'articles.html';
+    }
+
+    // Load article
+    async function loadArticle() {
+      try {
+        const docRef = doc(db, 'articles', articleId);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+          document.getElementById('articleHeader').innerHTML = `
+            <h1>😔 Artikel Tidak Ditemukan</h1>
+          `;
+          document.getElementById('articleContent').innerHTML = `
+            <p>Artikel yang Anda cari tidak ditemukan atau sudah dihapus.</p>
+            <a href="articles.html" class="btn btn-primary">← Kembali ke Daftar Artikel</a>
+          `;
+          return;
+        }
+
+        const article = docSnap.data();
+        document.title = article.judul + ' - PubGlow';
+
+        const date = article.tanggalPublish ? 
+          new Date(article.tanggalPublish.toMillis()).toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }) : 'Tanggal tidak tersedia';
+
+        // Render header
+        document.getElementById('articleHeader').innerHTML = `
+          <h1 class="article-title">${article.judul}</h1>
+          <div class="article-meta">
+            <span>✍️ ${article.penulis}</span>
+            <span>•</span>
+            <span>📅 ${date}</span>
+            <span>•</span>
+            <span class="badge bg-light text-dark">${article.kategori}</span>
+            <span>•</span>
+            <span>👁️ ${(article.views || 0) + 1} views</span>
+          </div>
+        `;
+
+        // Render content
+        document.getElementById('articleContent').innerHTML = article.konten || '<p>Konten tidak tersedia.</p>';
+
+        // Increment views
+        try {
+          await updateDoc(docRef, {
+            views: increment(1)
+          });
+        } catch (error) {
+          console.log('Could not increment views:', error);
+        }
+      } catch (error) {
+        console.error('Error loading article:', error);
+        document.getElementById('articleHeader').innerHTML = `
+          <h1>⚠️ Error</h1>
+        `;
+        document.getElementById('articleContent').innerHTML = `
+          <p>Gagal memuat artikel. Silakan refresh halaman.</p>
+        `;
+      }
+    }
+
+    loadArticle();
+  </script>
+</body>
+</html>

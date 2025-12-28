@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Jurnal - PubGlow</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 40px 0;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .filters {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+    
+    .journal-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      transition: all 0.3s;
+    }
+    
+    .journal-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    
+    .journal-card h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+    
+    .journal-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 15px 0;
+      font-size: 0.95rem;
+    }
+    
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .badge {
+      margin: 3px;
+    }
+    
+    .fast-track-badge {
+      background: #ffc107;
+      color: #000;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    
+    .btn-visit {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border: none;
+      color: white;
+      padding: 10px 25px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: transform 0.3s;
+    }
+    
+    .btn-visit:hover {
+      transform: translateY(-2px);
+      color: white;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 100px 0;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1>📚 Daftar Jurnal</h1>
+          <p class="mb-0">Temukan jurnal terakreditasi SINTA untuk publikasi Anda</p>
+        </div>
+        <a href="index.html" class="btn btn-light">← Beranda</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Filters -->
+    <div class="filters">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">🔍 Cari Jurnal</label>
+          <input type="text" class="form-control" id="searchInput" placeholder="Cari nama jurnal atau instansi...">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">📊 Akreditasi</label>
+          <select class="form-select" id="filterAkreditasi">
+            <option value="">Semua Akreditasi</option>
+            <option value="SINTA 1">SINTA 1</option>
+            <option value="SINTA 2">SINTA 2</option>
+            <option value="SINTA 3">SINTA 3</option>
+            <option value="SINTA 4">SINTA 4</option>
+            <option value="SINTA 5">SINTA 5</option>
+            <option value="SINTA 6">SINTA 6</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">📖 Scope</label>
+          <select class="form-select" id="filterScope">
+            <option value="">Semua Scope</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">&nbsp;</label>
+          <button class="btn btn-primary w-100" id="btnFilter">Filter</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="mb-3">
+      <p class="text-muted"><strong id="resultCount">0</strong> jurnal ditemukan</p>
+    </div>
+
+    <!-- Journals List -->
+    <div id="journalsList">
+      <div class="loading">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Memuat data jurnal...</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { db } from './js/firebase.js';
+    import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+    let allJournals = [];
+    let allScopes = [];
+
+    // Load scopes for filter
+    async function loadScopes() {
+      try {
+        const snapshot = await getDocs(collection(db, 'scopes'));
+        allScopes = [];
+        snapshot.forEach(doc => {
+          allScopes.push(doc.data().nama);
+        });
+        
+        // Populate scope filter
+        const filterScope = document.getElementById('filterScope');
+        allScopes.forEach(scope => {
+          const option = document.createElement('option');
+          option.value = scope;
+          option.textContent = scope;
+          filterScope.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error loading scopes:', error);
+      }
+    }
+
+    // Load journals
+    async function loadJournals() {
+      try {
+        const q = query(collection(db, 'journals'), where('status', '==', 'aktif'));
+        const snapshot = await getDocs(q);
+        
+        allJournals = [];
+        snapshot.forEach(doc => {
+          allJournals.push({ id: doc.id, ...doc.data() });
+        });
+
+        if (allJournals.length === 0) {
+          document.getElementById('journalsList').innerHTML = `
+            <div class="no-results">
+              <h3>😔 Belum Ada Jurnal</h3>
+              <p>Belum ada jurnal yang tersedia saat ini. Silakan cek kembali nanti!</p>
+            </div>
+          `;
+          document.getElementById('resultCount').textContent = '0';
+          return;
+        }
+
+        renderJournals(allJournals);
+      } catch (error) {
+        console.error('Error loading journals:', error);
+        document.getElementById('journalsList').innerHTML = `
+          <div class="no-results">
+            <h3>⚠️ Error</h3>
+            <p>Gagal memuat data jurnal. Silakan refresh halaman.</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderJournals(journals) {
+      if (journals.length === 0) {
+        document.getElementById('journalsList').innerHTML = `
+          <div class="no-results">
+            <h3>🔍 Tidak Ditemukan</h3>
+            <p>Tidak ada jurnal yang sesuai dengan filter Anda.</p>
+          </div>
+        `;
+        document.getElementById('resultCount').textContent = '0';
+        return;
+      }
+
+      document.getElementById('resultCount').textContent = journals.length;
+
+      const html = journals.map(journal => {
+        const scopes = Array.isArray(journal.scope) ? journal.scope : [journal.scope];
+        const scopeBadges = scopes.map(s => `<span class="badge bg-info">${s}</span>`).join(' ');
+        const fastTrackBadge = journal.fastTrack?.tersedia ? 
+          `<span class="fast-track-badge">⚡ Fast Track Tersedia</span>` : '';
+
+        return `
+          <div class="journal-card">
+            <h3>${journal.nama}</h3>
+            <p class="text-muted mb-2">🏛️ ${journal.instansi}</p>
+            
+            <div class="mb-3">
+              ${scopeBadges}
+              <span class="badge bg-success">${journal.akreditasi}</span>
+              ${fastTrackBadge}
+            </div>
+
+            <div class="journal-info">
+              <div class="info-item">
+                <strong>💰 Biaya:</strong> Rp ${journal.harga?.toLocaleString('id-ID')}
+              </div>
+              <div class="info-item">
+                <strong>⏱️ Waktu Review:</strong> ${journal.waktuReview} bulan
+              </div>
+              <div class="info-item">
+                <strong>📅 Terbit:</strong> ${journal.frekuensi}
+              </div>
+            </div>
+
+            ${journal.fastTrack?.tersedia ? `
+              <p class="mt-2 mb-3" style="font-size: 0.9rem;">
+                <strong>Fast Track:</strong> Rp ${journal.fastTrack.biaya?.toLocaleString('id-ID')}
+              </p>
+            ` : ''}
+
+            <a href="${journal.tautan}" target="_blank" class="btn btn-visit">
+              🔗 Kunjungi Website Jurnal
+            </a>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('journalsList').innerHTML = html;
+    }
+
+    // Filter function
+    function filterJournals() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const akreditasi = document.getElementById('filterAkreditasi').value;
+      const scope = document.getElementById('filterScope').value;
+
+      let filtered = allJournals;
+
+      // Search filter
+      if (search) {
+        filtered = filtered.filter(j => 
+          j.nama.toLowerCase().includes(search) || 
+          j.instansi.toLowerCase().includes(search)
+        );
+      }
+
+      // Akreditasi filter
+      if (akreditasi) {
+        filtered = filtered.filter(j => j.akreditasi === akreditasi);
+      }
+
+      // Scope filter
+      if (scope) {
+        filtered = filtered.filter(j => {
+          const scopes = Array.isArray(j.scope) ? j.scope : [j.scope];
+          return scopes.includes(scope);
+        });
+      }
+
+      renderJournals(filtered);
+    }
+
+    // Event listeners
+    document.getElementById('btnFilter').addEventListener('click', filterJournals);
+    document.getElementById('searchInput').addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') filterJournals();
+    });
+
+    // Initial load
+    await loadScopes();
+    await loadJournals();
+  </script>
+</body>
+</html>
