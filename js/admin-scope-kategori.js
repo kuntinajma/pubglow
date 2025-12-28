@@ -282,12 +282,12 @@ export function renderScopeTable(scopes) {
   }
   
   return `
-    <table class="table table-striped">
+    <table class="table table-hover">
       <thead>
         <tr>
-          <th>#</th>
+          <th style="width:60px">#</th>
           <th>Nama Scope</th>
-          <th width="150">Aksi</th>
+          <th style="width:180px">Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -296,12 +296,22 @@ export function renderScopeTable(scopes) {
             <td>${index + 1}</td>
             <td class="scope-name">${scope.nama}</td>
             <td>
-              <button class="btn btn-sm btn-warning edit-scope" data-id="${scope.id}" data-name="${scope.nama}">
-                ✏️ Edit
-              </button>
-              <button class="btn btn-sm btn-danger delete-scope" data-id="${scope.id}" data-name="${scope.nama}">
-                🗑️ Hapus
-              </button>
+              <div class="action-buttons">
+                <button class="btn btn-action btn-action-edit edit-scope" data-id="${scope.id}" data-name="${scope.nama}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  Edit
+                </button>
+                <button class="btn btn-action btn-action-delete delete-scope" data-id="${scope.id}" data-name="${scope.nama}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                  Hapus
+                </button>
+              </div>
             </td>
           </tr>
         `).join('')}
@@ -325,12 +335,12 @@ export function renderKategoriTable(kategori) {
   }
   
   return `
-    <table class="table table-striped">
+    <table class="table table-hover">
       <thead>
         <tr>
-          <th>#</th>
+          <th style="width:60px">#</th>
           <th>Nama Kategori</th>
-          <th width="150">Aksi</th>
+          <th style="width:180px">Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -339,12 +349,22 @@ export function renderKategoriTable(kategori) {
             <td>${index + 1}</td>
             <td class="kategori-name">${kat.nama}</td>
             <td>
-              <button class="btn btn-sm btn-warning edit-kategori" data-id="${kat.id}" data-name="${kat.nama}">
-                ✏️ Edit
-              </button>
-              <button class="btn btn-sm btn-danger delete-kategori" data-id="${kat.id}" data-name="${kat.nama}">
-                🗑️ Hapus
-              </button>
+              <div class="action-buttons">
+                <button class="btn btn-action btn-action-edit edit-kategori" data-id="${kat.id}" data-name="${kat.nama}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  Edit
+                </button>
+                <button class="btn btn-action btn-action-delete delete-kategori" data-id="${kat.id}" data-name="${kat.nama}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                  Hapus
+                </button>
+              </div>
             </td>
           </tr>
         `).join('')}
