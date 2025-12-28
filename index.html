@@ -160,6 +160,7 @@
       border: none;
       color: white;
       transition: transform 0.3s, box-shadow 0.3s;
+      margin: 10px;
     }
     
     .cta .btn:hover {
@@ -194,8 +195,8 @@
       <h1>🚀 PubGlow</h1>
       <p>Platform Terpadu untuk Publikasi Jurnal & Artikel Ilmiah</p>
       <div>
-        <a href="#journals" class="btn btn-light">📚 Lihat Jurnal</a>
-        <a href="#articles" class="btn btn-outline-light">📰 Baca Artikel</a>
+        <a href="journals.html" class="btn btn-light">📚 Lihat Jurnal</a>
+        <a href="articles.html" class="btn btn-outline-light">📰 Baca Artikel</a>
       </div>
     </div>
   </section>
@@ -288,7 +289,8 @@
     <div class="container">
       <h2>Siap Publikasi Karya Ilmiah Anda?</h2>
       <p>Mulai jelajahi database jurnal dan artikel kami sekarang!</p>
-      <a href="#journals" class="btn">Mulai Sekarang →</a>
+      <a href="journals.html" class="btn">Cari Jurnal →</a>
+      <a href="articles.html" class="btn">Baca Artikel →</a>
     </div>
   </section>
   
@@ -306,15 +308,15 @@
 
   <script type="module">
     import { db } from './js/firebase.js';
-    import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
     
     // Load stats
     async function loadStats() {
       try {
-        const journalsSnap = await getDocs(collection(db, 'journals'));
+        const journalsSnap = await getDocs(query(collection(db, 'journals'), where('status', '==', 'aktif')));
         document.getElementById('statJournals').textContent = journalsSnap.size || '0';
         
-        const articlesSnap = await getDocs(collection(db, 'articles'));
+        const articlesSnap = await getDocs(query(collection(db, 'articles'), where('status', '==', 'published')));
         document.getElementById('statArticles').textContent = articlesSnap.size || '0';
         
         const scopesSnap = await getDocs(collection(db, 'scopes'));
