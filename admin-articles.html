@@ -54,6 +54,42 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       font-size: 16px;
     }
+    
+    /* Toggle Switch */
+    .status-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .status-toggle .form-check {
+      margin: 0;
+    }
+    
+    .status-toggle .form-check-input {
+      width: 50px;
+      height: 25px;
+      cursor: pointer;
+    }
+    
+    .status-toggle .form-check-input:checked {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+    
+    .status-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .status-label.published {
+      color: #28a745;
+    }
+    
+    .status-label.draft {
+      color: #6c757d;
+    }
   </style>
 </head>
 <body>
@@ -285,9 +321,10 @@
     }
 
     function renderArticleCard(id, data) {
-      const statusBadge = data.status === 'published' ? 
-        '<span class="badge bg-success">Published</span>' : 
-        '<span class="badge bg-secondary">Draft</span>';
+      const isPublished = data.status === 'published';
+      const statusLabel = isPublished ? 
+        '<span class="status-label published">✅ Published (Tampil)</span>' : 
+        '<span class="status-label draft">📝 Draft (Tidak Tampil)</span>';
       
       const kontenPreview = data.konten ? 
         data.konten.replace(/<[^>]*>/g, '').substring(0, 150) + '...' : 
@@ -295,20 +332,22 @@
 
       return `
         <div class="article-card" data-id="${id}">
-          <div class="d-flex justify-content-between align-items-start">
+          <div class="d-flex justify-content-between align-items-start mb-3">
             <div class="flex-grow-1">
               <h5>${data.judul}</h5>
+              
+              <!-- Status Toggle -->
+              <div class="status-toggle">
+                <div class="form-check form-switch">
+                  <input class="form-check-input status-toggle-switch" type="checkbox" 
+                    data-id="${id}" ${isPublished ? 'checked' : ''}>
+                </div>
+                ${statusLabel}
+              </div>
+              
               <p class="article-info mb-2">
                 <strong>✍️ ${data.penulis}</strong> | 
-                <span class="badge bg-info">${data.kategori}</span> | 
-                ${statusBadge}
-              </p>
-              <p class="article-info mb-1 text-muted">
-                ${kontenPreview}
-              </p>
-              <p class="article-info mb-0">
-                👁️ ${data.views || 0} views | 
-                🔗 <code>${data.slug}</code>
+                <span class="badge bg-info">${data.kategori}</span>
               </p>
             </div>
             <div>
@@ -320,11 +359,28 @@
               </button>
             </div>
           </div>
+          
+          <p class="article-info mb-1 text-muted">
+            ${kontenPreview}
+          </p>
+          <p class="article-info mb-0">
+            👁️ ${data.views || 0} views | 
+            🔗 <code>${data.slug}</code>
+          </p>
         </div>
       `;
     }
 
     function attachEventListeners() {
+      // Status Toggle
+      document.querySelectorAll('.status-toggle-switch').forEach(toggle => {
+        toggle.addEventListener('change', async (e) => {
+          const id = e.target.dataset.id;
+          const newStatus = e.target.checked ? 'published' : 'draft';
+          await toggleStatus(id, newStatus, e.target);
+        });
+      });
+
       // Edit
       document.querySelectorAll('.edit-article').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -342,6 +398,26 @@
           }
         });
       });
+    }
+
+    async function toggleStatus(id, newStatus, toggleElement) {
+      try {
+        await updateDoc(doc(db, 'articles', id), {
+          status: newStatus
+        });
+        
+        const statusText = newStatus === 'published' ? 'Published' : 'Draft';
+        showToast('Status Updated', `Artikel sekarang: ${statusText}`);
+        
+        // Reload to update badge
+        loadArticles();
+      } catch (error) {
+        console.error('Error updating status:', error);
+        showToast('Error', error.message, 'error');
+        
+        // Revert toggle on error
+        toggleElement.checked = !toggleElement.checked;
+      }
     }
 
     async function editArticle(id) {
