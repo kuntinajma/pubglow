@@ -47,9 +47,22 @@ async function loadJournalSubmissions() {
             <p style="font-size:13px;color:#6c757d" class="mb-1"><strong>Scope:</strong> ${scopeBadges}</p>
             <p style="font-size:13px;color:#6c757d" class="mb-1"><strong>Akreditasi:</strong> <span class="badge bg-success">${data.akreditasi}</span></p>
             <p style="font-size:13px;color:#6c757d" class="mb-1"><strong>Biaya:</strong> Rp ${data.harga?.toLocaleString('id-ID')}</p>
-            <p style="font-size:13px;color:#6c757d" class="mb-2"><strong>Website:</strong> <a href="${data.tautan}" target="_blank">${data.tautan}</a></p>
-            <button class="btn btn-sm btn-success approve-journal" data-id="${d.id}">Approve</button>
-            <button class="btn btn-sm btn-danger reject-journal" data-id="${d.id}">Reject</button>
+            <p style="font-size:13px;color:#6c757d" class="mb-3"><strong>Website:</strong> <a href="${data.tautan}" target="_blank">${data.tautan}</a></p>
+            <div class="action-buttons">
+              <button class="btn btn-success btn-sm approve-journal" data-id="${d.id}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Approve
+              </button>
+              <button class="btn btn-danger btn-sm reject-journal" data-id="${d.id}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Reject
+              </button>
+            </div>
           </div>
         </div>
       `;
@@ -130,8 +143,21 @@ async function loadArticleSubmissions() {
             <p style="font-size:13px;color:#6c757d" class="mb-1"><strong>Penulis:</strong> ${data.penulis}</p>
             <p style="font-size:13px;color:#6c757d" class="mb-2"><strong>Slug:</strong> <code>${data.slug}</code></p>
             <div class="content-preview" style="font-size:12px;color:#495057;margin-bottom:15px">${data.konten}</div>
-            <button class="btn btn-sm btn-success approve-article" data-id="${d.id}">Approve</button>
-            <button class="btn btn-sm btn-danger reject-article" data-id="${d.id}">Reject</button>
+            <div class="action-buttons">
+              <button class="btn btn-success btn-sm approve-article" data-id="${d.id}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Approve
+              </button>
+              <button class="btn btn-danger btn-sm reject-article" data-id="${d.id}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Reject
+              </button>
+            </div>
           </div>
         </div>
       `;
