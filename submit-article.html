@@ -5,9 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kontribusi Artikel - PubGlow</title>
   <link href="css/main-theme.css" rel="stylesheet">
+  
+  <!-- Quill WYSIWYG Editor -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  
   <style>
     .form-wrapper {
-      max-width: 700px;
+      max-width: 800px;
       margin: 0 auto;
       padding-bottom: 80px;
     }
@@ -35,6 +39,53 @@
       color: var(--color-text-light);
       margin-bottom: 24px;
     }
+    
+    .form-section-divider {
+      border-top: 2px solid var(--color-border);
+      margin: 32px 0;
+      padding-top: 32px;
+    }
+    
+    .form-section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--color-primary);
+    }
+    
+    /* Quill Editor Styling */
+    #editor-container {
+      height: 400px;
+      background: white;
+      border-radius: 6px;
+    }
+    
+    .ql-container {
+      font-size: 15px;
+      font-family: inherit;
+    }
+    
+    .ql-editor {
+      min-height: 350px;
+    }
+    
+    .ql-toolbar {
+      border-radius: 6px 6px 0 0;
+      background: var(--color-bg-light);
+    }
+    
+    .editor-wrapper {
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    .form-hint {
+      font-size: 12px;
+      color: var(--color-text-light);
+      margin-top: 6px;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -58,49 +109,88 @@
   <div class="container">
     <div class="page-header">
       <h1>Kontribusi Artikel</h1>
-      <p>Bagikan pengalaman dan pengetahuan Anda tentang publikasi ilmiah</p>
+      <p>Bagikan pengalaman dan pengetahuan Anda melalui artikel edukatif</p>
     </div>
   </div>
 
   <div class="container form-wrapper">
     <div class="form-card" id="formContainer">
       <form id="submitForm">
+        <!-- INFORMASI ARTIKEL -->
+        <div class="form-section-title">Informasi Artikel</div>
+        
         <div class="form-group">
           <label class="form-label">Judul Artikel *</label>
-          <input type="text" class="form-control" id="judul" required>
+          <input type="text" class="form-control" id="title" required placeholder="Masukkan judul artikel yang menarik">
+          <span class="form-hint">Buat judul yang informatif dan menarik perhatian pembaca</span>
         </div>
         
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-          <div class="form-group">
-            <label class="form-label">Nama Penulis *</label>
-            <input type="text" class="form-control" id="penulis" required>
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">Kategori *</label>
-            <select class="form-select" id="kategori" required>
-              <option value="">Pilih kategori</option>
-              <option value="Tips Publikasi">Tips Publikasi</option>
-              <option value="Panduan Riset">Panduan Riset</option>
-              <option value="Pengalaman">Pengalaman</option>
-              <option value="Tutorial">Tutorial</option>
-              <option value="Berita">Berita</option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label class="form-label">Kategori *</label>
+          <select class="form-select" id="category" required>
+            <option value="">Pilih kategori artikel</option>
+            <option value="Tips Publikasi">Tips Publikasi</option>
+            <option value="Panduan Riset">Panduan Riset</option>
+            <option value="Pengalaman">Pengalaman</option>
+            <option value="Tutorial">Tutorial</option>
+            <option value="Berita">Berita</option>
+            <option value="Opini">Opini</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Ringkasan Artikel *</label>
+          <textarea class="form-control" id="excerpt" rows="3" required placeholder="Tulis ringkasan singkat artikel (2-3 kalimat)"></textarea>
+          <span class="form-hint">Ringkasan akan ditampilkan di halaman daftar artikel</span>
         </div>
         
         <div class="form-group">
           <label class="form-label">Konten Artikel *</label>
-          <textarea class="form-control" id="konten" rows="12" required placeholder="Tulis artikel Anda di sini..."></textarea>
-          <p style="font-size:12px;color:var(--color-text-light);margin-top:4px">Minimal 300 karakter</p>
+          <div class="editor-wrapper">
+            <div id="editor-container"></div>
+          </div>
+          <span class="form-hint">Gunakan toolbar untuk memformat teks, menambahkan link, list, dan lainnya</span>
         </div>
         
         <div class="form-group">
-          <label class="form-label">Email Anda *</label>
-          <input type="email" class="form-control" id="email" required placeholder="Untuk follow-up">
+          <label class="form-label">Tags</label>
+          <input type="text" class="form-control" id="tags" placeholder="Pisahkan dengan koma. Contoh: publikasi, jurnal, scopus">
+          <span class="form-hint">Tags membantu pembaca menemukan artikel Anda</span>
         </div>
         
-        <button type="submit" class="btn btn-primary" style="width:100%" id="btnSubmit">Kirim Artikel</button>
+        <!-- DIVIDER -->
+        <div class="form-section-divider">
+          <div class="form-section-title">Informasi Kontributor</div>
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap *</label>
+            <input type="text" class="form-control" id="contributorName" required placeholder="Nama Anda">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input type="email" class="form-control" id="contributorEmail" required placeholder="email@example.com">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Afiliasi/Institusi</label>
+          <input type="text" class="form-control" id="contributorAffiliation" placeholder="Universitas, Lembaga, atau Perusahaan (opsional)">
+        </div>
+        
+        <div class="form-group">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="publishName" checked>
+            <label class="form-check-label" for="publishName">
+              <strong>Publikasikan nama saya sebagai penulis</strong>
+            </label>
+          </div>
+          <span class="form-hint">Jika tidak dicentang, artikel akan dipublikasikan sebagai "Kontributor Anonim"</span>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:24px" id="btnSubmit">Kirim Artikel</button>
       </form>
     </div>
   </div>
@@ -133,6 +223,9 @@
     </div>
   </footer>
 
+  <!-- Quill JS -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  
   <script type="module">
     import { db } from './js/firebase.js';
     import { collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
@@ -141,40 +234,89 @@
       document.getElementById('navMenu').classList.toggle('active');
     });
 
+    // Initialize Quill WYSIWYG Editor
+    const quill = new Quill('#editor-container', {
+      theme: 'snow',
+      placeholder: 'Tulis konten artikel Anda di sini...',
+      modules: {
+        toolbar: [
+          [{ 'header': [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'indent': '-1'}, { 'indent': '+1' }],
+          ['link'],
+          [{ 'align': [] }],
+          ['blockquote', 'code-block'],
+          ['clean']
+        ]
+      }
+    });
+
     document.getElementById('submitForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      
-      const konten = document.getElementById('konten').value;
-      if (konten.length < 300) {
-        alert('Konten artikel minimal 300 karakter');
-        return;
-      }
-      
       const btn = document.getElementById('btnSubmit');
       btn.disabled = true;
       btn.textContent = 'Mengirim...';
       
+      // Get content from Quill editor
+      const content = quill.root.innerHTML;
+      const plainText = quill.getText().trim();
+      
+      // Validate content
+      if (plainText.length < 100) {
+        alert('Konten artikel minimal 100 karakter!');
+        btn.disabled = false;
+        btn.textContent = 'Kirim Artikel';
+        return;
+      }
+      
+      // Parse tags
+      const tagsInput = document.getElementById('tags').value.trim();
+      const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [];
+      
+      // Get contributor info
+      const publishName = document.getElementById('publishName').checked;
+      const contributorName = document.getElementById('contributorName').value.trim();
+      const affiliation = document.getElementById('contributorAffiliation').value.trim();
+      
       try {
         await addDoc(collection(db, 'article_submissions'), {
-          judul: document.getElementById('judul').value,
-          penulis: document.getElementById('penulis').value,
-          kategori: document.getElementById('kategori').value,
-          konten: konten,
-          email: document.getElementById('email').value,
-          tanggalSubmit: new Date(),
-          status: 'pending'
+          // ARTICLE DATA
+          title: document.getElementById('title').value.trim(),
+          category: document.getElementById('category').value,
+          excerpt: document.getElementById('excerpt').value.trim(),
+          content: content,
+          tags: tags,
+          
+          // CONTRIBUTOR DATA
+          contributor: {
+            nama: contributorName,
+            email: document.getElementById('contributorEmail').value.trim(),
+            affiliation: affiliation || null,
+            publishName: publishName
+          },
+          
+          // AUTHOR DISPLAY (for published article)
+          author: publishName ? contributorName : 'Kontributor Anonim',
+          authorAffiliation: (publishName && affiliation) ? affiliation : null,
+          
+          // METADATA
+          submittedAt: new Date(),
+          status: 'pending',
+          views: 0
         });
         
         document.getElementById('formContainer').innerHTML = `
           <div class="success-message">
-            <h2>Terima Kasih!</h2>
-            <p>Artikel Anda telah diterima dan akan direview oleh tim kami.</p>
-            <a href="articles.html" class="btn btn-primary">Baca Artikel Lain</a>
+            <h2>✓ Artikel Berhasil Dikirim!</h2>
+            <p>Terima kasih atas kontribusi Anda. Artikel akan direview oleh tim kami dan dipublikasikan segera.</p>
+            <a href="articles.html" class="btn btn-primary">Lihat Daftar Artikel</a>
             <a href="submit-article.html" class="btn btn-outline" style="margin-left:8px">Kirim Lagi</a>
           </div>
         `;
       } catch (error) {
-        alert('Gagal mengirim. Silakan coba lagi.');
+        alert('Gagal mengirim artikel. Silakan coba lagi.');
+        console.error(error);
         btn.disabled = false;
         btn.textContent = 'Kirim Artikel';
       }
