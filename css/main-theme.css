@@ -26,6 +26,86 @@ body {
 }
 
 /* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Apply animations to elements */
+.main-navbar {
+  animation: fadeIn 0.6s ease;
+}
+
+.page-header {
+  animation: fadeIn 0.8s ease;
+}
+
+.card {
+  animation: scaleIn 0.5s ease;
+  animation-fill-mode: both;
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+.card:nth-child(5) { animation-delay: 0.5s; }
+.card:nth-child(6) { animation-delay: 0.6s; }
+
+.journal-card,
+.article-card {
+  animation: fadeIn 0.6s ease;
+  animation-fill-mode: both;
+}
+
+.journal-card:nth-child(odd) { animation-delay: 0.1s; }
+.journal-card:nth-child(even) { animation-delay: 0.2s; }
+.article-card:nth-child(odd) { animation-delay: 0.1s; }
+.article-card:nth-child(even) { animation-delay: 0.2s; }
+
+/* ============================================
    NAVBAR
    ============================================ */
 
@@ -45,7 +125,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 16px 16px;
 }
 
 .navbar-brand {
@@ -54,10 +134,12 @@ body {
   color: var(--color-primary);
   text-decoration: none;
   letter-spacing: -0.5px;
+  transition: var(--transition);
 }
 
 .navbar-brand:hover {
   color: var(--color-primary);
+  transform: translateY(-2px);
 }
 
 .navbar-menu {
@@ -85,11 +167,12 @@ body {
   width: 0;
   height: 2px;
   background: var(--color-primary);
-  transition: width 0.2s ease;
+  transition: width 0.3s ease;
 }
 
 .navbar-menu a:hover {
   color: var(--color-primary);
+  transform: translateY(-2px);
 }
 
 .navbar-menu a:hover::after,
@@ -132,7 +215,7 @@ body {
     background: var(--color-bg);
     flex-direction: column;
     gap: 0;
-    padding: 16px 24px;
+    padding: 16px;
     border-bottom: 1px solid var(--color-border);
     display: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
@@ -140,6 +223,7 @@ body {
   
   .navbar-menu.active {
     display: flex;
+    animation: slideInRight 0.3s ease;
   }
   
   .navbar-menu a {
@@ -155,8 +239,9 @@ body {
 .main-footer {
   background: var(--color-primary);
   color: white;
-  padding: 48px 24px 24px;
+  padding: 48px 16px 24px;
   margin-top: 80px;
+  animation: fadeIn 0.8s ease;
 }
 
 .footer-container {
@@ -209,6 +294,7 @@ body {
 
 .footer-links a:hover {
   color: white;
+  transform: translateX(3px);
 }
 
 .footer-bottom {
@@ -233,7 +319,7 @@ body {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 16px;
 }
 
 .page-header {
@@ -263,12 +349,13 @@ body {
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 24px;
-  transition: var(--transition);
+  transition: all 0.3s ease;
 }
 
 .card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   border-color: var(--color-primary);
+  transform: translateY(-4px);
 }
 
 .card-title {
@@ -276,6 +363,11 @@ body {
   font-weight: 600;
   margin-bottom: 12px;
   color: var(--color-primary);
+  transition: var(--transition);
+}
+
+.card:hover .card-title {
+  transform: translateX(3px);
 }
 
 .card-text {
@@ -295,7 +387,7 @@ body {
   font-weight: 500;
   text-decoration: none;
   border-radius: 6px;
-  transition: var(--transition);
+  transition: all 0.3s ease;
   border: 1px solid transparent;
   cursor: pointer;
 }
@@ -309,8 +401,8 @@ body {
 .btn-primary:hover {
   background: var(--color-secondary);
   color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .btn-outline {
@@ -322,6 +414,8 @@ body {
 .btn-outline:hover {
   background: var(--color-primary);
   color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .btn-link {
@@ -330,10 +424,12 @@ body {
   padding: 0;
   border: none;
   font-weight: 500;
+  transition: var(--transition);
 }
 
 .btn-link:hover {
   text-decoration: underline;
+  transform: translateX(3px);
 }
 
 /* ============================================
@@ -342,7 +438,15 @@ body {
 
 .form-group {
   margin-bottom: 20px;
+  animation: fadeIn 0.5s ease;
+  animation-fill-mode: both;
 }
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.15s; }
+.form-group:nth-child(3) { animation-delay: 0.2s; }
+.form-group:nth-child(4) { animation-delay: 0.25s; }
+.form-group:nth-child(5) { animation-delay: 0.3s; }
 
 .form-label {
   display: block;
@@ -358,7 +462,7 @@ body {
   font-size: 14px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  transition: var(--transition);
+  transition: all 0.3s ease;
   font-family: inherit;
 }
 
@@ -366,6 +470,7 @@ body {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(26, 29, 41, 0.1);
+  transform: translateY(-1px);
 }
 
 .form-select {
@@ -374,7 +479,7 @@ body {
   font-size: 14px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  transition: var(--transition);
+  transition: all 0.3s ease;
   background: white;
   cursor: pointer;
 }
@@ -383,6 +488,7 @@ body {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(26, 29, 41, 0.1);
+  transform: translateY(-1px);
 }
 
 textarea.form-control {
@@ -403,6 +509,11 @@ textarea.form-control {
   background: var(--color-bg-light);
   color: var(--color-text);
   border: 1px solid var(--color-border);
+  transition: all 0.2s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
 }
 
 .badge-primary {
@@ -445,23 +556,8 @@ textarea.form-control {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
-/* ============================================
-   ANIMATIONS
-   ============================================ */
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .fade-in {
-  animation: fadeIn 0.4s ease;
+  animation: fadeIn 0.6s ease;
 }
 
 /* ============================================
@@ -469,6 +565,10 @@ textarea.form-control {
    ============================================ */
 
 @media (max-width: 768px) {
+  .container {
+    padding: 0 12px;
+  }
+  
   .page-header h1 {
     font-size: 24px;
   }
