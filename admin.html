@@ -46,13 +46,6 @@
       color: white;
       font-size: 20px;
       font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .sidebar-brand span {
-      font-size: 24px;
     }
     
     .sidebar-menu {
@@ -90,13 +83,6 @@
       color: white;
     }
     
-    .menu-item i {
-      margin-right: 12px;
-      font-size: 18px;
-      width: 20px;
-      text-align: center;
-    }
-    
     .logout-item {
       margin-top: 30px;
       padding-top: 20px;
@@ -120,9 +106,6 @@
     
     /* Header */
     .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       margin-bottom: 30px;
     }
     
@@ -149,7 +132,7 @@
     
     .stat-card {
       background: white;
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 24px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       transition: transform 0.2s, box-shadow 0.2s;
@@ -160,49 +143,13 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     }
     
-    .stat-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    
     .stat-label {
       color: #8b8d98;
       font-size: 13px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-    }
-    
-    .stat-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-    
-    .stat-icon.purple {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-    
-    .stat-icon.blue {
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      color: white;
-    }
-    
-    .stat-icon.green {
-      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-      color: white;
-    }
-    
-    .stat-icon.orange {
-      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-      color: white;
+      margin-bottom: 12px;
     }
     
     .stat-value {
@@ -231,8 +178,8 @@
     
     .action-card {
       background: white;
-      border-radius: 16px;
-      padding: 28px;
+      border-radius: 12px;
+      padding: 24px;
       text-decoration: none;
       color: inherit;
       display: flex;
@@ -243,22 +190,9 @@
     }
     
     .action-card:hover {
-      transform: translateY(-6px);
+      transform: translateY(-4px);
       box-shadow: 0 12px 28px rgba(0,0,0,0.12);
       border-color: #667eea;
-    }
-    
-    .action-card-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      margin-bottom: 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
     }
     
     .action-card h3 {
@@ -284,6 +218,7 @@
       font-size: 12px;
       font-weight: 600;
       margin-top: 12px;
+      align-self: flex-start;
     }
     
     .badge-success {
@@ -293,25 +228,13 @@
     /* Responsive */
     @media (max-width: 768px) {
       .sidebar {
-        width: 80px;
-      }
-      
-      .sidebar-brand span:last-child {
-        display: none;
-      }
-      
-      .menu-item span {
-        display: none;
-      }
-      
-      .menu-label {
-        text-align: center;
-        padding-left: 0;
-        padding-right: 0;
+        width: 100%;
+        height: auto;
+        position: relative;
       }
       
       .main-content {
-        margin-left: 80px;
+        margin-left: 0;
         padding: 20px;
       }
       
@@ -326,46 +249,24 @@
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="sidebar-brand">
-      <span>📚</span>
-      <span>PubGlow</span>
+      PubGlow Admin
     </div>
     
     <div class="sidebar-menu">
       <div class="menu-label">Main Menu</div>
-      <a href="admin.html" class="menu-item active">
-        <i>🏠</i>
-        <span>Dashboard</span>
-      </a>
+      <a href="admin.html" class="menu-item active">Dashboard</a>
       
       <div class="menu-label">Management</div>
-      <a href="admin-scope-kategori.html" class="menu-item">
-        <i>🔧</i>
-        <span>Scope & Kategori</span>
-      </a>
-      <a href="admin-journals.html" class="menu-item">
-        <i>📚</i>
-        <span>Kelola Jurnal</span>
-      </a>
-      <a href="admin-articles.html" class="menu-item">
-        <i>📰</i>
-        <span>Kelola Artikel</span>
-      </a>
-      <a href="admin-submissions.html" class="menu-item">
-        <i>📋</i>
-        <span>Submissions</span>
-      </a>
+      <a href="admin-scope-kategori.html" class="menu-item">Scope & Kategori</a>
+      <a href="admin-journals.html" class="menu-item">Kelola Jurnal</a>
+      <a href="admin-articles.html" class="menu-item">Kelola Artikel</a>
+      <a href="admin-submissions.html" class="menu-item">Submissions</a>
       
       <div class="menu-label">Other</div>
-      <a href="index.html" class="menu-item">
-        <i>🌐</i>
-        <span>View Website</span>
-      </a>
+      <a href="index.html" class="menu-item">View Website</a>
       
       <div class="logout-item">
-        <a href="#" id="btnLogout" class="menu-item">
-          <i>🚺</i>
-          <span>Logout</span>
-        </a>
+        <a href="#" id="btnLogout" class="menu-item">Logout</a>
       </div>
     </div>
   </div>
@@ -383,64 +284,48 @@
     <!-- Stats Cards -->
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-label">Total Jurnal</span>
-          <div class="stat-icon purple">📚</div>
-        </div>
+        <div class="stat-label">Total Jurnal</div>
         <div class="stat-value" id="totalJournals">0</div>
-        <div class="stat-change">↑ Loading...</div>
+        <div class="stat-change">Loading...</div>
       </div>
       
       <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-label">Total Artikel</span>
-          <div class="stat-icon blue">📰</div>
-        </div>
+        <div class="stat-label">Total Artikel</div>
         <div class="stat-value" id="totalArticles">0</div>
-        <div class="stat-change">↑ Loading...</div>
+        <div class="stat-change">Loading...</div>
       </div>
       
       <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-label">Pending Review</span>
-          <div class="stat-icon orange">📋</div>
-        </div>
+        <div class="stat-label">Pending Review</div>
         <div class="stat-value" id="totalPending">0</div>
         <div class="stat-change" id="pendingChange">Loading...</div>
       </div>
       
       <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-label">Published</span>
-          <div class="stat-icon green">✅</div>
-        </div>
+        <div class="stat-label">Published</div>
         <div class="stat-value" id="totalPublished">0</div>
-        <div class="stat-change">↑ Active content</div>
+        <div class="stat-change">Active content</div>
       </div>
     </div>
 
     <!-- Action Cards -->
     <div class="action-cards">
       <a href="admin-scope-kategori.html" class="action-card">
-        <div class="action-card-icon">🔧</div>
         <h3>Kelola Scope & Kategori</h3>
         <p>Manage scope jurnal dan kategori artikel untuk organisasi konten yang lebih baik.</p>
       </a>
       
       <a href="admin-journals.html" class="action-card">
-        <div class="action-card-icon">📚</div>
         <h3>Kelola Jurnal</h3>
         <p>Tambah, edit, dan kelola database jurnal publikasi ilmiah.</p>
       </a>
       
       <a href="admin-articles.html" class="action-card">
-        <div class="action-card-icon">📰</div>
         <h3>Kelola Artikel</h3>
         <p>Tulis dan publikasikan artikel blog untuk panduan pengguna.</p>
       </a>
       
       <a href="admin-submissions.html" class="action-card">
-        <div class="action-card-icon">📋</div>
         <h3>Review Submissions</h3>
         <p>Review dan approve kontribusi jurnal dari pengguna.</p>
         <span class="badge-pending" id="submissionBadge">Loading...</span>
@@ -490,7 +375,7 @@
         const totalPending = journalSubSnap.size + articleSubSnap.size;
         
         document.getElementById('totalPending').textContent = totalPending;
-        document.getElementById('pendingChange').textContent = totalPending > 0 ? '⚠️ Needs review' : '✅ All clear';
+        document.getElementById('pendingChange').textContent = totalPending > 0 ? 'Needs review' : 'All clear';
         document.getElementById('pendingChange').className = totalPending > 0 ? 'stat-change negative' : 'stat-change';
         
         // Total Published
