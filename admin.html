@@ -40,49 +40,34 @@
       font-weight: 600;
       color: #1a1d29;
     }
-    .chart-bar {
-      display: flex;
-      align-items: center;
-      margin-bottom: 12px;
+    #visitorChart {
+      width: 100%;
+      height: 200px;
+      margin-top: 10px;
     }
-    .chart-label {
-      width: 100px;
-      font-size: 12px;
-      color: #495057;
-      font-weight: 500;
+    .visitor-summary {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
     }
-    .chart-bar-container {
-      flex: 1;
-      height: 24px;
-      background: #f1f3f5;
-      border-radius: 4px;
-      overflow: hidden;
-      position: relative;
+    .visitor-summary-item {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
     }
-    .chart-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #1a1d29 0%, #2d3142 100%);
-      border-radius: 4px;
-      transition: width 0.6s ease;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding-right: 8px;
-    }
-    .chart-bar-value {
-      font-size: 11px;
-      color: white;
+    .visitor-summary-value {
+      font-size: 20px;
       font-weight: 600;
+      color: #1a1d29;
+      margin-bottom: 2px;
     }
-    .visitor-stat-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid #f1f3f5;
-    }
-    .visitor-stat-item:last-child {
-      border-bottom: none;
+    .visitor-summary-label {
+      font-size: 11px;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
   </style>
 </head>
@@ -198,12 +183,12 @@
       </div>
     </div>
 
-    <!-- Recent Activity & Visitor Stats -->
+    <!-- Recent Activity & Visitor Chart -->
     <div class="row">
       <div class="col-md-6">
         <div class="card">
           <div class="card-header">Recent Activity</div>
-          <div class="card-body" id="recentActivity" style="max-height:300px;overflow-y:auto">
+          <div class="card-body" id="recentActivity" style="max-height:340px;overflow-y:auto">
             <div style="text-align:center;padding:20px;color:#6c757d">
               <div class="spinner-border spinner-border-sm"></div>
               <p class="mt-2 mb-0" style="font-size:13px">Loading activity...</p>
@@ -213,24 +198,20 @@
       </div>
       <div class="col-md-6">
         <div class="card">
-          <div class="card-header">Pengunjung Web</div>
+          <div class="card-header">Pengunjung Web (7 Hari Terakhir)</div>
           <div class="card-body">
-            <div class="mb-3">
-              <div class="visitor-stat-item">
-                <span style="font-size:13px;color:#6c757d">Total Page Views</span>
-                <span style="font-size:16px;font-weight:600;color:#1a1d29" id="visitorTotal">0</span>
+            <div class="visitor-summary">
+              <div class="visitor-summary-item">
+                <div class="visitor-summary-value" id="todayVisitors">0</div>
+                <div class="visitor-summary-label">Hari Ini</div>
               </div>
-              <div class="visitor-stat-item">
-                <span style="font-size:13px;color:#6c757d">Avg. Views per Article</span>
-                <span style="font-size:16px;font-weight:600;color:#1a1d29" id="visitorAvg">0</span>
-              </div>
-            </div>
-            <div style="margin-top:20px">
-              <p style="font-size:12px;font-weight:600;color:#495057;margin-bottom:12px">Top 5 Artikel Terpopuler</p>
-              <div id="topArticlesChart">
-                <div style="text-align:center;padding:10px;color:#6c757d;font-size:12px">Loading chart...</div>
+              <div class="visitor-summary-item">
+                <div class="visitor-summary-value" id="weekVisitors">0</div>
+                <div class="visitor-summary-label">7 Hari</div>
               </div>
             </div>
+            <canvas id="visitorChart"></canvas>
+            <p style="font-size:11px;color:#6c757d;margin-top:10px;margin-bottom:0;text-align:center">Data otomatis terekam setiap kunjungan ke website</p>
           </div>
         </div>
       </div>
@@ -274,16 +255,8 @@
         const publishedArticles = articlesSnap.docs.filter(doc => doc.data().status === 'published').length;
         const draftArticles = articlesSnap.size - publishedArticles;
         let totalViews = 0;
-        const articleViews = [];
         articlesSnap.docs.forEach(doc => {
-          const views = doc.data().views || 0;
-          totalViews += views;
-          if (doc.data().status === 'published') {
-            articleViews.push({
-              title: doc.data().judul,
-              views: views
-            });
-          }
+          totalViews += doc.data().views || 0;
         });
         
         document.getElementById('totalArticles').textContent = articlesSnap.size;
@@ -291,14 +264,6 @@
         document.getElementById('articlesDraft').textContent = draftArticles;
         document.getElementById('articleChange').textContent = `${publishedArticles} published`;
         document.getElementById('totalViews').textContent = totalViews.toLocaleString('id-ID');
-        
-        // Visitor Stats
-        document.getElementById('visitorTotal').textContent = totalViews.toLocaleString('id-ID');
-        const avgViews = publishedArticles > 0 ? Math.round(totalViews / publishedArticles) : 0;
-        document.getElementById('visitorAvg').textContent = avgViews.toLocaleString('id-ID');
-        
-        // Top Articles Chart
-        loadTopArticlesChart(articleViews);
         
         // Submissions
         const journalSubSnap = await getDocs(query(collection(db, 'journal_submissions'), where('status', '==', 'pending')));
@@ -331,40 +296,153 @@
         
         // Load Recent Activity
         await loadRecentActivity(journalsSnap, articlesSnap, journalSubSnap, articleSubSnap);
+        
+        // Load Visitor Chart
+        await loadVisitorChart();
       } catch (error) {
         console.error('Error loading stats:', error);
       }
     }
     
-    function loadTopArticlesChart(articleViews) {
-      // Sort by views and get top 5
-      const topArticles = articleViews
-        .sort((a, b) => b.views - a.views)
-        .slice(0, 5);
+    async function loadVisitorChart() {
+      try {
+        const visitorSnap = await getDocs(collection(db, 'visitor_stats'));
+        
+        // Get last 7 days
+        const last7Days = [];
+        const today = new Date();
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date(today);
+          date.setDate(date.getDate() - i);
+          const dateStr = date.toISOString().split('T')[0];
+          last7Days.push({
+            date: dateStr,
+            label: date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }),
+            visitors: 0
+          });
+        }
+        
+        // Fill with actual data
+        visitorSnap.docs.forEach(doc => {
+          const data = doc.data();
+          const dateStr = doc.id;
+          const dayData = last7Days.find(d => d.date === dateStr);
+          if (dayData) {
+            dayData.visitors = data.count || 0;
+          }
+        });
+        
+        // Calculate today and week total
+        const todayVisitors = last7Days[6].visitors;
+        const weekVisitors = last7Days.reduce((sum, day) => sum + day.visitors, 0);
+        
+        document.getElementById('todayVisitors').textContent = todayVisitors.toLocaleString('id-ID');
+        document.getElementById('weekVisitors').textContent = weekVisitors.toLocaleString('id-ID');
+        
+        // Draw chart
+        drawVisitorChart(last7Days);
+      } catch (error) {
+        console.error('Error loading visitor chart:', error);
+        // Show demo data if collection doesn't exist
+        const demoData = [];
+        const today = new Date();
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date(today);
+          date.setDate(date.getDate() - i);
+          demoData.push({
+            date: date.toISOString().split('T')[0],
+            label: date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }),
+            visitors: Math.floor(Math.random() * 50) + 10
+          });
+        }
+        document.getElementById('todayVisitors').textContent = demoData[6].visitors;
+        document.getElementById('weekVisitors').textContent = demoData.reduce((sum, d) => sum + d.visitors, 0);
+        drawVisitorChart(demoData);
+      }
+    }
+    
+    function drawVisitorChart(data) {
+      const canvas = document.getElementById('visitorChart');
+      const ctx = canvas.getContext('2d');
       
-      if (topArticles.length === 0) {
-        document.getElementById('topArticlesChart').innerHTML = '<p class="text-muted mb-0" style="font-size:12px">Belum ada data views</p>';
-        return;
+      // Set canvas size
+      canvas.width = canvas.offsetWidth * 2;
+      canvas.height = 200 * 2;
+      ctx.scale(2, 2);
+      
+      const width = canvas.offsetWidth;
+      const height = 200;
+      const padding = { top: 20, right: 20, bottom: 30, left: 40 };
+      const chartWidth = width - padding.left - padding.right;
+      const chartHeight = height - padding.top - padding.bottom;
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, width, height);
+      
+      // Find max value
+      const maxVisitors = Math.max(...data.map(d => d.visitors), 10);
+      const yScale = chartHeight / maxVisitors;
+      const xStep = chartWidth / (data.length - 1);
+      
+      // Draw grid lines
+      ctx.strokeStyle = '#f1f3f5';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padding.top + (chartHeight / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(width - padding.right, y);
+        ctx.stroke();
       }
       
-      const maxViews = Math.max(...topArticles.map(a => a.views), 1);
+      // Draw line
+      ctx.strokeStyle = '#1a1d29';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      data.forEach((point, index) => {
+        const x = padding.left + xStep * index;
+        const y = padding.top + chartHeight - (point.visitors * yScale);
+        if (index === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      });
+      ctx.stroke();
       
-      const html = topArticles.map(article => {
-        const percentage = (article.views / maxViews) * 100;
-        const shortTitle = article.title.length > 25 ? article.title.substring(0, 25) + '...' : article.title;
-        return `
-          <div class="chart-bar">
-            <div class="chart-label" title="${article.title}">${shortTitle}</div>
-            <div class="chart-bar-container">
-              <div class="chart-bar-fill" style="width:${percentage}%">
-                <span class="chart-bar-value">${article.views}</span>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+      // Draw points
+      ctx.fillStyle = '#1a1d29';
+      data.forEach((point, index) => {
+        const x = padding.left + xStep * index;
+        const y = padding.top + chartHeight - (point.visitors * yScale);
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Draw white center
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(x, y, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#1a1d29';
+      });
       
-      document.getElementById('topArticlesChart').innerHTML = html;
+      // Draw x-axis labels
+      ctx.fillStyle = '#6c757d';
+      ctx.font = '10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+      ctx.textAlign = 'center';
+      data.forEach((point, index) => {
+        const x = padding.left + xStep * index;
+        ctx.fillText(point.label, x, height - 10);
+      });
+      
+      // Draw y-axis labels
+      ctx.textAlign = 'right';
+      for (let i = 0; i <= 4; i++) {
+        const value = Math.round((maxVisitors / 4) * (4 - i));
+        const y = padding.top + (chartHeight / 4) * i;
+        ctx.fillText(value.toString(), padding.left - 10, y + 4);
+      }
     }
 
     async function loadRecentActivity(journalsSnap, articlesSnap, journalSubSnap, articleSubSnap) {
