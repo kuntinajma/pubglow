@@ -36,22 +36,17 @@
       margin-bottom: 24px;
     }
     
-    .month-checkboxes {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+    .scope-checkboxes {
+      max-height: 150px;
+      overflow-y: auto;
       border: 1px solid var(--color-border);
       border-radius: 6px;
       padding: 12px;
       background: var(--color-bg-light);
     }
     
-    .month-checkboxes .form-check {
-      margin: 0;
-    }
-    
-    .month-checkboxes .form-check-label {
-      font-size: 13px;
+    .scope-checkboxes .form-check {
+      margin-bottom: 8px;
     }
     
     .fast-track-price {
@@ -61,6 +56,19 @@
     
     .fast-track-price.show {
       display: block;
+    }
+    
+    .form-section-divider {
+      border-top: 2px solid var(--color-border);
+      margin: 32px 0;
+      padding-top: 32px;
+    }
+    
+    .form-section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--color-primary);
     }
   </style>
 </head>
@@ -92,6 +100,9 @@
   <div class="container form-wrapper">
     <div class="form-card" id="formContainer">
       <form id="submitForm">
+        <!-- INFORMASI JURNAL -->
+        <div class="form-section-title">Informasi Jurnal</div>
+        
         <div class="form-group">
           <label class="form-label">Nama Jurnal *</label>
           <input type="text" class="form-control" id="nama" required>
@@ -122,87 +133,35 @@
           </div>
           
           <div class="form-group">
-            <label class="form-label">Bidang Ilmu *</label>
-            <input type="text" class="form-control" id="scope" required placeholder="Contoh: Teknik Informatika">
+            <label class="form-label">Frekuensi Terbit *</label>
+            <select class="form-select" id="frekuensi" required>
+              <option value="">Pilih frekuensi</option>
+              <option value="Bulanan">Bulanan</option>
+              <option value="2 Bulan Sekali">2 Bulan Sekali</option>
+              <option value="Triwulan">Triwulan</option>
+              <option value="4 Bulan Sekali">4 Bulan Sekali</option>
+              <option value="Semester">Semester</option>
+              <option value="Tahunan">Tahunan</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Scope (Bidang Ilmu) *</label>
+          <div id="scopeContainer" class="scope-checkboxes">
+            <div style="text-align:center;color:var(--color-text-light);font-size:12px">Loading...</div>
           </div>
         </div>
         
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
           <div class="form-group">
             <label class="form-label">Biaya Publikasi (Rp) *</label>
-            <input type="number" class="form-control" id="harga" required>
+            <input type="number" class="form-control" id="harga" required placeholder="Contoh: 500000">
           </div>
           
           <div class="form-group">
             <label class="form-label">Waktu Review *</label>
             <input type="text" class="form-control" id="waktuReview" required placeholder="Contoh: 2-3 bulan">
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Frekuensi Terbit *</label>
-          <select class="form-select" id="frekuensi" required>
-            <option value="">Pilih frekuensi</option>
-            <option value="Bulanan">Bulanan</option>
-            <option value="2 Bulan Sekali">2 Bulan Sekali</option>
-            <option value="Triwulan">Triwulan</option>
-            <option value="4 Bulan Sekali">4 Bulan Sekali</option>
-            <option value="Semester">Semester</option>
-            <option value="Tahunan">Tahunan</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Bulan Terbit (pilih yang sesuai)</label>
-          <div class="month-checkboxes">
-            <div class="form-check">
-              <input class="form-check-input month-check" type="checkbox" value="Januari" id="m_jan">
-              <label class="form-check-label" for="m_jan">Januari</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-check" type="checkbox" value="Februari" id="m_feb">
-              <label class="form-check-label" for="m_feb">Februari</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-check" type="checkbox" value="Maret" id="m_mar">
-              <label class="form-check-label" for="m_mar">Maret</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-check" type="checkbox" value="April" id="m_apr">
-              <label class="form-check-label" for="m_apr">April</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-check" type="checkbox" value="Mei" id="m_may">
-              <label class="form-check-label" for="m_may">Mei</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-check" type="checkbox" value="Juni" id="m_jun">
-              <label class="form-check-label" for="m_jun">Juni</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-check" type="checkbox" value="Juli" id="m_jul">
-              <label class="form-check-label" for="m_jul">Juli</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-check" type="checkbox" value="Agustus" id="m_aug">
-              <label class="form-check-label" for="m_aug">Agustus</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-check" type="checkbox" value="September" id="m_sep">
-              <label class="form-check-label" for="m_sep">September</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-check" type="checkbox" value="Oktober" id="m_oct">
-              <label class="form-check-label" for="m_oct">Oktober</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-check" type="checkbox" value="November" id="m_nov">
-              <label class="form-check-label" for="m_nov">November</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-check" type="checkbox" value="Desember" id="m_dec">
-              <label class="form-check-label" for="m_dec">Desember</label>
-            </div>
           </div>
         </div>
         
@@ -226,12 +185,24 @@
         
         <div class="form-group">
           <label class="form-label">Catatan Tambahan</label>
-          <textarea class="form-control" id="catatan" rows="3" placeholder="Informasi tambahan (opsional)"></textarea>
+          <textarea class="form-control" id="catatan" rows="3" placeholder="Informasi tambahan yang perlu diketahui (opsional)"></textarea>
         </div>
         
-        <div class="form-group">
-          <label class="form-label">Email Anda *</label>
-          <input type="email" class="form-control" id="email" required placeholder="Untuk follow-up">
+        <!-- DIVIDER -->
+        <div class="form-section-divider">
+          <div class="form-section-title">Informasi Kontributor</div>
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap *</label>
+            <input type="text" class="form-control" id="contributorName" required placeholder="Nama Anda">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input type="email" class="form-control" id="contributorEmail" required placeholder="email@example.com">
+          </div>
         </div>
         
         <button type="submit" class="btn btn-primary" style="width:100%" id="btnSubmit">Kirim Kontribusi</button>
@@ -269,11 +240,38 @@
 
   <script type="module">
     import { db } from './js/firebase.js';
-    import { collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { collection, addDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
     document.getElementById('navToggle').addEventListener('click', () => {
       document.getElementById('navMenu').classList.toggle('active');
     });
+
+    // Load scopes
+    async function loadScopes() {
+      try {
+        const snapshot = await getDocs(collection(db, 'scopes'));
+        if (snapshot.empty) {
+          document.getElementById('scopeContainer').innerHTML = '<p style="font-size:12px;color:var(--color-text-light);margin:0">Belum ada scope tersedia</p>';
+          return;
+        }
+        let html = '';
+        snapshot.forEach(doc => {
+          const scope = doc.data().nama;
+          html += `
+            <div class="form-check">
+              <input class="form-check-input scope-checkbox" type="checkbox" value="${scope}" id="scope_${doc.id}">
+              <label class="form-check-label" for="scope_${doc.id}">${scope}</label>
+            </div>
+          `;
+        });
+        document.getElementById('scopeContainer').innerHTML = html;
+      } catch (error) {
+        console.error(error);
+        document.getElementById('scopeContainer').innerHTML = '<p style="font-size:12px;color:red;margin:0">Error loading scopes</p>';
+      }
+    }
+    
+    loadScopes();
 
     // Toggle Fast Track price input
     document.getElementById('fastTrack').addEventListener('change', (e) => {
@@ -292,26 +290,41 @@
       btn.disabled = true;
       btn.textContent = 'Mengirim...';
       
-      const selectedMonths = Array.from(document.querySelectorAll('.month-check:checked')).map(cb => cb.value);
+      // Get selected scopes
+      const selectedScopes = Array.from(document.querySelectorAll('.scope-checkbox:checked')).map(cb => cb.value);
+      if (selectedScopes.length === 0) {
+        alert('Pilih minimal 1 bidang ilmu!');
+        btn.disabled = false;
+        btn.textContent = 'Kirim Kontribusi';
+        return;
+      }
+      
       const fastTrackChecked = document.getElementById('fastTrack').checked;
       const fastTrackBiaya = fastTrackChecked ? (parseInt(document.getElementById('fastTrackBiaya').value) || null) : null;
       
       try {
         await addDoc(collection(db, 'journal_submissions'), {
-          nama: document.getElementById('nama').value,
-          instansi: document.getElementById('instansi').value,
+          // JOURNAL DATA
+          nama: document.getElementById('nama').value.trim(),
+          instansi: document.getElementById('instansi').value.trim(),
           akreditasi: document.getElementById('akreditasi').value,
-          scope: document.getElementById('scope').value,
+          scope: selectedScopes,
           harga: parseInt(document.getElementById('harga').value),
-          waktuReview: document.getElementById('waktuReview').value,
+          waktuReview: document.getElementById('waktuReview').value.trim(),
           frekuensi: document.getElementById('frekuensi').value,
-          bulanTerbit: selectedMonths,
-          tautan: document.getElementById('tautan').value,
+          tautan: document.getElementById('tautan').value.trim(),
           fastTrack: fastTrackChecked ? 'Ada' : 'Tidak Ada',
           fastTrackBiaya: fastTrackBiaya,
-          catatan: document.getElementById('catatan').value,
-          email: document.getElementById('email').value,
-          tanggalSubmit: new Date(),
+          catatan: document.getElementById('catatan').value.trim(),
+          
+          // CONTRIBUTOR DATA
+          contributor: {
+            nama: document.getElementById('contributorName').value.trim(),
+            email: document.getElementById('contributorEmail').value.trim()
+          },
+          
+          // METADATA
+          submittedAt: new Date(),
           status: 'pending'
         });
         
@@ -325,6 +338,7 @@
         `;
       } catch (error) {
         alert('Gagal mengirim. Silakan coba lagi.');
+        console.error(error);
         btn.disabled = false;
         btn.textContent = 'Kirim Kontribusi';
       }
