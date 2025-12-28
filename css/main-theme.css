@@ -125,7 +125,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 16px;
+  padding: 16px 12px;
 }
 
 .navbar-brand {
@@ -215,7 +215,7 @@ body {
     background: var(--color-bg);
     flex-direction: column;
     gap: 0;
-    padding: 16px;
+    padding: 16px 12px;
     border-bottom: 1px solid var(--color-border);
     display: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
@@ -239,7 +239,7 @@ body {
 .main-footer {
   background: var(--color-primary);
   color: white;
-  padding: 48px 16px 24px;
+  padding: 48px 12px 24px;
   margin-top: 80px;
   animation: fadeIn 0.8s ease;
 }
@@ -319,7 +319,7 @@ body {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 8px;
 }
 
 .page-header {
@@ -566,7 +566,15 @@ textarea.form-control {
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 12px;
+    padding: 0 8px;
+  }
+  
+  .navbar-container {
+    padding: 16px 8px;
+  }
+  
+  .main-footer {
+    padding: 48px 8px 24px;
   }
   
   .page-header h1 {
