@@ -46,10 +46,14 @@
       color: var(--color-text);
     }
     
+    .month-filter-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    
     .month-filter-group .form-check {
-      display: inline-block;
-      width: 31%;
-      margin-right: 2%;
+      margin: 0;
     }
     
     .price-range {
@@ -211,6 +215,61 @@
             </div>
           </div>
 
+          <!-- Jadwal Terbit -->
+          <div class="filter-section">
+            <label>Jadwal Terbit</label>
+            <div class="month-filter-group">
+              <div class="form-check">
+                <input class="form-check-input month-filter" type="checkbox" value="Januari" id="mf_jan">
+                <label class="form-check-label" for="mf_jan">Jan</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input month-filter" type="checkbox" value="Februari" id="mf_feb">
+                <label class="form-check-label" for="mf_feb">Feb</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input month-filter" type="checkbox" value="Maret" id="mf_mar">
+                <label class="form-check-label" for="mf_mar">Mar</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input month-filter" type="checkbox" value="April" id="mf_apr">
+                <label class="form-check-label" for="mf_apr">Apr</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input month-filter" type="checkbox" value="Mei" id="mf_may">
+                <label class="form-check-label" for="mf_may">Mei</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input month-filter" type="checkbox" value="Juni" id="mf_jun">
+                <label class="form-check-label" for="mf_jun">Jun</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input month-filter" type="checkbox" value="Juli" id="mf_jul">
+                <label class="form-check-label" for="mf_jul">Jul</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input month-filter" type="checkbox" value="Agustus" id="mf_aug">
+                <label class="form-check-label" for="mf_aug">Agu</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input month-filter" type="checkbox" value="September" id="mf_sep">
+                <label class="form-check-label" for="mf_sep">Sep</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input month-filter" type="checkbox" value="Oktober" id="mf_oct">
+                <label class="form-check-label" for="mf_oct">Okt</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input month-filter" type="checkbox" value="November" id="mf_nov">
+                <label class="form-check-label" for="mf_nov">Nov</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input month-filter" type="checkbox" value="Desember" id="mf_dec">
+                <label class="form-check-label" for="mf_dec">Des</label>
+              </div>
+            </div>
+          </div>
+
           <!-- Harga -->
           <div class="filter-section">
             <label>Rentang Harga (Rp)</label>
@@ -254,7 +313,6 @@
           <div class="result-count"><strong id="resultCount">0</strong> jurnal ditemukan</div>
           <a href="submit-journal.html" class="btn btn-outline" style="padding:8px 16px;font-size:13px">Kontribusi Jurnal</a>
         </div>
-
         <div id="journalsList">
           <div style="text-align:center;padding:60px 0">
             <div style="width:24px;height:24px;border:2px solid var(--color-border);border-top-color:var(--color-primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px"></div>
@@ -356,12 +414,18 @@
 
     function applyFiltersAndSort() {
       let filtered = [...allJournals];
+      
+      // Search filter
       const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
       if (searchTerm) {
         filtered = filtered.filter(j => j.nama.toLowerCase().includes(searchTerm) || j.instansi.toLowerCase().includes(searchTerm));
       }
+      
+      // Akreditasi filter
       const akreditasi = document.getElementById('filterAkreditasi').value;
       if (akreditasi) filtered = filtered.filter(j => j.akreditasi === akreditasi);
+      
+      // Scope filter
       const selectedScopes = Array.from(document.querySelectorAll('.scope-filter:checked')).map(cb => cb.value);
       if (selectedScopes.length > 0) {
         filtered = filtered.filter(j => {
@@ -369,18 +433,34 @@
           return selectedScopes.some(s => journalScopes.includes(s));
         });
       }
+      
+      // Month filter (Jadwal Terbit)
+      const selectedMonths = Array.from(document.querySelectorAll('.month-filter:checked')).map(cb => cb.value);
+      if (selectedMonths.length > 0) {
+        filtered = filtered.filter(j => {
+          const journalMonths = Array.isArray(j.jadwalTerbit) ? j.jadwalTerbit : [];
+          return selectedMonths.some(m => journalMonths.includes(m));
+        });
+      }
+      
+      // Price range filter
       const priceMin = parseInt(document.getElementById('priceMin').value) || 0;
       const priceMax = parseInt(document.getElementById('priceMax').value) || Infinity;
       filtered = filtered.filter(j => j.harga >= priceMin && j.harga <= priceMax);
+      
+      // Fast Track filter
       const fastTrack = document.getElementById('filterFastTrack').value;
       if (fastTrack === 'ya') {
         filtered = filtered.filter(j => j.fastTrack === 'Ada');
       } else if (fastTrack === 'tidak') {
         filtered = filtered.filter(j => j.fastTrack !== 'Ada');
       }
+      
+      // Sort
       const sortBy = document.getElementById('sortBy').value;
       if (sortBy === 'harga-asc') filtered.sort((a, b) => a.harga - b.harga);
       else if (sortBy === 'harga-desc') filtered.sort((a, b) => b.harga - a.harga);
+      
       displayJournals(filtered);
     }
 
@@ -394,6 +474,11 @@
       journals.forEach(j => {
         const scopes = Array.isArray(j.scope) ? j.scope : [j.scope];
         const scopeBadges = scopes.map(s => `<span class="badge">${s}</span>`).join(' ');
+        
+        // Jadwal Terbit
+        const jadwalTerbit = Array.isArray(j.jadwalTerbit) && j.jadwalTerbit.length > 0
+          ? j.jadwalTerbit.join(', ')
+          : (j.frekuensi || 'N/A');
         
         // Fast Track Badge
         let fastTrackHTML = '';
@@ -430,8 +515,8 @@
                 <span class="journal-meta-value">${j.waktuReview}</span>
               </div>
               <div class="journal-meta-item">
-                <span class="journal-meta-label">Frekuensi</span>
-                <span class="journal-meta-value">${j.frekuensi}</span>
+                <span class="journal-meta-label">Jadwal Terbit</span>
+                <span class="journal-meta-value">${jadwalTerbit}</span>
               </div>
               ${fastTrackHTML}
             </div>
@@ -451,8 +536,10 @@
       document.getElementById('filterFastTrack').value = '';
       document.getElementById('sortBy').value = '';
       document.querySelectorAll('.scope-filter').forEach(cb => cb.checked = false);
+      document.querySelectorAll('.month-filter').forEach(cb => cb.checked = false);
       applyFiltersAndSort();
     });
+    
     document.getElementById('searchInput').addEventListener('input', applyFiltersAndSort);
     document.getElementById('filterAkreditasi').addEventListener('change', applyFiltersAndSort);
     document.getElementById('filterFastTrack').addEventListener('change', applyFiltersAndSort);
