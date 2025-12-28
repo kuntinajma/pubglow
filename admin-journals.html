@@ -14,6 +14,20 @@
     .fast-track-price-wrapper.show {
       display: block;
     }
+    .month-checkboxes {
+      max-height: 150px;
+      overflow-y: auto;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 12px;
+      background: #f8f9fa;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .month-checkboxes .form-check {
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -97,25 +111,67 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-4 mb-3">
+              <div class="col-md-6 mb-3">
                 <label class="form-label">Harga (Rp) *</label>
                 <input type="number" class="form-control" id="harga" required>
               </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label">Frekuensi Terbit *</label>
-                <select class="form-select" id="frekuensi" required>
-                  <option value="">Pilih</option>
-                  <option value="Bulanan">Bulanan</option>
-                  <option value="2 Bulan Sekali">2 Bulan Sekali</option>
-                  <option value="Triwulan">Triwulan</option>
-                  <option value="4 Bulan Sekali">4 Bulan Sekali</option>
-                  <option value="Semester">Semester</option>
-                  <option value="Tahunan">Tahunan</option>
-                </select>
-              </div>
-              <div class="col-md-4 mb-3">
+              <div class="col-md-6 mb-3">
                 <label class="form-label">Waktu Review *</label>
                 <input type="text" class="form-control" id="waktuReview" placeholder="Contoh: 2-3 bulan" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Jadwal Terbit *</label>
+              <small class="text-muted d-block mb-2">Pilih bulan terbit jurnal</small>
+              <div id="monthContainer" class="month-checkboxes">
+                <div class="form-check">
+                  <input class="form-check-input month-checkbox" type="checkbox" value="Januari" id="m_jan">
+                  <label class="form-check-label" for="m_jan">Januari</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input month-checkbox" type="checkbox" value="Februari" id="m_feb">
+                  <label class="form-check-label" for="m_feb">Februari</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input month-checkbox" type="checkbox" value="Maret" id="m_mar">
+                  <label class="form-check-label" for="m_mar">Maret</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input month-checkbox" type="checkbox" value="April" id="m_apr">
+                  <label class="form-check-label" for="m_apr">April</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input month-checkbox" type="checkbox" value="Mei" id="m_may">
+                  <label class="form-check-label" for="m_may">Mei</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input month-checkbox" type="checkbox" value="Juni" id="m_jun">
+                  <label class="form-check-label" for="m_jun">Juni</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input month-checkbox" type="checkbox" value="Juli" id="m_jul">
+                  <label class="form-check-label" for="m_jul">Juli</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input month-checkbox" type="checkbox" value="Agustus" id="m_aug">
+                  <label class="form-check-label" for="m_aug">Agustus</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input month-checkbox" type="checkbox" value="September" id="m_sep">
+                  <label class="form-check-label" for="m_sep">September</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input month-checkbox" type="checkbox" value="Oktober" id="m_oct">
+                  <label class="form-check-label" for="m_oct">Oktober</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input month-checkbox" type="checkbox" value="November" id="m_nov">
+                  <label class="form-check-label" for="m_nov">November</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input month-checkbox" type="checkbox" value="Desember" id="m_dec">
+                  <label class="form-check-label" for="m_dec">Desember</label>
+                </div>
               </div>
             </div>
             <div class="mb-3">

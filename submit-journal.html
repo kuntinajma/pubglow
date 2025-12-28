@@ -49,6 +49,20 @@
       margin-bottom: 8px;
     }
     
+    .month-checkboxes {
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 12px;
+      background: var(--color-bg-light);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    
+    .month-checkboxes .form-check {
+      margin: 0;
+    }
+    
     .fast-track-price {
       margin-top: 12px;
       display: none;
@@ -113,37 +127,22 @@
           <input type="text" class="form-control" id="instansi" required>
         </div>
         
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-          <div class="form-group">
-            <label class="form-label">Akreditasi *</label>
-            <select class="form-select" id="akreditasi" required>
-              <option value="">Pilih akreditasi</option>
-              <option value="SINTA 1">SINTA 1</option>
-              <option value="SINTA 2">SINTA 2</option>
-              <option value="SINTA 3">SINTA 3</option>
-              <option value="SINTA 4">SINTA 4</option>
-              <option value="SINTA 5">SINTA 5</option>
-              <option value="SINTA 6">SINTA 6</option>
-              <option value="Non-SINTA">Non-SINTA</option>
-              <option value="Scopus Q1">Scopus Q1</option>
-              <option value="Scopus Q2">Scopus Q2</option>
-              <option value="Scopus Q3">Scopus Q3</option>
-              <option value="Scopus Q4">Scopus Q4</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">Frekuensi Terbit *</label>
-            <select class="form-select" id="frekuensi" required>
-              <option value="">Pilih frekuensi</option>
-              <option value="Bulanan">Bulanan</option>
-              <option value="2 Bulan Sekali">2 Bulan Sekali</option>
-              <option value="Triwulan">Triwulan</option>
-              <option value="4 Bulan Sekali">4 Bulan Sekali</option>
-              <option value="Semester">Semester</option>
-              <option value="Tahunan">Tahunan</option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label class="form-label">Akreditasi *</label>
+          <select class="form-select" id="akreditasi" required>
+            <option value="">Pilih akreditasi</option>
+            <option value="SINTA 1">SINTA 1</option>
+            <option value="SINTA 2">SINTA 2</option>
+            <option value="SINTA 3">SINTA 3</option>
+            <option value="SINTA 4">SINTA 4</option>
+            <option value="SINTA 5">SINTA 5</option>
+            <option value="SINTA 6">SINTA 6</option>
+            <option value="Non-SINTA">Non-SINTA</option>
+            <option value="Scopus Q1">Scopus Q1</option>
+            <option value="Scopus Q2">Scopus Q2</option>
+            <option value="Scopus Q3">Scopus Q3</option>
+            <option value="Scopus Q4">Scopus Q4</option>
+          </select>
         </div>
         
         <div class="form-group">
@@ -162,6 +161,61 @@
           <div class="form-group">
             <label class="form-label">Waktu Review *</label>
             <input type="text" class="form-control" id="waktuReview" required placeholder="Contoh: 2-3 bulan">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Jadwal Terbit *</label>
+          <small class="text-muted d-block mb-2">Pilih bulan terbit jurnal</small>
+          <div class="month-checkboxes">
+            <div class="form-check">
+              <input class="form-check-input month-checkbox" type="checkbox" value="Januari" id="m_jan">
+              <label class="form-check-label" for="m_jan">Januari</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input month-checkbox" type="checkbox" value="Februari" id="m_feb">
+              <label class="form-check-label" for="m_feb">Februari</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input month-checkbox" type="checkbox" value="Maret" id="m_mar">
+              <label class="form-check-label" for="m_mar">Maret</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input month-checkbox" type="checkbox" value="April" id="m_apr">
+              <label class="form-check-label" for="m_apr">April</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input month-checkbox" type="checkbox" value="Mei" id="m_may">
+              <label class="form-check-label" for="m_may">Mei</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input month-checkbox" type="checkbox" value="Juni" id="m_jun">
+              <label class="form-check-label" for="m_jun">Juni</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input month-checkbox" type="checkbox" value="Juli" id="m_jul">
+              <label class="form-check-label" for="m_jul">Juli</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input month-checkbox" type="checkbox" value="Agustus" id="m_aug">
+              <label class="form-check-label" for="m_aug">Agustus</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input month-checkbox" type="checkbox" value="September" id="m_sep">
+              <label class="form-check-label" for="m_sep">September</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input month-checkbox" type="checkbox" value="Oktober" id="m_oct">
+              <label class="form-check-label" for="m_oct">Oktober</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input month-checkbox" type="checkbox" value="November" id="m_nov">
+              <label class="form-check-label" for="m_nov">November</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input month-checkbox" type="checkbox" value="Desember" id="m_dec">
+              <label class="form-check-label" for="m_dec">Desember</label>
+            </div>
           </div>
         </div>
         
@@ -299,6 +353,15 @@
         return;
       }
       
+      // Get selected months
+      const selectedMonths = Array.from(document.querySelectorAll('.month-checkbox:checked')).map(cb => cb.value);
+      if (selectedMonths.length === 0) {
+        alert('Pilih minimal 1 bulan jadwal terbit!');
+        btn.disabled = false;
+        btn.textContent = 'Kirim Kontribusi';
+        return;
+      }
+      
       const fastTrackChecked = document.getElementById('fastTrack').checked;
       const fastTrackBiaya = fastTrackChecked ? (parseInt(document.getElementById('fastTrackBiaya').value) || null) : null;
       
@@ -311,7 +374,7 @@
           scope: selectedScopes,
           harga: parseInt(document.getElementById('harga').value),
           waktuReview: document.getElementById('waktuReview').value.trim(),
-          frekuensi: document.getElementById('frekuensi').value,
+          jadwalTerbit: selectedMonths,
           tautan: document.getElementById('tautan').value.trim(),
           fastTrack: fastTrackChecked ? 'Ada' : 'Tidak Ada',
           fastTrackBiaya: fastTrackBiaya,
