@@ -40,6 +40,50 @@
       font-weight: 600;
       color: #1a1d29;
     }
+    .chart-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .chart-label {
+      width: 100px;
+      font-size: 12px;
+      color: #495057;
+      font-weight: 500;
+    }
+    .chart-bar-container {
+      flex: 1;
+      height: 24px;
+      background: #f1f3f5;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .chart-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1a1d29 0%, #2d3142 100%);
+      border-radius: 4px;
+      transition: width 0.6s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+    }
+    .chart-bar-value {
+      font-size: 11px;
+      color: white;
+      font-weight: 600;
+    }
+    .visitor-stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f3f5;
+    }
+    .visitor-stat-item:last-child {
+      border-bottom: none;
+    }
   </style>
 </head>
 <body>
@@ -154,7 +198,7 @@
       </div>
     </div>
 
-    <!-- Recent Activity & Quick Actions -->
+    <!-- Recent Activity & Visitor Stats -->
     <div class="row">
       <div class="col-md-6">
         <div class="card">
@@ -169,15 +213,23 @@
       </div>
       <div class="col-md-6">
         <div class="card">
-          <div class="card-header">Quick Actions</div>
+          <div class="card-header">Pengunjung Web</div>
           <div class="card-body">
-            <div class="d-grid gap-2">
-              <a href="admin-journals.html" class="btn btn-primary">Tambah Jurnal Baru</a>
-              <a href="admin-articles.html" class="btn btn-primary">Tulis Artikel Baru</a>
-              <a href="admin-submissions.html" class="btn btn-warning text-dark" id="reviewSubmissionsBtn">
-                Review Submissions <span class="badge bg-danger" id="quickPendingBadge">0</span>
-              </a>
-              <a href="admin-scope-kategori.html" class="btn btn-secondary">Kelola Scope & Kategori</a>
+            <div class="mb-3">
+              <div class="visitor-stat-item">
+                <span style="font-size:13px;color:#6c757d">Total Page Views</span>
+                <span style="font-size:16px;font-weight:600;color:#1a1d29" id="visitorTotal">0</span>
+              </div>
+              <div class="visitor-stat-item">
+                <span style="font-size:13px;color:#6c757d">Avg. Views per Article</span>
+                <span style="font-size:16px;font-weight:600;color:#1a1d29" id="visitorAvg">0</span>
+              </div>
+            </div>
+            <div style="margin-top:20px">
+              <p style="font-size:12px;font-weight:600;color:#495057;margin-bottom:12px">Top 5 Artikel Terpopuler</p>
+              <div id="topArticlesChart">
+                <div style="text-align:center;padding:10px;color:#6c757d;font-size:12px">Loading chart...</div>
+              </div>
             </div>
           </div>
         </div>
@@ -222,14 +274,31 @@
         const publishedArticles = articlesSnap.docs.filter(doc => doc.data().status === 'published').length;
         const draftArticles = articlesSnap.size - publishedArticles;
         let totalViews = 0;
+        const articleViews = [];
         articlesSnap.docs.forEach(doc => {
-          totalViews += doc.data().views || 0;
+          const views = doc.data().views || 0;
+          totalViews += views;
+          if (doc.data().status === 'published') {
+            articleViews.push({
+              title: doc.data().judul,
+              views: views
+            });
+          }
         });
+        
         document.getElementById('totalArticles').textContent = articlesSnap.size;
         document.getElementById('articlesPublished').textContent = publishedArticles;
         document.getElementById('articlesDraft').textContent = draftArticles;
         document.getElementById('articleChange').textContent = `${publishedArticles} published`;
         document.getElementById('totalViews').textContent = totalViews.toLocaleString('id-ID');
+        
+        // Visitor Stats
+        document.getElementById('visitorTotal').textContent = totalViews.toLocaleString('id-ID');
+        const avgViews = publishedArticles > 0 ? Math.round(totalViews / publishedArticles) : 0;
+        document.getElementById('visitorAvg').textContent = avgViews.toLocaleString('id-ID');
+        
+        // Top Articles Chart
+        loadTopArticlesChart(articleViews);
         
         // Submissions
         const journalSubSnap = await getDocs(query(collection(db, 'journal_submissions'), where('status', '==', 'pending')));
@@ -253,7 +322,6 @@
         document.getElementById('totalContributors').textContent = contributorEmails.size;
         document.getElementById('pendingChange').textContent = totalPending > 0 ? 'Needs review' : 'All clear';
         document.getElementById('pendingChange').className = totalPending > 0 ? 'stat-change negative' : 'stat-change';
-        document.getElementById('quickPendingBadge').textContent = totalPending;
         
         // Scopes & Kategori
         const scopesSnap = await getDocs(collection(db, 'scopes'));
@@ -266,6 +334,37 @@
       } catch (error) {
         console.error('Error loading stats:', error);
       }
+    }
+    
+    function loadTopArticlesChart(articleViews) {
+      // Sort by views and get top 5
+      const topArticles = articleViews
+        .sort((a, b) => b.views - a.views)
+        .slice(0, 5);
+      
+      if (topArticles.length === 0) {
+        document.getElementById('topArticlesChart').innerHTML = '<p class="text-muted mb-0" style="font-size:12px">Belum ada data views</p>';
+        return;
+      }
+      
+      const maxViews = Math.max(...topArticles.map(a => a.views), 1);
+      
+      const html = topArticles.map(article => {
+        const percentage = (article.views / maxViews) * 100;
+        const shortTitle = article.title.length > 25 ? article.title.substring(0, 25) + '...' : article.title;
+        return `
+          <div class="chart-bar">
+            <div class="chart-label" title="${article.title}">${shortTitle}</div>
+            <div class="chart-bar-container">
+              <div class="chart-bar-fill" style="width:${percentage}%">
+                <span class="chart-bar-value">${article.views}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      document.getElementById('topArticlesChart').innerHTML = html;
     }
 
     async function loadRecentActivity(journalsSnap, articlesSnap, journalSubSnap, articleSubSnap) {
