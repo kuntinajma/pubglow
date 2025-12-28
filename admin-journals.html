@@ -54,6 +54,42 @@
       width: 48%;
       margin-right: 2%;
     }
+    
+    /* Toggle Switch */
+    .status-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .status-toggle .form-check {
+      margin: 0;
+    }
+    
+    .status-toggle .form-check-input {
+      width: 50px;
+      height: 25px;
+      cursor: pointer;
+    }
+    
+    .status-toggle .form-check-input:checked {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+    
+    .status-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .status-label.aktif {
+      color: #28a745;
+    }
+    
+    .status-label.hidden {
+      color: #6c757d;
+    }
   </style>
 </head>
 <body>
@@ -372,9 +408,12 @@
     function renderJournalCard(id, data) {
       const scopes = Array.isArray(data.scope) ? data.scope : [data.scope];
       const scopeBadges = scopes.map(s => `<span class="badge bg-info">${s}</span>`).join(' ');
-      const statusBadge = data.status === 'aktif' ? 
-        '<span class="badge bg-success">Aktif</span>' : 
-        '<span class="badge bg-secondary">Hidden</span>';
+      
+      const isAktif = data.status === 'aktif';
+      const statusLabel = isAktif ? 
+        '<span class="status-label aktif">✅ Aktif (Tampil di Public)</span>' : 
+        '<span class="status-label hidden">🚫 Hidden (Tidak Tampil)</span>';
+      
       const fastTrackText = data.fastTrack?.tersedia ? 
         `✅ Fast Track (Rp ${data.fastTrack.biaya?.toLocaleString('id-ID')})` : 
         '❌ Tidak ada fast track';
@@ -389,27 +428,22 @@
 
       return `
         <div class="journal-card" data-id="${id}">
-          <div class="d-flex justify-content-between align-items-start">
+          <div class="d-flex justify-content-between align-items-start mb-3">
             <div class="flex-grow-1">
               <h5>${data.nama}</h5>
+              
+              <!-- Status Toggle -->
+              <div class="status-toggle">
+                <div class="form-check form-switch">
+                  <input class="form-check-input status-toggle-switch" type="checkbox" 
+                    data-id="${id}" ${isAktif ? 'checked' : ''}>
+                </div>
+                ${statusLabel}
+              </div>
+              
               <p class="journal-info mb-2">
                 <strong>🏛️ ${data.instansi}</strong> | 
-                <span class="badge bg-success">${data.akreditasi}</span> | 
-                ${statusBadge}
-              </p>
-              <p class="journal-info mb-1">
-                📖 Scope: ${scopeBadges}
-              </p>
-              <p class="journal-info mb-1">
-                💰 Rp ${data.harga?.toLocaleString('id-ID')} | 
-                ⏱️ ${data.waktuReview} bulan | 
-                📅 ${frekuensiText}
-              </p>
-              <p class="journal-info mb-1">
-                ${fastTrackText}
-              </p>
-              <p class="journal-info mb-0">
-                🔗 <a href="${data.tautan}" target="_blank">${data.tautan}</a>
+                <span class="badge bg-success">${data.akreditasi}</span>
               </p>
             </div>
             <div>
@@ -421,11 +455,35 @@
               </button>
             </div>
           </div>
+          
+          <p class="journal-info mb-1">
+            📖 Scope: ${scopeBadges}
+          </p>
+          <p class="journal-info mb-1">
+            💰 Rp ${data.harga?.toLocaleString('id-ID')} | 
+            ⏱️ ${data.waktuReview} bulan | 
+            📅 ${frekuensiText}
+          </p>
+          <p class="journal-info mb-1">
+            ${fastTrackText}
+          </p>
+          <p class="journal-info mb-0">
+            🔗 <a href="${data.tautan}" target="_blank">${data.tautan}</a>
+          </p>
         </div>
       `;
     }
 
     function attachEventListeners() {
+      // Status Toggle
+      document.querySelectorAll('.status-toggle-switch').forEach(toggle => {
+        toggle.addEventListener('change', async (e) => {
+          const id = e.target.dataset.id;
+          const newStatus = e.target.checked ? 'aktif' : 'hidden';
+          await toggleStatus(id, newStatus, e.target);
+        });
+      });
+
       // Edit
       document.querySelectorAll('.edit-journal').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -443,6 +501,26 @@
           }
         });
       });
+    }
+
+    async function toggleStatus(id, newStatus, toggleElement) {
+      try {
+        await updateDoc(doc(db, 'journals', id), {
+          status: newStatus
+        });
+        
+        const statusText = newStatus === 'aktif' ? 'Aktif' : 'Hidden';
+        showToast('Status Updated', `Jurnal sekarang: ${statusText}`);
+        
+        // Reload to update badge
+        loadJournals();
+      } catch (error) {
+        console.error('Error updating status:', error);
+        showToast('Error', error.message, 'error');
+        
+        // Revert toggle on error
+        toggleElement.checked = !toggleElement.checked;
+      }
     }
 
     async function editJournal(id) {
