@@ -3,341 +3,416 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - PubGlow</title>
+  <title>Dashboard Admin - PubGlow</title>
   
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/pages.css">
-  
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
-  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .tab-content {
-      display: none;
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+      --sidebar-width: 260px;
     }
-    .tab-content.active {
-      display: block;
-      animation: fadeIn 0.3s ease;
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: var(--sidebar-width);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 20px;
+      overflow-y: auto;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
     }
-    .action-buttons {
+    
+    .sidebar-header {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .sidebar-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .sidebar-header .user-info {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    
+    .nav-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .nav-item {
+      margin-bottom: 5px;
+    }
+    
+    .nav-link {
       display: flex;
-      gap: 6px;
+      align-items: center;
+      padding: 12px 15px;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+    
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(5px);
+    }
+    
+    .nav-link.active {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .nav-link .icon {
+      font-size: 1.3rem;
+      margin-right: 12px;
+      width: 25px;
+      text-align: center;
+    }
+    
+    .btn-logout {
+      margin-top: 30px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid white;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .btn-logout:hover {
+      background: white;
+      color: var(--primary);
+    }
+    
+    /* Main Content */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      padding: 30px;
+      min-height: 100vh;
+    }
+    
+    .top-bar {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+    }
+    
+    .top-bar h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+      margin: 0;
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-card .icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .stat-card .label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 5px;
+    }
+    
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+    }
+    
+    /* Quick Actions */
+    .quick-actions {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .quick-actions h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    
+    .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      flex-wrap: wrap;
+      padding: 30px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 15px;
+      text-decoration: none;
+      color: #333;
+      transition: all 0.3s;
+      text-align: center;
     }
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: var(--space-6);
-      gap: var(--space-4);
+    
+    .action-btn:hover {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      transform: translateY(-3px);
     }
-    .badge-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+    
+    .action-btn .icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .action-btn .text {
+      font-weight: 600;
+    }
+    
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 50px;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .stats-grid,
+      .action-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="admin-layout">
-    <aside class="admin-sidebar">
-      <a href="admin.html" class="admin-sidebar-brand">PubGlow Admin</a>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>🚀 PubGlow</h2>
+      <div class="user-info">
+        <div>👤 <span id="userEmail">Loading...</span></div>
+      </div>
+    </div>
+    
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a href="admin.html" class="nav-link active">
+          <span class="icon">🏠</span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="admin-scope-kategori.html" class="nav-link">
+          <span class="icon">🔧</span>
+          <span>Kelola Scope & Kategori</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#journals" class="nav-link">
+          <span class="icon">📚</span>
+          <span>Kelola Jurnal</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#articles" class="nav-link">
+          <span class="icon">📰</span>
+          <span>Kelola Artikel</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#submissions" class="nav-link">
+          <span class="icon">📥</span>
+          <span>Review Submissions</span>
+        </a>
+      </li>
+    </ul>
+    
+    <button class="btn btn-logout" id="btnLogout">
+      🚪 Logout
+    </button>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="top-bar">
+      <h1>👋 Selamat Datang, Admin!</h1>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="icon">📚</div>
+        <div class="label">Total Jurnal</div>
+        <div class="value" id="statJournals">
+          <span class="spinner-border spinner-border-sm"></span>
+        </div>
+      </div>
       
-      <nav>
-        <ul class="admin-sidebar-nav">
-          <li><a href="#dashboard" class="admin-sidebar-link active" data-tab="dashboard">Dashboard</a></li>
-          <li><a href="#pendingJurnal" class="admin-sidebar-link" data-tab="pendingJurnal">Pending Jurnal</a></li>
-          <li><a href="#pendingArtikel" class="admin-sidebar-link" data-tab="pendingArtikel">Pending Artikel</a></li>
-          <li><a href="#kelolaJurnal" class="admin-sidebar-link" data-tab="kelolaJurnal">Kelola Jurnal</a></li>
-          <li><a href="#kelolaArtikel" class="admin-sidebar-link" data-tab="kelolaArtikel">Kelola Artikel</a></li>
-          <li><a href="#kelolaScope" class="admin-sidebar-link" data-tab="kelolaScope">Kelola Scope</a></li>
-          <li><a href="#kelolaKategori" class="admin-sidebar-link" data-tab="kelolaKategori">Kelola Kategori</a></li>
-          <li style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--border-color);">
-            <a href="index.html" class="admin-sidebar-link">← Kembali ke Website</a>
-          </li>
-        </ul>
-      </nav>
-    </aside>
-
-    <main class="admin-main">
-      <!-- Dashboard Tab -->
-      <div class="tab-content active" id="dashboardTab">
-        <div class="page-header">
-          <div>
-            <h1 class="page-title">Dashboard</h1>
-            <p class="page-subtitle">Overview statistik dan aktivitas PubGlow</p>
-          </div>
-        </div>
-
-        <div class="stats-grid" style="margin-bottom: var(--space-8);">
-          <div class="stat-card">
-            <div class="stat-label">Total Jurnal</div>
-            <div class="stat-value" id="statJurnal">-</div>
-            <div class="stat-change positive">↑ Aktif di platform</div>
-          </div>
-          
-          <div class="stat-card">
-            <div class="stat-label">Total Artikel</div>
-            <div class="stat-value" id="statArtikel">-</div>
-            <div class="stat-change positive">↑ Published</div>
-          </div>
-          
-          <div class="stat-card">
-            <div class="stat-label">Pending Jurnal</div>
-            <div class="stat-value" id="statPendingJurnal">-</div>
-            <div class="stat-change" style="color: var(--text-tertiary);">Menunggu review</div>
-          </div>
-          
-          <div class="stat-card">
-            <div class="stat-label">Pending Artikel</div>
-            <div class="stat-value" id="statPendingArtikel">-</div>
-            <div class="stat-change" style="color: var(--text-tertiary);">Menunggu review</div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2" style="gap: var(--space-6);">
-          <div class="card">
-            <h3 style="margin-bottom: var(--space-4); font-size: var(--font-size-lg);">Quick Actions</h3>
-            <div style="display: flex; flex-direction: column; gap: var(--space-3);">
-              <a href="#pendingJurnal" class="btn btn-outline" style="justify-content: flex-start; text-decoration: none;">Review Jurnal Pending</a>
-              <a href="#pendingArtikel" class="btn btn-outline" style="justify-content: flex-start; text-decoration: none;">Review Artikel Pending</a>
-              <button class="btn btn-outline" style="justify-content: flex-start;" onclick="location.reload()">Refresh Data</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3 style="margin-bottom: var(--space-4); font-size: var(--font-size-lg);">Recent Activity</h3>
-            <div id="recentActivity" style="font-size: var(--font-size-sm); color: var(--text-secondary);">
-              <p>Loading aktivitas terbaru...</p>
-            </div>
-          </div>
+      <div class="stat-card">
+        <div class="icon">📰</div>
+        <div class="label">Total Artikel</div>
+        <div class="value" id="statArticles">
+          <span class="spinner-border spinner-border-sm"></span>
         </div>
       </div>
-
-      <!-- Pending Jurnal Tab -->
-      <div class="tab-content" id="pendingJurnalTab">
-        <div class="page-header">
-          <div>
-            <h1 class="page-title">Pending Jurnal</h1>
-            <p class="page-subtitle">Review dan approve submission jurnal dari kontributor</p>
-          </div>
+      
+      <div class="stat-card">
+        <div class="icon">📥</div>
+        <div class="label">Pending Submissions</div>
+        <div class="value" id="statSubmissions">
+          <span class="spinner-border spinner-border-sm"></span>
         </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="icon">🔧</div>
+        <div class="label">Scope & Kategori</div>
+        <div class="value" id="statScopes">
+          <span class="spinner-border spinner-border-sm"></span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <h3>⚡ Quick Actions</h3>
+      <div class="action-grid">
+        <a href="admin-scope-kategori.html" class="action-btn">
+          <div class="icon">🔧</div>
+          <div class="text">Kelola Scope & Kategori</div>
+        </a>
         
-        <div class="card">
-          <div id="pendingJurnalTable">
-            <div class="text-center" style="padding: 40px;">
-              <div class="loader" style="margin: 0 auto 16px;"></div>
-              <p style="color: var(--text-secondary);">Memuat data...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Pending Artikel Tab -->
-      <div class="tab-content" id="pendingArtikelTab">
-        <div class="page-header">
-          <div>
-            <h1 class="page-title">Pending Artikel</h1>
-            <p class="page-subtitle">Review dan approve submission artikel dari kontributor</p>
-          </div>
-        </div>
+        <a href="#add-journal" class="action-btn">
+          <div class="icon">➕</div>
+          <div class="text">Tambah Jurnal Baru</div>
+        </a>
         
-        <div class="card">
-          <div id="pendingArtikelTable">
-            <div class="text-center" style="padding: 40px;">
-              <div class="loader" style="margin: 0 auto 16px;"></div>
-              <p style="color: var(--text-secondary);">Memuat data...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Kelola Jurnal Tab -->
-      <div class="tab-content" id="kelolaJurnalTab">
-        <div class="page-header">
-          <div>
-            <h1 class="page-title">Kelola Jurnal</h1>
-            <p class="page-subtitle">Manage semua jurnal di platform</p>
-          </div>
-          <a href="tambah-jurnal.html" class="btn btn-outline btn-sm">+ Tambah Jurnal</a>
-        </div>
+        <a href="#add-article" class="action-btn">
+          <div class="icon">✍️</div>
+          <div class="text">Tulis Artikel Baru</div>
+        </a>
         
-        <div class="card">
-          <div style="margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap;">
-            <input type="text" id="searchJurnal" class="input" placeholder="Cari jurnal..." style="max-width: 300px;">
-            <div style="display: flex; gap: var(--space-2);">
-              <select id="filterJurnalStatus" class="input" style="max-width: 150px;">
-                <option value="all">Semua Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-              <button class="btn btn-outline btn-sm" onclick="loadKelolaJournals()">Refresh</button>
-            </div>
-          </div>
-          <div id="kelolaJurnalTable">
-            <div class="text-center" style="padding: 40px;">
-              <p style="color: var(--text-secondary);">Klik tab ini untuk memuat data</p>
-            </div>
-          </div>
-        </div>
+        <a href="#submissions" class="action-btn">
+          <div class="icon">📋</div>
+          <div class="text">Review Submissions</div>
+        </a>
       </div>
-
-      <!-- Kelola Artikel Tab -->
-      <div class="tab-content" id="kelolaArtikelTab">
-        <div class="page-header">
-          <div>
-            <h1 class="page-title">Kelola Artikel</h1>
-            <p class="page-subtitle">Manage semua artikel di blog</p>
-          </div>
-          <a href="tambah-artikel.html" class="btn btn-outline btn-sm">+ Tambah Artikel</a>
-        </div>
-        
-        <div class="card">
-          <div style="margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap;">
-            <input type="text" id="searchArtikel" class="input" placeholder="Cari artikel..." style="max-width: 300px;">
-            <div style="display: flex; gap: var(--space-2);">
-              <select id="filterArtikelStatus" class="input" style="max-width: 150px;">
-                <option value="all">Semua Status</option>
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-                <option value="rejected">Rejected</option>
-              </select>
-              <button class="btn btn-outline btn-sm" onclick="loadKelolaArticles()">Refresh</button>
-            </div>
-          </div>
-          <div id="kelolaArtikelTable">
-            <div class="text-center" style="padding: 40px;">
-              <p style="color: var(--text-secondary);">Klik tab ini untuk memuat data</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Kelola Scope Tab -->
-      <div class="tab-content" id="kelolaScopeTab">
-        <div class="page-header">
-          <div>
-            <h1 class="page-title">Kelola Scope Jurnal</h1>
-            <p class="page-subtitle">Manage kategori/bidang ilmu untuk jurnal</p>
-          </div>
-        </div>
-        
-        <div class="card" style="margin-bottom: var(--space-6);">
-          <h3 style="margin-bottom: var(--space-4);">Tambah Scope Baru</h3>
-          <form id="formTambahScope" style="display: flex; gap: var(--space-3); align-items: flex-end;">
-            <div class="form-group" style="flex: 1; margin: 0;">
-              <label for="namaScope" class="form-label">Nama Scope</label>
-              <input type="text" id="namaScope" class="input" placeholder="Contoh: Teknik Informatika" required>
-            </div>
-            <button type="submit" class="btn btn-primary">+ Tambah</button>
-          </form>
-        </div>
-
-        <div class="card">
-          <h3 style="margin-bottom: var(--space-4);">Daftar Scope</h3>
-          <div id="scopeList">
-            <div class="text-center" style="padding: 40px;">
-              <p style="color: var(--text-secondary);">Memuat data...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Kelola Kategori Tab -->
-      <div class="tab-content" id="kelolaKategoriTab">
-        <div class="page-header">
-          <div>
-            <h1 class="page-title">Kelola Kategori Artikel</h1>
-            <p class="page-subtitle">Manage kategori untuk artikel blog</p>
-          </div>
-        </div>
-        
-        <div class="card" style="margin-bottom: var(--space-6);">
-          <h3 style="margin-bottom: var(--space-4);">Tambah Kategori Baru</h3>
-          <form id="formTambahKategori" style="display: flex; gap: var(--space-3); align-items: flex-end;">
-            <div class="form-group" style="flex: 1; margin: 0;">
-              <label for="namaKategori" class="form-label">Nama Kategori</label>
-              <input type="text" id="namaKategori" class="input" placeholder="Contoh: Tips Publikasi" required>
-            </div>
-            <button type="submit" class="btn btn-primary">+ Tambah</button>
-          </form>
-        </div>
-
-        <div class="card">
-          <h3 style="margin-bottom: var(--space-4);">Daftar Kategori</h3>
-          <div id="kategoriList">
-            <div class="text-center" style="padding: 40px;">
-              <p style="color: var(--text-secondary);">Memuat data...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
+    </div>
   </div>
 
-  <div class="toast-container" id="toastContainer"></div>
-
-  <script>
-    console.log('🎬 Navigation script loaded');
+  <script type="module">
+    import { protectAdminPage, logout } from './js/auth.js';
+    import { db } from './js/firebase.js';
+    import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
     
-    let currentTab = 'dashboard';
+    // Protect page - redirect if not authenticated
+    const user = await protectAdminPage();
+    if (!user) return; // Will redirect to login
     
-    function switchTab(tabName) {
-      console.log('✅ switchTab called:', tabName);
-      
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      
-      const targetTab = document.getElementById(tabName + 'Tab');
-      if (targetTab) {
-        targetTab.classList.add('active');
-        console.log('  ✅ Showing tab:', targetTab.id);
-      } else {
-        console.error('  ❌ Tab not found:', tabName + 'Tab');
+    // Display user email
+    document.getElementById('userEmail').textContent = user.email;
+    
+    // Logout handler
+    document.getElementById('btnLogout').addEventListener('click', async () => {
+      if (confirm('Yakin mau logout?')) {
+        await logout();
       }
-      
-      document.querySelectorAll('.admin-sidebar-link').forEach(link => {
-        link.classList.remove('active');
-      });
-      const activeLink = document.querySelector(`[data-tab="${tabName}"]`);
-      if (activeLink) {
-        activeLink.classList.add('active');
-      }
-      
-      currentTab = tabName;
-      
-      if (window.loadTabData) {
-        window.loadTabData(tabName);
+    });
+    
+    // Load stats
+    async function loadStats() {
+      try {
+        // Count journals
+        const journalsSnap = await getDocs(collection(db, 'journals'));
+        document.getElementById('statJournals').textContent = journalsSnap.size;
+        
+        // Count articles
+        const articlesSnap = await getDocs(collection(db, 'articles'));
+        document.getElementById('statArticles').textContent = articlesSnap.size;
+        
+        // Count pending submissions
+        const journalSubsSnap = await getDocs(
+          query(collection(db, 'journal_submissions'), where('status', '==', 'pending'))
+        );
+        const articleSubsSnap = await getDocs(
+          query(collection(db, 'article_submissions'), where('status', '==', 'pending'))
+        );
+        const totalSubs = journalSubsSnap.size + articleSubsSnap.size;
+        document.getElementById('statSubmissions').textContent = totalSubs;
+        
+        // Count scopes & categories
+        const scopesSnap = await getDocs(collection(db, 'scopes'));
+        const kategoriSnap = await getDocs(collection(db, 'kategori_artikel'));
+        document.getElementById('statScopes').textContent = 
+          scopesSnap.size + kategoriSnap.size;
+          
+      } catch (error) {
+        console.error('Error loading stats:', error);
+        // Show 0 if error or collection doesn't exist yet
+        document.getElementById('statJournals').textContent = '0';
+        document.getElementById('statArticles').textContent = '0';
+        document.getElementById('statSubmissions').textContent = '0';
+        document.getElementById('statScopes').textContent = '0';
       }
     }
     
-    window.switchTab = switchTab;
-    
-    function handleHashChange() {
-      const hash = window.location.hash.substring(1) || 'dashboard';
-      console.log('🔗 Hash:', hash);
-      switchTab(hash);
-    }
-    
-    window.addEventListener('hashchange', handleHashChange);
-    
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', handleHashChange);
-    } else {
-      handleHashChange();
-    }
-    
-    console.log('✅ Navigation system ready');
+    loadStats();
   </script>
-
-  <script type="module" src="js/admin.js"></script>
 </body>
 </html>

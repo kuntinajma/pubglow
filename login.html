@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin - PubGlow</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .login-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      max-width: 400px;
+      width: 100%;
+    }
+    
+    .login-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px 30px;
+      text-align: center;
+    }
+    
+    .login-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .login-header p {
+      margin: 10px 0 0 0;
+      opacity: 0.9;
+    }
+    
+    .login-body {
+      padding: 40px 30px;
+    }
+    
+    .form-label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    
+    .form-control {
+      border-radius: 10px;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .btn-login {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 100%;
+      color: white;
+    }
+    
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-login:active {
+      transform: translateY(0);
+    }
+    
+    .btn-login:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .alert {
+      border-radius: 10px;
+      border: none;
+    }
+    
+    .password-toggle {
+      position: relative;
+    }
+    
+    .password-toggle-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      padding: 5px;
+      font-size: 1.2rem;
+    }
+    
+    .spinner-border-sm {
+      width: 1rem;
+      height: 1rem;
+      border-width: 0.15em;
+    }
+    
+    .default-credentials {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 20px;
+      font-size: 0.9rem;
+    }
+    
+    .default-credentials strong {
+      color: #667eea;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <h1>🔐 PubGlow Admin</h1>
+      <p>Login untuk mengakses dashboard</p>
+    </div>
+    
+    <div class="login-body">
+      <!-- Alert Error -->
+      <div id="alertError" class="alert alert-danger d-none" role="alert">
+        <strong>⚠️ Error:</strong> <span id="errorMessage"></span>
+      </div>
+      
+      <!-- Login Form -->
+      <form id="loginForm">
+        <div class="mb-3">
+          <label for="email" class="form-label">📧 Email</label>
+          <input 
+            type="email" 
+            class="form-control" 
+            id="email" 
+            placeholder="admin@pubglow.com"
+            required
+            autocomplete="email"
+          >
+        </div>
+        
+        <div class="mb-4">
+          <label for="password" class="form-label">🔒 Password</label>
+          <div class="password-toggle">
+            <input 
+              type="password" 
+              class="form-control" 
+              id="password" 
+              placeholder="Masukkan password"
+              required
+              autocomplete="current-password"
+            >
+            <button 
+              type="button" 
+              class="password-toggle-btn" 
+              id="togglePassword"
+              title="Tampilkan/Sembunyikan password"
+            >
+              👁️
+            </button>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-login" id="btnLogin">
+          <span id="btnLoginText">Login</span>
+          <span id="btnLoginSpinner" class="d-none">
+            <span class="spinner-border spinner-border-sm" role="status"></span>
+            Logging in...
+          </span>
+        </button>
+      </form>
+      
+      <!-- Default Credentials Info -->
+      <div class="default-credentials">
+        <p class="mb-2"><strong>📝 Default Admin:</strong></p>
+        <p class="mb-1">Email: <code>admin@pubglow.com</code></p>
+        <p class="mb-0">Password: <code>PubGlow2025!</code></p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { login, redirectIfAuthenticated, getErrorMessage } from './js/auth.js';
+    
+    // Check if already authenticated
+    await redirectIfAuthenticated();
+    
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const btnLogin = document.getElementById('btnLogin');
+    const btnLoginText = document.getElementById('btnLoginText');
+    const btnLoginSpinner = document.getElementById('btnLoginSpinner');
+    const alertError = document.getElementById('alertError');
+    const errorMessage = document.getElementById('errorMessage');
+    const togglePassword = document.getElementById('togglePassword');
+    
+    // Toggle password visibility
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+    
+    // Hide error on input
+    [emailInput, passwordInput].forEach(input => {
+      input.addEventListener('input', () => {
+        alertError.classList.add('d-none');
+      });
+    });
+    
+    // Handle login
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      
+      // Validate
+      if (!email || !password) {
+        showError('Email dan password harus diisi');
+        return;
+      }
+      
+      // Show loading
+      btnLogin.disabled = true;
+      btnLoginText.classList.add('d-none');
+      btnLoginSpinner.classList.remove('d-none');
+      alertError.classList.add('d-none');
+      
+      try {
+        // Login
+        await login(email, password);
+        
+        // Success - redirect
+        window.location.href = 'admin.html';
+      } catch (error) {
+        // Show error
+        const message = getErrorMessage(error.code);
+        showError(message);
+        
+        // Reset button
+        btnLogin.disabled = false;
+        btnLoginText.classList.remove('d-none');
+        btnLoginSpinner.classList.add('d-none');
+      }
+    });
+    
+    function showError(message) {
+      errorMessage.textContent = message;
+      alertError.classList.remove('d-none');
+    }
+  </script>
+</body>
+</html>

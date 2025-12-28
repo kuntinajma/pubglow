@@ -3,51 +3,331 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PubGlow - Platform Publikasi Jurnal & Artikel</title>
+  <title>PubGlow - Platform Publikasi Jurnal & Artikel Ilmiah</title>
   
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/pages.css">
-  
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>P</text></svg>">
-  
-  <!-- EmailJS SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 100px 0;
+      text-align: center;
+    }
+    
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .hero p {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      opacity: 0.95;
+    }
+    
+    .hero .btn {
+      padding: 15px 40px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 50px;
+      margin: 0 10px;
+      transition: all 0.3s;
+    }
+    
+    .hero .btn-light {
+      background: white;
+      color: var(--primary);
+    }
+    
+    .hero .btn-light:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .hero .btn-outline-light:hover {
+      background: white;
+      color: var(--primary);
+    }
+    
+    /* Features Section */
+    .features {
+      padding: 80px 0;
+      background: #f8f9fa;
+    }
+    
+    .features h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 50px;
+      color: #333;
+    }
+    
+    .feature-card {
+      text-align: center;
+      padding: 40px 30px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s, box-shadow 0.3s;
+      height: 100%;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .feature-card .icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+    
+    .feature-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+    
+    .feature-card p {
+      color: #666;
+      line-height: 1.6;
+    }
+    
+    /* Stats Section */
+    .stats {
+      padding: 60px 0;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .stat-item .number {
+      font-size: 3rem;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 10px;
+    }
+    
+    .stat-item .label {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    /* CTA Section */
+    .cta {
+      padding: 80px 0;
+      text-align: center;
+      background: white;
+    }
+    
+    .cta h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    
+    .cta p {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 30px;
+    }
+    
+    .cta .btn {
+      padding: 15px 50px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border-radius: 50px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border: none;
+      color: white;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .cta .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    /* Footer */
+    footer {
+      background: #2c3e50;
+      color: white;
+      padding: 40px 0;
+      text-align: center;
+    }
+    
+    footer a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      transition: color 0.3s;
+    }
+    
+    footer a:hover {
+      color: var(--primary);
+    }
+  </style>
 </head>
 <body>
-  <h1>🚀 PubGlow Platform</h1>
-  <p>Firebase & EmailJS Configuration Complete!</p>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>🚀 PubGlow</h1>
+      <p>Platform Terpadu untuk Publikasi Jurnal & Artikel Ilmiah</p>
+      <div>
+        <a href="#journals" class="btn btn-light">📚 Lihat Jurnal</a>
+        <a href="#articles" class="btn btn-outline-light">📰 Baca Artikel</a>
+      </div>
+    </div>
+  </section>
   
-  <div style="max-width: 600px; margin: 40px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-    <h2>✅ Services Configured:</h2>
-    <ul>
-      <li>🔥 Firebase (Firestore, Auth, Storage, Analytics)</li>
-      <li>📧 EmailJS (Service ID: service_qzsmxcn)</li>
-    </ul>
-    
-    <h3>Next Steps:</h3>
-    <ol>
-      <li>Setup Firestore collections (scopes, kategori_artikel)</li>
-      <li>Create EmailJS templates & update IDs</li>
-      <li>Create admin user in Firebase Auth</li>
-      <li>Test connections</li>
-    </ol>
-    
-    <p><a href="admin.html" style="display: inline-block; padding: 10px 20px; background: #3b82f6; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px;">Go to Admin Dashboard</a></p>
-  </div>
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container">
+      <h2>✨ Fitur Unggulan</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="icon">📚</div>
+            <h3>Database Jurnal Lengkap</h3>
+            <p>Akses ribuan jurnal terakreditasi SINTA dengan informasi lengkap dan terperinci</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="icon">🔍</div>
+            <h3>Pencarian Cerdas</h3>
+            <p>Filter berdasarkan bidang ilmu, akreditasi, harga, dan estimasi waktu review</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="icon">📰</div>
+            <h3>Artikel Edukatif</h3>
+            <p>Tips publikasi, panduan riset, dan berita terkini seputar dunia akademik</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="icon">⚡</div>
+            <h3>Fast Track Option</h3>
+            <p>Informasi lengkap tentang layanan fast track untuk publikasi lebih cepat</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="icon">💰</div>
+            <h3>Perbandingan Biaya</h3>
+            <p>Bandingkan biaya publikasi antar jurnal untuk keputusan yang tepat</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card">
+            <div class="icon">📊</div>
+            <h3>Update Berkala</h3>
+            <p>Database jurnal diperbarui secara berkala untuk informasi terkini</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
   
+  <!-- Stats Section -->
+  <section class="stats">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="stat-item">
+            <span class="number" id="statJournals">-</span>
+            <span class="label">Jurnal Terakreditasi</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-item">
+            <span class="number" id="statArticles">-</span>
+            <span class="label">Artikel Edukatif</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-item">
+            <span class="number" id="statScopes">-</span>
+            <span class="label">Bidang Ilmu</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-item">
+            <span class="number">24/7</span>
+            <span class="label">Akses Gratis</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="container">
+      <h2>Siap Publikasi Karya Ilmiah Anda?</h2>
+      <p>Mulai jelajahi database jurnal dan artikel kami sekarang!</p>
+      <a href="#journals" class="btn">Mulai Sekarang →</a>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 PubGlow. Platform Publikasi Jurnal & Artikel Ilmiah.</p>
+      <div>
+        <a href="#about">Tentang Kami</a>
+        <a href="#contact">Kontak</a>
+        <a href="login.html">Admin Login</a>
+      </div>
+    </div>
+  </footer>
+
   <script type="module">
-    import { db, auth, storage, analytics } from './js/firebase.js';
-    import { EMAILJS_CONFIG } from './js/emailjs-config.js';
+    import { db } from './js/firebase.js';
+    import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
     
-    console.log('✅ All services loaded!');
-    console.log('📊 Firebase DB:', db);
-    console.log('🔐 Firebase Auth:', auth);
-    console.log('📦 Firebase Storage:', storage);
-    console.log('📈 Firebase Analytics:', analytics);
-    console.log('📧 EmailJS Config:', EMAILJS_CONFIG);
+    // Load stats
+    async function loadStats() {
+      try {
+        const journalsSnap = await getDocs(collection(db, 'journals'));
+        document.getElementById('statJournals').textContent = journalsSnap.size || '0';
+        
+        const articlesSnap = await getDocs(collection(db, 'articles'));
+        document.getElementById('statArticles').textContent = articlesSnap.size || '0';
+        
+        const scopesSnap = await getDocs(collection(db, 'scopes'));
+        document.getElementById('statScopes').textContent = scopesSnap.size || '0';
+      } catch (error) {
+        console.log('Collections belum ada, tampilkan 0');
+        document.getElementById('statJournals').textContent = '0';
+        document.getElementById('statArticles').textContent = '0';
+        document.getElementById('statScopes').textContent = '0';
+      }
+    }
+    
+    loadStats();
   </script>
 </body>
 </html>
