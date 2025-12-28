@@ -53,6 +53,15 @@
     .month-checkboxes .form-check-label {
       font-size: 13px;
     }
+    
+    .fast-track-price {
+      margin-top: 12px;
+      display: none;
+    }
+    
+    .fast-track-price.show {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -203,11 +212,16 @@
         </div>
         
         <div class="form-group">
-          <label class="form-label">Fast Track</label>
-          <select class="form-select" id="fastTrack">
-            <option value="Tidak Ada">Tidak Ada</option>
-            <option value="Ada">Ada</option>
-          </select>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="fastTrack">
+            <label class="form-check-label" for="fastTrack">
+              <strong>Ada Fast Track</strong>
+            </label>
+          </div>
+          <div id="fastTrackPrice" class="fast-track-price">
+            <label class="form-label mt-2">Biaya Fast Track (Rp)</label>
+            <input type="number" class="form-control" id="fastTrackBiaya" placeholder="Masukkan biaya fast track">
+          </div>
         </div>
         
         <div class="form-group">
@@ -261,14 +275,26 @@
       document.getElementById('navMenu').classList.toggle('active');
     });
 
+    // Toggle Fast Track price input
+    document.getElementById('fastTrack').addEventListener('change', (e) => {
+      const wrapper = document.getElementById('fastTrackPrice');
+      if (e.target.checked) {
+        wrapper.classList.add('show');
+      } else {
+        wrapper.classList.remove('show');
+        document.getElementById('fastTrackBiaya').value = '';
+      }
+    });
+
     document.getElementById('submitForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btnSubmit');
       btn.disabled = true;
       btn.textContent = 'Mengirim...';
       
-      // Get selected months
       const selectedMonths = Array.from(document.querySelectorAll('.month-check:checked')).map(cb => cb.value);
+      const fastTrackChecked = document.getElementById('fastTrack').checked;
+      const fastTrackBiaya = fastTrackChecked ? (parseInt(document.getElementById('fastTrackBiaya').value) || null) : null;
       
       try {
         await addDoc(collection(db, 'journal_submissions'), {
@@ -281,7 +307,8 @@
           frekuensi: document.getElementById('frekuensi').value,
           bulanTerbit: selectedMonths,
           tautan: document.getElementById('tautan').value,
-          fastTrack: document.getElementById('fastTrack').value,
+          fastTrack: fastTrackChecked ? 'Ada' : 'Tidak Ada',
+          fastTrackBiaya: fastTrackBiaya,
           catatan: document.getElementById('catatan').value,
           email: document.getElementById('email').value,
           tanggalSubmit: new Date(),
