@@ -31,107 +31,96 @@
   <div class="main-content">
     <div class="page-header">
       <h1>Kelola Jurnal</h1>
-      <p>Tambah, edit, dan hapus data jurnal</p>
+      <p>Manage database jurnal terakreditasi</p>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalJurnal">+ Tambah Jurnal Baru</button>
     </div>
 
-    <div class="mb-4">
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalJournal">Tambah Jurnal Baru</button>
-    </div>
-
-    <div id="journalsList">
+    <div id="journalsList" class="mb-4">
       <div style="text-align:center;padding:50px">
-        <div class="spinner-border" role="status"></div>
-        <p class="mt-2">Memuat data jurnal...</p>
+        <div class="spinner-border"></div>
+        <p class="mt-3">Loading journals...</p>
       </div>
     </div>
   </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="modalJournal" tabindex="-1">
+  <!-- Modal Jurnal -->
+  <div class="modal fade" id="modalJurnal" tabindex="-1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="modalTitle">Tambah Jurnal Baru</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body" style="max-height:70vh;overflow-y:auto">
-          <form id="formJournal">
+        <div class="modal-body">
+          <form id="formJurnal">
             <input type="hidden" id="journalId">
-            <div class="mb-3">
-              <label class="form-label">Nama Jurnal *</label>
-              <input type="text" class="form-control" id="nama" required>
+            <div class="row">
+              <div class="col-md-8 mb-3">
+                <label class="form-label">Nama Jurnal *</label>
+                <input type="text" class="form-control" id="nama" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Akreditasi *</label>
+                <select class="form-select" id="akreditasi" required>
+                  <option value="">Pilih</option>
+                  <option value="SINTA 1">SINTA 1</option>
+                  <option value="SINTA 2">SINTA 2</option>
+                  <option value="SINTA 3">SINTA 3</option>
+                  <option value="SINTA 4">SINTA 4</option>
+                  <option value="SINTA 5">SINTA 5</option>
+                  <option value="SINTA 6">SINTA 6</option>
+                </select>
+              </div>
             </div>
             <div class="mb-3">
-              <label class="form-label">Instansi/Universitas *</label>
+              <label class="form-label">Instansi *</label>
               <input type="text" class="form-control" id="instansi" required>
             </div>
             <div class="mb-3">
-              <label class="form-label">Scope (Pilih 1 atau lebih) *</label>
-              <div id="scopeCheckboxContainer" style="max-height:200px;overflow-y:auto;border:1px solid #dee2e6;border-radius:6px;padding:15px;background:#f8f9fa">
-                <div style="text-align:center"><span class="spinner-border spinner-border-sm"></span> Loading...</div>
+              <label class="form-label">Scope (Bidang Ilmu) *</label>
+              <div id="scopeContainer">
+                <p class="text-muted">Loading scope...</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Harga (Rp) *</label>
+                <input type="number" class="form-control" id="harga" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Frekuensi Terbit *</label>
+                <select class="form-select" id="frekuensi" required>
+                  <option value="">Pilih</option>
+                  <option value="Bulanan">Bulanan</option>
+                  <option value="2 Bulan Sekali">2 Bulan Sekali</option>
+                  <option value="Triwulan">Triwulan</option>
+                  <option value="4 Bulan Sekali">4 Bulan Sekali</option>
+                  <option value="Semester">Semester</option>
+                  <option value="Tahunan">Tahunan</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Waktu Review *</label>
+                <input type="text" class="form-control" id="waktuReview" placeholder="Contoh: 2-3 bulan" required>
               </div>
             </div>
             <div class="mb-3">
-              <label class="form-label">Akreditasi *</label>
-              <select class="form-select" id="akreditasi" required>
-                <option value="">-- Pilih Akreditasi --</option>
-                <option value="SINTA 1">SINTA 1</option>
-                <option value="SINTA 2">SINTA 2</option>
-                <option value="SINTA 3">SINTA 3</option>
-                <option value="SINTA 4">SINTA 4</option>
-                <option value="SINTA 5">SINTA 5</option>
-                <option value="SINTA 6">SINTA 6</option>
-                <option value="Non-SINTA">Non-SINTA</option>
-                <option value="Scopus Q1">Scopus Q1</option>
-                <option value="Scopus Q2">Scopus Q2</option>
-                <option value="Scopus Q3">Scopus Q3</option>
-                <option value="Scopus Q4">Scopus Q4</option>
+              <label class="form-label">Fast Track *</label>
+              <select class="form-select" id="fastTrack" required>
+                <option value="">Pilih</option>
+                <option value="Ada">Ada</option>
+                <option value="Tidak Ada">Tidak Ada</option>
               </select>
             </div>
             <div class="mb-3">
-              <label class="form-label">Harga Publikasi (Rp) *</label>
-              <input type="number" class="form-control" id="harga" required min="0" step="1000">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Bulan Terbit (Pilih 1 atau lebih) *</label>
-              <div style="max-height:180px;overflow-y:auto;border:1px solid #dee2e6;border-radius:6px;padding:15px;background:#f8f9fa;display:grid;grid-template-columns:1fr 1fr;gap:5px">
-                <div class="form-check"><input class="form-check-input month-checkbox" type="checkbox" value="Januari" id="m1"><label class="form-check-label" for="m1">Januari</label></div>
-                <div class="form-check"><input class="form-check-input month-checkbox" type="checkbox" value="Februari" id="m2"><label class="form-check-label" for="m2">Februari</label></div>
-                <div class="form-check"><input class="form-check-input month-checkbox" type="checkbox" value="Maret" id="m3"><label class="form-check-label" for="m3">Maret</label></div>
-                <div class="form-check"><input class="form-check-input month-checkbox" type="checkbox" value="April" id="m4"><label class="form-check-label" for="m4">April</label></div>
-                <div class="form-check"><input class="form-check-input month-checkbox" type="checkbox" value="Mei" id="m5"><label class="form-check-label" for="m5">Mei</label></div>
-                <div class="form-check"><input class="form-check-input month-checkbox" type="checkbox" value="Juni" id="m6"><label class="form-check-label" for="m6">Juni</label></div>
-                <div class="form-check"><input class="form-check-input month-checkbox" type="checkbox" value="Juli" id="m7"><label class="form-check-label" for="m7">Juli</label></div>
-                <div class="form-check"><input class="form-check-input month-checkbox" type="checkbox" value="Agustus" id="m8"><label class="form-check-label" for="m8">Agustus</label></div>
-                <div class="form-check"><input class="form-check-input month-checkbox" type="checkbox" value="September" id="m9"><label class="form-check-label" for="m9">September</label></div>
-                <div class="form-check"><input class="form-check-input month-checkbox" type="checkbox" value="Oktober" id="m10"><label class="form-check-label" for="m10">Oktober</label></div>
-                <div class="form-check"><input class="form-check-input month-checkbox" type="checkbox" value="November" id="m11"><label class="form-check-label" for="m11">November</label></div>
-                <div class="form-check"><input class="form-check-input month-checkbox" type="checkbox" value="Desember" id="m12"><label class="form-check-label" for="m12">Desember</label></div>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Waktu Review (bulan) *</label>
-              <input type="number" class="form-control" id="waktuReview" required min="0.5" max="24" step="0.5">
-            </div>
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="fastTrackTersedia">
-                <label class="form-check-label" for="fastTrackTersedia">Tersedia Fast Track</label>
-              </div>
-            </div>
-            <div class="mb-3" id="fastTrackBiayaContainer" style="display:none">
-              <label class="form-label">Biaya Fast Track (Rp)</label>
-              <input type="number" class="form-control" id="fastTrackBiaya" min="0" step="1000">
-            </div>
-            <div class="mb-3">
               <label class="form-label">Tautan Website *</label>
-              <input type="url" class="form-control" id="tautan" required>
+              <input type="url" class="form-control" id="tautan" placeholder="https://" required>
             </div>
             <div class="mb-3">
               <label class="form-label">Status *</label>
               <select class="form-select" id="status" required>
-                <option value="aktif">Aktif (Tampil di public)</option>
-                <option value="hidden">Hidden (Tidak tampil)</option>
+                <option value="aktif">Aktif (Visible)</option>
+                <option value="hidden">Hidden</option>
               </select>
             </div>
           </form>
