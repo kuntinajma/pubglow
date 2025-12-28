@@ -4,399 +4,211 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kontribusi Jurnal - PubGlow</title>
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/main-theme.css" rel="stylesheet">
   <style>
-    :root {
-      --primary: #667eea;
-      --secondary: #764ba2;
+    .form-wrapper {
+      max-width: 700px;
+      margin: 0 auto;
+      padding-bottom: 80px;
     }
     
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f7fa;
-    }
-    
-    .header {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      color: white;
-      padding: 60px 0;
-      margin-bottom: 40px;
-    }
-    
-    .header h1 {
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-    
-    .form-container {
-      background: white;
+    .form-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
       padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      max-width: 800px;
-      margin: 0 auto 40px;
     }
     
-    .form-label {
+    .success-message {
+      text-align: center;
+      padding: 60px 40px;
+    }
+    
+    .success-message h2 {
+      font-size: 24px;
       font-weight: 600;
-      color: #333;
+      margin-bottom: 12px;
+      color: var(--color-primary);
     }
     
-    .scope-checkbox-group, .month-checkbox-group {
-      max-height: 200px;
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
-      background: #f9f9fa;
-    }
-    
-    .month-checkbox-group {
-      max-height: 180px;
-    }
-    
-    .month-checkbox-group .form-check {
-      display: inline-block;
-      width: 48%;
-      margin-right: 2%;
-    }
-    
-    .btn-submit {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      border: none;
-      color: white;
-      padding: 12px 40px;
-      font-weight: 600;
-      border-radius: 8px;
-      transition: transform 0.3s;
-    }
-    
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      color: white;
-    }
-    
-    .alert-success {
-      border-radius: 10px;
+    .success-message p {
+      color: var(--color-text-light);
+      margin-bottom: 24px;
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <div class="header">
-    <div class="container text-center">
-      <h1>📚 Kontribusi Data Jurnal</h1>
-      <p class="mb-0">Bantu kami melengkapi database jurnal dengan mengirimkan informasi jurnal yang Anda ketahui</p>
+  <nav class="main-navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-brand">PubGlow</a>
+      <button class="navbar-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="navbar-menu" id="navMenu">
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="journals.html">Jurnal</a></li>
+        <li><a href="articles.html">Artikel</a></li>
+        <li><a href="index.html#contribute">Kontributor</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Kontribusi Jurnal</h1>
+      <p>Bantu lengkapi database dengan menambahkan informasi jurnal</p>
     </div>
   </div>
 
-  <div class="container">
-    <div class="form-container">
-      <div class="alert alert-info mb-4">
-        <strong>📝 Informasi:</strong> Data jurnal yang Anda kirimkan akan direview oleh admin sebelum dipublikasikan.
-      </div>
-
-      <!-- Success Message -->
-      <div id="successMessage" class="alert alert-success d-none" role="alert">
-        <h5>✅ Berhasil Terkirim!</h5>
-        <p class="mb-0">Terima kasih atas kontribusi Anda. Data jurnal akan segera direview oleh tim kami.</p>
-      </div>
-
-      <!-- Form -->
-      <form id="formSubmit">
-        <h4 class="mb-4">Informasi Kontributor</h4>
+  <div class="container form-wrapper">
+    <div class="form-card" id="formContainer">
+      <form id="submitForm">
+        <div class="form-group">
+          <label class="form-label">Nama Jurnal *</label>
+          <input type="text" class="form-control" id="nama" required>
+        </div>
         
-        <!-- Nama Kontributor -->
-        <div class="mb-3">
-          <label for="contributorName" class="form-label">Nama Lengkap *</label>
-          <input type="text" class="form-control" id="contributorName" required
-            placeholder="Nama lengkap Anda">
+        <div class="form-group">
+          <label class="form-label">Instansi Penerbit *</label>
+          <input type="text" class="form-control" id="instansi" required>
         </div>
-
-        <!-- Email Kontributor -->
-        <div class="mb-3">
-          <label for="contributorEmail" class="form-label">Email *</label>
-          <input type="email" class="form-control" id="contributorEmail" required
-            placeholder="email@example.com">
-          <small class="form-text text-muted">Email untuk notifikasi status review</small>
-        </div>
-
-        <hr class="my-4">
-        <h4 class="mb-4">Informasi Jurnal</h4>
-
-        <!-- Nama Jurnal -->
-        <div class="mb-3">
-          <label for="nama" class="form-label">Nama Jurnal *</label>
-          <input type="text" class="form-control" id="nama" required
-            placeholder="Jurnal Teknik Informatika dan Sistem Informasi">
-        </div>
-
-        <!-- Instansi -->
-        <div class="mb-3">
-          <label for="instansi" class="form-label">Instansi/Universitas *</label>
-          <input type="text" class="form-control" id="instansi" required
-            placeholder="Universitas Indonesia">
-        </div>
-
-        <!-- Scope (Multiple Checkbox) -->
-        <div class="mb-3">
-          <label class="form-label">Scope (Pilih 1 atau lebih) *</label>
-          <div id="scopeCheckboxContainer" class="scope-checkbox-group">
-            <div class="text-center text-muted">
-              <span class="spinner-border spinner-border-sm"></span> Loading scopes...
-            </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group">
+            <label class="form-label">Akreditasi *</label>
+            <select class="form-select" id="akreditasi" required>
+              <option value="">Pilih akreditasi</option>
+              <option value="SINTA 1">SINTA 1</option>
+              <option value="SINTA 2">SINTA 2</option>
+              <option value="SINTA 3">SINTA 3</option>
+              <option value="SINTA 4">SINTA 4</option>
+              <option value="SINTA 5">SINTA 5</option>
+              <option value="SINTA 6">SINTA 6</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Bidang Ilmu *</label>
+            <input type="text" class="form-control" id="scope" required placeholder="Contoh: Teknik Informatika">
           </div>
         </div>
-
-        <!-- Akreditasi -->
-        <div class="mb-3">
-          <label for="akreditasi" class="form-label">Akreditasi *</label>
-          <select class="form-select" id="akreditasi" required>
-            <option value="">-- Pilih Akreditasi --</option>
-            <option value="SINTA 1">SINTA 1</option>
-            <option value="SINTA 2">SINTA 2</option>
-            <option value="SINTA 3">SINTA 3</option>
-            <option value="SINTA 4">SINTA 4</option>
-            <option value="SINTA 5">SINTA 5</option>
-            <option value="SINTA 6">SINTA 6</option>
-            <option value="Non-SINTA">Non-SINTA</option>
-            <option value="Scopus Q1">Scopus Q1</option>
-            <option value="Scopus Q2">Scopus Q2</option>
-            <option value="Scopus Q3">Scopus Q3</option>
-            <option value="Scopus Q4">Scopus Q4</option>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group">
+            <label class="form-label">Biaya Publikasi (Rp) *</label>
+            <input type="number" class="form-control" id="harga" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Waktu Review *</label>
+            <input type="text" class="form-control" id="waktuReview" required placeholder="Contoh: 2-3 bulan">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Frekuensi Terbit *</label>
+          <select class="form-select" id="frekuensi" required>
+            <option value="">Pilih frekuensi</option>
+            <option value="Bulanan">Bulanan</option>
+            <option value="2 Bulan Sekali">2 Bulan Sekali</option>
+            <option value="Triwulan">Triwulan</option>
+            <option value="Semester">Semester</option>
+            <option value="Tahunan">Tahunan</option>
           </select>
         </div>
-
-        <!-- Harga -->
-        <div class="mb-3">
-          <label for="harga" class="form-label">Harga Publikasi (Rp) *</label>
-          <input type="number" class="form-control" id="harga" required
-            placeholder="500000" min="0" step="1000">
+        
+        <div class="form-group">
+          <label class="form-label">Website Jurnal *</label>
+          <input type="url" class="form-control" id="tautan" required placeholder="https://">
         </div>
-
-        <!-- Bulan Terbit (Checkbox) -->
-        <div class="mb-3">
-          <label class="form-label">Bulan Terbit (Pilih 1 atau lebih) *</label>
-          <div class="month-checkbox-group">
-            <div class="form-check">
-              <input class="form-check-input month-checkbox" type="checkbox" value="Januari" id="month_jan">
-              <label class="form-check-label" for="month_jan">Januari</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-checkbox" type="checkbox" value="Februari" id="month_feb">
-              <label class="form-check-label" for="month_feb">Februari</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-checkbox" type="checkbox" value="Maret" id="month_mar">
-              <label class="form-check-label" for="month_mar">Maret</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-checkbox" type="checkbox" value="April" id="month_apr">
-              <label class="form-check-label" for="month_apr">April</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-checkbox" type="checkbox" value="Mei" id="month_may">
-              <label class="form-check-label" for="month_may">Mei</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-checkbox" type="checkbox" value="Juni" id="month_jun">
-              <label class="form-check-label" for="month_jun">Juni</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-checkbox" type="checkbox" value="Juli" id="month_jul">
-              <label class="form-check-label" for="month_jul">Juli</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-checkbox" type="checkbox" value="Agustus" id="month_aug">
-              <label class="form-check-label" for="month_aug">Agustus</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-checkbox" type="checkbox" value="September" id="month_sep">
-              <label class="form-check-label" for="month_sep">September</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-checkbox" type="checkbox" value="Oktober" id="month_oct">
-              <label class="form-check-label" for="month_oct">Oktober</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-checkbox" type="checkbox" value="November" id="month_nov">
-              <label class="form-check-label" for="month_nov">November</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input month-checkbox" type="checkbox" value="Desember" id="month_dec">
-              <label class="form-check-label" for="month_dec">Desember</label>
-            </div>
-          </div>
+        
+        <div class="form-group">
+          <label class="form-label">Catatan Tambahan</label>
+          <textarea class="form-control" id="catatan" rows="3" placeholder="Informasi tambahan (opsional)"></textarea>
         </div>
-
-        <!-- Waktu Review -->
-        <div class="mb-3">
-          <label for="waktuReview" class="form-label">Waktu Review (bulan) *</label>
-          <input type="number" class="form-control" id="waktuReview" required
-            placeholder="3" min="0.5" max="24" step="0.5">
-          <small class="form-text text-muted">Estimasi waktu review dalam bulan</small>
+        
+        <div class="form-group">
+          <label class="form-label">Email Anda *</label>
+          <input type="email" class="form-control" id="email" required placeholder="Untuk follow-up">
         </div>
-
-        <!-- Fast Track -->
-        <div class="mb-3">
-          <label class="form-label">Fast Track</label>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="fastTrackTersedia">
-            <label class="form-check-label" for="fastTrackTersedia">
-              Tersedia Fast Track
-            </label>
-          </div>
-        </div>
-
-        <!-- Fast Track Biaya (conditional) -->
-        <div class="mb-3" id="fastTrackBiayaContainer" style="display: none;">
-          <label for="fastTrackBiaya" class="form-label">Biaya Fast Track (Rp)</label>
-          <input type="number" class="form-control" id="fastTrackBiaya"
-            placeholder="1000000" min="0" step="1000">
-        </div>
-
-        <!-- Tautan -->
-        <div class="mb-3">
-          <label for="tautan" class="form-label">Tautan Website *</label>
-          <input type="url" class="form-control" id="tautan" required
-            placeholder="https://journal.example.com">
-        </div>
-
-        <div class="d-grid gap-2">
-          <button type="submit" class="btn btn-submit" id="btnSubmit">
-            <span id="btnText">📤 Kirim Kontribusi</span>
-            <span id="btnSpinner" class="d-none">
-              <span class="spinner-border spinner-border-sm"></span> Mengirim...
-            </span>
-          </button>
-          <a href="index.html" class="btn btn-secondary">Batal</a>
-        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width:100%" id="btnSubmit">Kirim Kontribusi</button>
       </form>
     </div>
   </div>
 
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">PubGlow</div>
+          <p class="footer-description">Platform terpadu untuk publikasi jurnal dan artikel ilmiah.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Platform</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="journals.html">Jurnal</a></li>
+            <li><a href="articles.html">Artikel</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Lainnya</h4>
+          <ul class="footer-links">
+            <li><a href="submit-journal.html">Submit Jurnal</a></li>
+            <li><a href="submit-article.html">Submit Artikel</a></li>
+            <li><a href="login.html">Admin</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">&copy; 2025 PubGlow</div>
+    </div>
+  </footer>
+
   <script type="module">
     import { db } from './js/firebase.js';
-    import { collection, addDoc, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-    // Fast Track toggle
-    document.getElementById('fastTrackTersedia').addEventListener('change', (e) => {
-      const container = document.getElementById('fastTrackBiayaContainer');
-      container.style.display = e.target.checked ? 'block' : 'none';
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navMenu').classList.toggle('active');
     });
 
-    // Load scopes
-    async function loadScopes() {
-      try {
-        const snapshot = await getDocs(collection(db, 'scopes'));
-        
-        if (snapshot.empty) {
-          document.getElementById('scopeCheckboxContainer').innerHTML = 
-            '<p class="text-danger mb-0">Scope belum tersedia</p>';
-          return;
-        }
-
-        let html = '';
-        snapshot.forEach(doc => {
-          const scope = doc.data().nama;
-          html += `
-            <div class="form-check">
-              <input class="form-check-input scope-checkbox" type="checkbox" value="${scope}" id="scope_${doc.id}">
-              <label class="form-check-label" for="scope_${doc.id}">
-                ${scope}
-              </label>
-            </div>
-          `;
-        });
-        document.getElementById('scopeCheckboxContainer').innerHTML = html;
-      } catch (error) {
-        console.error('Error loading scopes:', error);
-        document.getElementById('scopeCheckboxContainer').innerHTML = 
-          '<p class="text-danger mb-0">Error loading scopes</p>';
-      }
-    }
-
-    function getSelectedScopes() {
-      const checkboxes = document.querySelectorAll('.scope-checkbox:checked');
-      return Array.from(checkboxes).map(cb => cb.value);
-    }
-
-    function getSelectedMonths() {
-      const checkboxes = document.querySelectorAll('.month-checkbox:checked');
-      return Array.from(checkboxes).map(cb => cb.value);
-    }
-
-    loadScopes();
-
-    // Handle submit
-    document.getElementById('formSubmit').addEventListener('submit', async (e) => {
+    document.getElementById('submitForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      const selectedScopes = getSelectedScopes();
-      if (selectedScopes.length === 0) {
-        alert('Pilih minimal 1 scope!');
-        return;
-      }
-
-      const selectedMonths = getSelectedMonths();
-      if (selectedMonths.length === 0) {
-        alert('Pilih minimal 1 bulan terbit!');
-        return;
-      }
-
-      const data = {
-        // Contributor info
-        contributor: {
-          name: document.getElementById('contributorName').value.trim(),
-          email: document.getElementById('contributorEmail').value.trim()
-        },
-        // Journal info
-        nama: document.getElementById('nama').value.trim(),
-        instansi: document.getElementById('instansi').value.trim(),
-        scope: selectedScopes,
-        akreditasi: document.getElementById('akreditasi').value,
-        harga: parseInt(document.getElementById('harga').value),
-        frekuensi: selectedMonths,
-        waktuReview: parseFloat(document.getElementById('waktuReview').value),
-        fastTrack: {
-          tersedia: document.getElementById('fastTrackTersedia').checked,
-          biaya: document.getElementById('fastTrackTersedia').checked ? 
-            parseInt(document.getElementById('fastTrackBiaya').value || 0) : 0
-        },
-        tautan: document.getElementById('tautan').value.trim(),
-        // Submission metadata
-        status: 'pending',
-        submittedAt: serverTimestamp()
-      };
-
-      // Show loading
-      document.getElementById('btnText').classList.add('d-none');
-      document.getElementById('btnSpinner').classList.remove('d-none');
-      document.getElementById('btnSubmit').disabled = true;
-
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+      btn.textContent = 'Mengirim...';
+      
       try {
-        await addDoc(collection(db, 'journal_submissions'), data);
+        await addDoc(collection(db, 'journal_submissions'), {
+          nama: document.getElementById('nama').value,
+          instansi: document.getElementById('instansi').value,
+          akreditasi: document.getElementById('akreditasi').value,
+          scope: document.getElementById('scope').value,
+          harga: parseInt(document.getElementById('harga').value),
+          waktuReview: document.getElementById('waktuReview').value,
+          frekuensi: document.getElementById('frekuensi').value,
+          tautan: document.getElementById('tautan').value,
+          catatan: document.getElementById('catatan').value,
+          email: document.getElementById('email').value,
+          tanggalSubmit: new Date(),
+          status: 'pending'
+        });
         
-        // Show success
-        document.getElementById('formSubmit').classList.add('d-none');
-        document.getElementById('successMessage').classList.remove('d-none');
-        
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        // Redirect after 3 seconds
-        setTimeout(() => {
-          window.location.href = 'journals.html';
-        }, 3000);
+        document.getElementById('formContainer').innerHTML = `
+          <div class="success-message">
+            <h2>Terima Kasih!</h2>
+            <p>Kontribusi Anda telah diterima dan akan direview oleh tim kami.</p>
+            <a href="journals.html" class="btn btn-primary">Lihat Daftar Jurnal</a>
+            <a href="submit-journal.html" class="btn btn-outline" style="margin-left:8px">Kirim Lagi</a>
+          </div>
+        `;
       } catch (error) {
-        console.error('Error submitting:', error);
-        alert('Gagal mengirim data. Silakan coba lagi.');
-        
-        // Reset button
-        document.getElementById('btnText').classList.remove('d-none');
-        document.getElementById('btnSpinner').classList.add('d-none');
-        document.getElementById('btnSubmit').disabled = false;
+        alert('Gagal mengirim. Silakan coba lagi.');
+        btn.disabled = false;
+        btn.textContent = 'Kirim Kontribusi';
       }
     });
   </script>
