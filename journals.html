@@ -4,532 +4,412 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daftar Jurnal - PubGlow</title>
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/main-theme.css" rel="stylesheet">
   <style>
-    :root {
-      --primary: #667eea;
-      --secondary: #764ba2;
+    .filters-sidebar {
+      position: sticky;
+      top: 80px;
     }
     
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f7fa;
+    .filter-section {
+      margin-bottom: 24px;
     }
     
-    .header {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      color: white;
-      padding: 60px 0 40px;
-      margin-bottom: 30px;
+    .filter-section label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--color-text);
     }
     
-    .header h1 {
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-    
-    .filters-card {
-      background: white;
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 25px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    
-    .filters-card h5 {
-      color: var(--primary);
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-    
-    .scope-filter-group {
+    .scope-filter-group,
+    .month-filter-group {
       max-height: 150px;
       overflow-y: auto;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 10px;
-      background: #f9f9fa;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 12px;
+      background: var(--color-bg-light);
     }
     
-    .month-filter-group {
-      max-height: 120px;
-      overflow-y: auto;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 10px;
-      background: #f9f9fa;
+    .form-check {
+      margin-bottom: 8px;
+    }
+    
+    .form-check-input {
+      margin-top: 0.2em;
+    }
+    
+    .form-check-label {
+      font-size: 13px;
+      color: var(--color-text);
     }
     
     .month-filter-group .form-check {
       display: inline-block;
-      width: 32%;
-      margin-right: 1%;
-      font-size: 0.9rem;
+      width: 31%;
+      margin-right: 2%;
+    }
+    
+    .price-range {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
     }
     
     .journal-card {
-      background: white;
-      border-radius: 12px;
-      padding: 25px;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 24px;
       margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      transition: all 0.3s;
-      border-left: 4px solid var(--primary);
+      transition: var(--transition);
     }
     
     .journal-card:hover {
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-color: var(--color-primary);
     }
     
-    .journal-card h5 {
-      color: var(--primary);
-      font-weight: 700;
+    .journal-title {
+      font-size: 18px;
+      font-weight: 600;
       margin-bottom: 12px;
+      color: var(--color-primary);
     }
     
-    .journal-info {
-      font-size: 0.95rem;
-      color: #555;
-      line-height: 1.8;
+    .journal-meta {
+      display: grid;
+      gap: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
     }
     
-    .badge-custom {
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.85rem;
+    .journal-meta-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
     }
     
-    .loading-spinner {
-      text-align: center;
-      padding: 50px;
+    .journal-meta-label {
+      font-weight: 500;
+      color: var(--color-text-light);
+      min-width: 110px;
     }
     
-    .btn-filter {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px 30px;
-      border-radius: 8px;
-      font-weight: 600;
-      transition: all 0.3s;
+    .journal-meta-value {
+      color: var(--color-text);
     }
     
-    .btn-filter:hover {
-      background: var(--secondary);
-      color: white;
-      transform: translateY(-2px);
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--color-border);
     }
     
-    .btn-reset {
-      background: #6c757d;
-      color: white;
-      border: none;
-      padding: 10px 30px;
-      border-radius: 8px;
-      font-weight: 600;
+    .result-count {
+      font-size: 14px;
+      color: var(--color-text-light);
     }
     
-    .result-info {
-      background: white;
-      padding: 15px 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    .filter-buttons {
+      display: grid;
+      gap: 8px;
+      margin-top: 24px;
+    }
+    
+    @media (max-width: 992px) {
+      .filters-sidebar {
+        position: static;
+        margin-bottom: 32px;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <div class="header">
-    <div class="container">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h1>📚 Daftar Jurnal</h1>
-          <p class="mb-0">Temukan jurnal yang sesuai dengan kebutuhan publikasi Anda</p>
-        </div>
-        <a href="index.html" class="btn btn-light">← Beranda</a>
-      </div>
+  <!-- Navbar -->
+  <nav class="main-navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-brand">PubGlow</a>
+      <button class="navbar-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="navbar-menu" id="navMenu">
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="journals.html" class="active">Jurnal</a></li>
+        <li><a href="articles.html">Artikel</a></li>
+        <li><a href="index.html#contribute">Kontributor</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="container">
+    <div class="page-header">
+      <h1>Daftar Jurnal</h1>
+      <p>Temukan jurnal terakreditasi yang sesuai dengan kebutuhan publikasi Anda</p>
     </div>
   </div>
 
-  <div class="container">
-    <div class="row">
+  <!-- Main Content -->
+  <div class="container" style="padding-bottom:80px">
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:40px">
       <!-- Filters Sidebar -->
-      <div class="col-lg-3">
-        <div class="filters-card">
-          <h5>🔍 Filter & Urutan</h5>
+      <div class="filters-sidebar">
+        <div class="card" style="padding:20px">
+          <h3 style="font-size:16px;font-weight:600;margin-bottom:20px">Filter & Urutan</h3>
           
           <!-- Search -->
-          <div class="mb-3">
-            <label class="form-label fw-bold">Cari Jurnal</label>
-            <input type="text" class="form-control" id="searchInput" 
-              placeholder="Nama jurnal atau instansi...">
+          <div class="filter-section">
+            <label>Cari Jurnal</label>
+            <input type="text" class="form-control" id="searchInput" placeholder="Nama atau instansi">
           </div>
 
           <!-- Akreditasi -->
-          <div class="mb-3">
-            <label class="form-label fw-bold">Akreditasi</label>
+          <div class="filter-section">
+            <label>Akreditasi</label>
             <select class="form-select" id="filterAkreditasi">
-              <option value="">Semua Akreditasi</option>
+              <option value="">Semua</option>
               <option value="SINTA 1">SINTA 1</option>
               <option value="SINTA 2">SINTA 2</option>
               <option value="SINTA 3">SINTA 3</option>
               <option value="SINTA 4">SINTA 4</option>
               <option value="SINTA 5">SINTA 5</option>
               <option value="SINTA 6">SINTA 6</option>
-              <option value="Non-SINTA">Non-SINTA</option>
-              <option value="Scopus Q1">Scopus Q1</option>
-              <option value="Scopus Q2">Scopus Q2</option>
-              <option value="Scopus Q3">Scopus Q3</option>
-              <option value="Scopus Q4">Scopus Q4</option>
             </select>
           </div>
 
-          <!-- Scope (Multiple) -->
-          <div class="mb-3">
-            <label class="form-label fw-bold">Scope (bisa pilih banyak)</label>
+          <!-- Scope -->
+          <div class="filter-section">
+            <label>Bidang Ilmu</label>
             <div id="scopeFilterContainer" class="scope-filter-group">
-              <div class="text-center text-muted">
-                <span class="spinner-border spinner-border-sm"></span> Loading...
-              </div>
+              <div style="text-align:center;color:var(--color-text-light);font-size:12px">Loading...</div>
             </div>
           </div>
 
-          <!-- Harga Range -->
-          <div class="mb-3">
-            <label class="form-label fw-bold">Harga Publikasi (Rp)</label>
-            <div class="row g-2">
-              <div class="col-6">
-                <input type="number" class="form-control" id="priceMin" 
-                  placeholder="Min" min="0" step="100000">
-              </div>
-              <div class="col-6">
-                <input type="number" class="form-control" id="priceMax" 
-                  placeholder="Max" min="0" step="100000">
-              </div>
-            </div>
-          </div>
-
-          <!-- Bulan Terbit -->
-          <div class="mb-3">
-            <label class="form-label fw-bold">Bulan Terbit</label>
-            <div id="monthFilterContainer" class="month-filter-group">
-              <div class="form-check">
-                <input class="form-check-input month-filter" type="checkbox" value="Januari" id="f_jan">
-                <label class="form-check-label" for="f_jan">Jan</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input month-filter" type="checkbox" value="Februari" id="f_feb">
-                <label class="form-check-label" for="f_feb">Feb</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input month-filter" type="checkbox" value="Maret" id="f_mar">
-                <label class="form-check-label" for="f_mar">Mar</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input month-filter" type="checkbox" value="April" id="f_apr">
-                <label class="form-check-label" for="f_apr">Apr</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input month-filter" type="checkbox" value="Mei" id="f_may">
-                <label class="form-check-label" for="f_may">Mei</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input month-filter" type="checkbox" value="Juni" id="f_jun">
-                <label class="form-check-label" for="f_jun">Jun</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input month-filter" type="checkbox" value="Juli" id="f_jul">
-                <label class="form-check-label" for="f_jul">Jul</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input month-filter" type="checkbox" value="Agustus" id="f_aug">
-                <label class="form-check-label" for="f_aug">Agu</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input month-filter" type="checkbox" value="September" id="f_sep">
-                <label class="form-check-label" for="f_sep">Sep</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input month-filter" type="checkbox" value="Oktober" id="f_oct">
-                <label class="form-check-label" for="f_oct">Okt</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input month-filter" type="checkbox" value="November" id="f_nov">
-                <label class="form-check-label" for="f_nov">Nov</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input month-filter" type="checkbox" value="Desember" id="f_dec">
-                <label class="form-check-label" for="f_dec">Des</label>
-              </div>
+          <!-- Harga -->
+          <div class="filter-section">
+            <label>Rentang Harga (Rp)</label>
+            <div class="price-range">
+              <input type="number" class="form-control" id="priceMin" placeholder="Min" step="100000">
+              <input type="number" class="form-control" id="priceMax" placeholder="Max" step="100000">
             </div>
           </div>
 
           <!-- Fast Track -->
-          <div class="mb-3">
-            <label class="form-label fw-bold">Fast Track</label>
+          <div class="filter-section">
+            <label>Fast Track</label>
             <select class="form-select" id="filterFastTrack">
               <option value="">Semua</option>
-              <option value="ya">Ada Fast Track</option>
+              <option value="ya">Ada</option>
               <option value="tidak">Tidak Ada</option>
             </select>
           </div>
 
-          <!-- Sort By -->
-          <div class="mb-3">
-            <label class="form-label fw-bold">Urutkan Berdasarkan</label>
+          <!-- Sort -->
+          <div class="filter-section">
+            <label>Urutkan</label>
             <select class="form-select" id="sortBy">
               <option value="">Default</option>
-              <option value="harga-asc">Harga: Termurah</option>
-              <option value="harga-desc">Harga: Termahal</option>
-              <option value="review-asc">Review: Tercepat</option>
-              <option value="review-desc">Review: Terlama</option>
+              <option value="harga-asc">Harga Termurah</option>
+              <option value="harga-desc">Harga Termahal</option>
+              <option value="review-asc">Review Tercepat</option>
             </select>
           </div>
 
-          <div class="d-grid gap-2">
-            <button class="btn btn-filter" id="btnApplyFilter">
-              🔍 Terapkan Filter
-            </button>
-            <button class="btn btn-reset" id="btnResetFilter">
-              🔄 Reset
-            </button>
+          <div class="filter-buttons">
+            <button class="btn btn-primary" id="btnApplyFilter">Terapkan</button>
+            <button class="btn btn-outline" id="btnResetFilter">Reset</button>
           </div>
         </div>
       </div>
 
       <!-- Journals List -->
-      <div class="col-lg-9">
-        <!-- Result Info -->
-        <div class="result-info">
-          <div class="d-flex justify-content-between align-items-center">
-            <span><strong id="resultCount">0</strong> jurnal ditemukan</span>
-            <a href="submit-journal.html" class="btn btn-sm btn-outline-primary">
-              ➕ Kontribusi Jurnal
-            </a>
-          </div>
+      <div>
+        <div class="result-header">
+          <div class="result-count"><strong id="resultCount">0</strong> jurnal ditemukan</div>
+          <a href="submit-journal.html" class="btn btn-outline" style="padding:8px 16px;font-size:13px">Kontribusi Jurnal</a>
         </div>
 
-        <!-- Journals Container -->
         <div id="journalsList">
-          <div class="loading-spinner">
-            <div class="spinner-border text-primary" role="status"></div>
-            <p class="mt-2">Memuat data jurnal...</p>
+          <div style="text-align:center;padding:60px 0">
+            <div style="width:24px;height:24px;border:2px solid var(--color-border);border-top-color:var(--color-primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px"></div>
+            <p style="color:var(--color-text-light);font-size:14px">Memuat data jurnal...</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">PubGlow</div>
+          <p class="footer-description">Platform terpadu untuk publikasi jurnal dan artikel ilmiah.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Platform</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="journals.html">Jurnal</a></li>
+            <li><a href="articles.html">Artikel</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Lainnya</h4>
+          <ul class="footer-links">
+            <li><a href="submit-journal.html">Submit Jurnal</a></li>
+            <li><a href="submit-article.html">Submit Artikel</a></li>
+            <li><a href="login.html">Admin</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">&copy; 2025 PubGlow</div>
+    </div>
+  </footer>
+
+  <style>
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
   <script type="module">
     import { db } from './js/firebase.js';
     import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { trackVisitor } from './js/visitor-tracker.js';
+
+    trackVisitor();
+
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navMenu').classList.toggle('active');
+    });
 
     let allJournals = [];
 
-    // Load scopes for filter
     async function loadScopesFilter() {
       try {
         const snapshot = await getDocs(collection(db, 'scopes'));
-        
         if (snapshot.empty) {
-          document.getElementById('scopeFilterContainer').innerHTML = 
-            '<p class="text-muted mb-0 small">Tidak ada scope</p>';
+          document.getElementById('scopeFilterContainer').innerHTML = '<p style="font-size:12px;color:var(--color-text-light);margin:0">Belum ada scope</p>';
           return;
         }
-
         let html = '';
         snapshot.forEach(doc => {
           const scope = doc.data().nama;
           html += `
             <div class="form-check">
               <input class="form-check-input scope-filter" type="checkbox" value="${scope}" id="sf_${doc.id}">
-              <label class="form-check-label" for="sf_${doc.id}">
-                ${scope}
-              </label>
+              <label class="form-check-label" for="sf_${doc.id}">${scope}</label>
             </div>
           `;
         });
         document.getElementById('scopeFilterContainer').innerHTML = html;
       } catch (error) {
-        console.error('Error loading scopes:', error);
+        console.error(error);
       }
     }
 
-    // Load journals
     async function loadJournals() {
       try {
         const q = query(collection(db, 'journals'), where('status', '==', 'aktif'));
         const snapshot = await getDocs(q);
-        
         if (snapshot.empty) {
-          document.getElementById('journalsList').innerHTML = `
-            <div class="alert alert-info">
-              <h5>Belum ada jurnal</h5>
-              <p class="mb-0">Belum ada jurnal yang dipublikasikan. Silakan cek kembali nanti!</p>
-            </div>
-          `;
-          document.getElementById('resultCount').textContent = '0';
+          document.getElementById('journalsList').innerHTML = '<div class="card" style="padding:40px;text-align:center"><p style="color:var(--color-text-light);margin:0">Belum ada jurnal dipublikasikan</p></div>';
           return;
         }
-
         allJournals = [];
         snapshot.forEach(doc => {
           allJournals.push({ id: doc.id, ...doc.data() });
         });
-
         applyFiltersAndSort();
       } catch (error) {
-        console.error('Error loading journals:', error);
-        document.getElementById('journalsList').innerHTML = `
-          <div class="alert alert-warning">
-            <p class="mb-0">Gagal memuat data jurnal. Silakan refresh halaman.</p>
-          </div>
-        `;
+        console.error(error);
       }
     }
 
     function applyFiltersAndSort() {
       let filtered = [...allJournals];
-
-      // Search filter
       const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
       if (searchTerm) {
-        filtered = filtered.filter(j => 
-          j.nama.toLowerCase().includes(searchTerm) || 
-          j.instansi.toLowerCase().includes(searchTerm)
-        );
+        filtered = filtered.filter(j => j.nama.toLowerCase().includes(searchTerm) || j.instansi.toLowerCase().includes(searchTerm));
       }
-
-      // Akreditasi filter
       const akreditasi = document.getElementById('filterAkreditasi').value;
-      if (akreditasi) {
-        filtered = filtered.filter(j => j.akreditasi === akreditasi);
-      }
-
-      // Scope filter (multi-select - must match ANY selected scope)
-      const selectedScopes = Array.from(document.querySelectorAll('.scope-filter:checked'))
-        .map(cb => cb.value);
+      if (akreditasi) filtered = filtered.filter(j => j.akreditasi === akreditasi);
+      const selectedScopes = Array.from(document.querySelectorAll('.scope-filter:checked')).map(cb => cb.value);
       if (selectedScopes.length > 0) {
         filtered = filtered.filter(j => {
           const journalScopes = Array.isArray(j.scope) ? j.scope : [j.scope];
           return selectedScopes.some(s => journalScopes.includes(s));
         });
       }
-
-      // Price range filter
       const priceMin = parseInt(document.getElementById('priceMin').value) || 0;
       const priceMax = parseInt(document.getElementById('priceMax').value) || Infinity;
       filtered = filtered.filter(j => j.harga >= priceMin && j.harga <= priceMax);
-
-      // Month filter (must match ANY selected month)
-      const selectedMonths = Array.from(document.querySelectorAll('.month-filter:checked'))
-        .map(cb => cb.value);
-      if (selectedMonths.length > 0) {
-        filtered = filtered.filter(j => {
-          const journalMonths = Array.isArray(j.frekuensi) ? j.frekuensi : [];
-          return selectedMonths.some(m => journalMonths.includes(m));
-        });
-      }
-
-      // Fast track filter
       const fastTrack = document.getElementById('filterFastTrack').value;
-      if (fastTrack === 'ya') {
-        filtered = filtered.filter(j => j.fastTrack?.tersedia === true);
-      } else if (fastTrack === 'tidak') {
-        filtered = filtered.filter(j => !j.fastTrack?.tersedia);
-      }
-
-      // Sort
+      if (fastTrack === 'ya') filtered = filtered.filter(j => j.fastTrack === 'Ada');
+      else if (fastTrack === 'tidak') filtered = filtered.filter(j => j.fastTrack !== 'Ada');
       const sortBy = document.getElementById('sortBy').value;
-      if (sortBy === 'harga-asc') {
-        filtered.sort((a, b) => a.harga - b.harga);
-      } else if (sortBy === 'harga-desc') {
-        filtered.sort((a, b) => b.harga - a.harga);
-      } else if (sortBy === 'review-asc') {
-        filtered.sort((a, b) => a.waktuReview - b.waktuReview);
-      } else if (sortBy === 'review-desc') {
-        filtered.sort((a, b) => b.waktuReview - a.waktuReview);
-      }
-
-      // Display results
+      if (sortBy === 'harga-asc') filtered.sort((a, b) => a.harga - b.harga);
+      else if (sortBy === 'harga-desc') filtered.sort((a, b) => b.harga - a.harga);
       displayJournals(filtered);
     }
 
     function displayJournals(journals) {
       document.getElementById('resultCount').textContent = journals.length;
-
       if (journals.length === 0) {
-        document.getElementById('journalsList').innerHTML = `
-          <div class="alert alert-warning">
-            <h5>🔍 Tidak ada hasil</h5>
-            <p class="mb-0">Tidak ada jurnal yang sesuai dengan filter. Coba ubah kriteria pencarian Anda.</p>
-          </div>
-        `;
+        document.getElementById('journalsList').innerHTML = '<div class="card" style="padding:40px;text-align:center"><p style="color:var(--color-text-light);margin:0">Tidak ada jurnal yang sesuai filter</p></div>';
         return;
       }
-
       let html = '';
-      journals.forEach(journal => {
-        html += renderJournalCard(journal);
+      journals.forEach(j => {
+        const scopes = Array.isArray(j.scope) ? j.scope : [j.scope];
+        const scopeBadges = scopes.map(s => `<span class="badge">${s}</span>`).join(' ');
+        html += `
+          <div class="journal-card">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">
+              <h3 class="journal-title">${j.nama}</h3>
+              <span class="badge badge-primary">${j.akreditasi}</span>
+            </div>
+            <div class="journal-meta">
+              <div class="journal-meta-item">
+                <span class="journal-meta-label">Instansi</span>
+                <span class="journal-meta-value">${j.instansi}</span>
+              </div>
+              <div class="journal-meta-item">
+                <span class="journal-meta-label">Bidang Ilmu</span>
+                <span class="journal-meta-value">${scopeBadges}</span>
+              </div>
+              <div class="journal-meta-item">
+                <span class="journal-meta-label">Biaya</span>
+                <span class="journal-meta-value">Rp ${j.harga?.toLocaleString('id-ID')}</span>
+              </div>
+              <div class="journal-meta-item">
+                <span class="journal-meta-label">Waktu Review</span>
+                <span class="journal-meta-value">${j.waktuReview}</span>
+              </div>
+              <div class="journal-meta-item">
+                <span class="journal-meta-label">Frekuensi</span>
+                <span class="journal-meta-value">${j.frekuensi}</span>
+              </div>
+              ${j.fastTrack === 'Ada' ? '<div class="journal-meta-item"><span class="badge" style="background:var(--color-primary);color:white">Fast Track Tersedia</span></div>' : ''}
+            </div>
+            <a href="${j.tautan}" target="_blank" class="btn btn-primary" style="padding:8px 16px;font-size:13px">Kunjungi Website</a>
+          </div>
+        `;
       });
-
       document.getElementById('journalsList').innerHTML = html;
     }
 
-    function renderJournalCard(data) {
-      const scopes = Array.isArray(data.scope) ? data.scope : [data.scope];
-      const scopeBadges = scopes.map(s => 
-        `<span class="badge bg-info badge-custom">${s}</span>`
-      ).join(' ');
-      
-      const months = Array.isArray(data.frekuensi) ? data.frekuensi : [];
-      const monthText = months.length > 0 ? months.join(', ') : 'N/A';
-
-      const fastTrackBadge = data.fastTrack?.tersedia ? 
-        `<span class="badge bg-warning text-dark badge-custom">⚡ Fast Track (Rp ${data.fastTrack.biaya?.toLocaleString('id-ID')})</span>` : 
-        '';
-
-      return `
-        <div class="journal-card">
-          <div class="d-flex justify-content-between align-items-start mb-3">
-            <h5 class="mb-0">${data.nama}</h5>
-            <span class="badge bg-success badge-custom">${data.akreditasi}</span>
-          </div>
-
-          <div class="journal-info">
-            <p class="mb-2">
-              <strong>🏛️ Instansi:</strong> ${data.instansi}
-            </p>
-            <p class="mb-2">
-              <strong>📖 Scope:</strong> ${scopeBadges}
-            </p>
-            <p class="mb-2">
-              <strong>💰 Biaya Publikasi:</strong> Rp ${data.harga?.toLocaleString('id-ID')}
-            </p>
-            <p class="mb-2">
-              <strong>⏱️ Waktu Review:</strong> ${data.waktuReview} bulan
-            </p>
-            <p class="mb-2">
-              <strong>📅 Bulan Terbit:</strong> ${monthText}
-            </p>
-            ${fastTrackBadge ? `<p class="mb-2">${fastTrackBadge}</p>` : ''}
-            <p class="mb-0">
-              <a href="${data.tautan}" target="_blank" class="btn btn-sm btn-primary">
-                🔗 Kunjungi Website Jurnal →
-              </a>
-            </p>
-          </div>
-        </div>
-      `;
-    }
-
-    // Event listeners
     document.getElementById('btnApplyFilter').addEventListener('click', applyFiltersAndSort);
-    
     document.getElementById('btnResetFilter').addEventListener('click', () => {
       document.getElementById('searchInput').value = '';
       document.getElementById('filterAkreditasi').value = '';
@@ -537,20 +417,14 @@
       document.getElementById('priceMax').value = '';
       document.getElementById('filterFastTrack').value = '';
       document.getElementById('sortBy').value = '';
-      
       document.querySelectorAll('.scope-filter').forEach(cb => cb.checked = false);
-      document.querySelectorAll('.month-filter').forEach(cb => cb.checked = false);
-      
       applyFiltersAndSort();
     });
-
-    // Auto-filter on input change
     document.getElementById('searchInput').addEventListener('input', applyFiltersAndSort);
     document.getElementById('filterAkreditasi').addEventListener('change', applyFiltersAndSort);
     document.getElementById('filterFastTrack').addEventListener('change', applyFiltersAndSort);
     document.getElementById('sortBy').addEventListener('change', applyFiltersAndSort);
 
-    // Initial load
     loadScopesFilter();
     loadJournals();
   </script>
