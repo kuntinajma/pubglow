@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Artikel - Admin PubGlow</title>
+  <link href="../css/main-theme.css" rel="stylesheet">
+  <style>
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    
+    .admin-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .admin-badge {
+      display: inline-block;
+      background: var(--color-primary);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 12px;
+    }
+    
+    .filter-bar {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .filter-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      transition: var(--transition);
+    }
+    
+    .stat-card:hover {
+      border-color: var(--color-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--color-primary);
+      display: block;
+      margin-bottom: 4px;
+    }
+    
+    .stat-label {
+      font-size: 13px;
+      color: var(--color-text-light);
+    }
+    
+    .table-container {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .table-responsive {
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th {
+      background: var(--color-bg-light);
+      padding: 16px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-border);
+      white-space: nowrap;
+    }
+    
+    td {
+      padding: 16px;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 14px;
+    }
+    
+    tbody tr:hover {
+      background: var(--color-bg-light);
+    }
+    
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .status-published {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .status-draft {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-pending {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+    
+    .article-title {
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--color-text-light);
+    }
+    
+    .empty-state h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--color-border);
+      border-top-color: var(--color-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="main-navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        PubGlow
+        <span class="admin-badge">Admin</span>
+      </a>
+      <button class="navbar-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="navbar-menu" id="navMenu">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="manage-journals.html">Jurnal</a></li>
+        <li><a href="manage-articles.html" class="active">Artikel</a></li>
+        <li><a href="write-article.html">Tulis Artikel</a></li>
+        <li><a href="#" id="logoutBtn">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container" style="padding-bottom:80px">
+    <div class="admin-header">
+      <h1>Kelola Artikel</h1>
+      <a href="write-article.html" class="btn btn-primary">+ Tulis Artikel Baru</a>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <span class="stat-number" id="statTotal">0</span>
+        <span class="stat-label">Total Artikel</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="statPublished">0</span>
+        <span class="stat-label">Dipublikasikan</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="statDraft">0</span>
+        <span class="stat-label">Draft</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="statPending">0</span>
+        <span class="stat-label">Pending Review</span>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="filter-grid">
+        <div class="form-group" style="margin:0">
+          <input type="text" class="form-control" id="searchInput" placeholder="Cari judul artikel atau penulis...">
+        </div>
+        
+        <div class="form-group" style="margin:0">
+          <select class="form-select" id="filterStatus">
+            <option value="">Semua Status</option>
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+          </select>
+        </div>
+        
+        <div class="form-group" style="margin:0">
+          <select class="form-select" id="filterCategory">
+            <option value="">Semua Kategori</option>
+            <option value="Tips Publikasi">Tips Publikasi</option>
+            <option value="Panduan Riset">Panduan Riset</option>
+            <option value="Pengalaman">Pengalaman</option>
+            <option value="Tutorial">Tutorial</option>
+            <option value="Berita">Berita</option>
+            <option value="Opini">Opini</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="filter-actions">
+        <button class="btn btn-outline btn-sm" id="btnReset">Reset Filter</button>
+        <span style="flex:1"></span>
+        <span id="resultCount" style="font-size:14px;color:var(--color-text-light);line-height:36px">0 artikel ditemukan</span>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <div class="table-responsive">
+        <table id="articlesTable">
+          <thead>
+            <tr>
+              <th>Judul</th>
+              <th>Penulis</th>
+              <th>Kategori</th>
+              <th>Views</th>
+              <th>Tanggal</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="7">
+                <div class="loading">
+                  <div class="loading-spinner"></div>
+                  <p style="color:var(--color-text-light);margin:0">Memuat data...</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">PubGlow Admin</div>
+          <p class="footer-description">Platform manajemen jurnal dan artikel ilmiah.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">&copy; 2025 PubGlow</div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { auth, db } from '../js/firebase.js';
+    import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+    import { collection, getDocs, doc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+    // Check auth
+    onAuthStateChanged(auth, (user) => {
+      if (!user) window.location.href = '../login.html';
+    });
+
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navMenu').classList.toggle('active');
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (confirm('Logout dari admin panel?')) {
+        await signOut(auth);
+        window.location.href = '../login.html';
+      }
+    });
+
+    let allArticles = [];
+
+    // Load articles
+    async function loadArticles() {
+      try {
+        const snapshot = await getDocs(collection(db, 'articles'));
+        allArticles = [];
+        snapshot.forEach(doc => {
+          allArticles.push({ id: doc.id, ...doc.data() });
+        });
+        updateStats();
+        applyFilters();
+      } catch (error) {
+        console.error(error);
+        document.getElementById('tableBody').innerHTML = `
+          <tr><td colspan="7">
+            <div class="empty-state">
+              <h3>Error</h3>
+              <p>Gagal memuat data artikel</p>
+            </div>
+          </td></tr>
+        `;
+      }
+    }
+
+    function updateStats() {
+      document.getElementById('statTotal').textContent = allArticles.length;
+      document.getElementById('statPublished').textContent = allArticles.filter(a => a.status === 'published').length;
+      document.getElementById('statDraft').textContent = allArticles.filter(a => a.status === 'draft').length;
+      
+      // Count pending submissions
+      getDocs(collection(db, 'article_submissions')).then(snap => {
+        document.getElementById('statPending').textContent = snap.size;
+      });
+    }
+
+    function applyFilters() {
+      let filtered = [...allArticles];
+      
+      const search = document.getElementById('searchInput').value.toLowerCase().trim();
+      if (search) {
+        filtered = filtered.filter(a => 
+          a.title.toLowerCase().includes(search) || 
+          a.author.toLowerCase().includes(search)
+        );
+      }
+      
+      const status = document.getElementById('filterStatus').value;
+      if (status) {
+        filtered = filtered.filter(a => a.status === status);
+      }
+      
+      const category = document.getElementById('filterCategory').value;
+      if (category) {
+        filtered = filtered.filter(a => a.category === category);
+      }
+      
+      displayArticles(filtered);
+    }
+
+    function displayArticles(articles) {
+      document.getElementById('resultCount').textContent = `${articles.length} artikel ditemukan`;
+      
+      if (articles.length === 0) {
+        document.getElementById('tableBody').innerHTML = `
+          <tr><td colspan="7">
+            <div class="empty-state">
+              <h3>Tidak Ada Data</h3>
+              <p>Tidak ada artikel yang sesuai dengan filter</p>
+            </div>
+          </td></tr>
+        `;
+        return;
+      }
+      
+      // Sort by date (newest first)
+      articles.sort((a, b) => {
+        const dateA = a.publishedAt?.toDate ? a.publishedAt.toDate() : new Date(a.publishedAt);
+        const dateB = b.publishedAt?.toDate ? b.publishedAt.toDate() : new Date(b.publishedAt);
+        return dateB - dateA;
+      });
+      
+      let html = '';
+      articles.forEach(a => {
+        const date = a.publishedAt?.toDate ? a.publishedAt.toDate() : new Date(a.publishedAt);
+        const dateStr = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        
+        html += `
+          <tr>
+            <td>
+              <div class="article-title" title="${a.title}">
+                <strong>${a.title}</strong>
+              </div>
+            </td>
+            <td>${a.author || 'Admin'}</td>
+            <td><span class="badge">${a.category}</span></td>
+            <td>${a.views || 0}</td>
+            <td><small>${dateStr}</small></td>
+            <td><span class="status-badge status-${a.status}">${a.status}</span></td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn btn-outline btn-sm" onclick="toggleStatus('${a.id}', '${a.status}')">
+                  ${a.status === 'published' ? 'Draft' : 'Publish'}
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="deleteArticle('${a.id}', '${a.title.replace(/'/g, "\\'")}')">Hapus</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+      document.getElementById('tableBody').innerHTML = html;
+    }
+
+    window.toggleStatus = async function(id, currentStatus) {
+      if (!confirm(`${currentStatus === 'published' ? 'Ubah ke draft' : 'Publikasikan'} artikel ini?`)) return;
+      
+      try {
+        const newStatus = currentStatus === 'published' ? 'draft' : 'published';
+        await updateDoc(doc(db, 'articles', id), { status: newStatus });
+        alert('Status berhasil diubah');
+        loadArticles();
+      } catch (error) {
+        alert('Gagal mengubah status');
+        console.error(error);
+      }
+    };
+
+    window.deleteArticle = async function(id, title) {
+      if (!confirm(`Hapus artikel "${title}"?\nData tidak dapat dikembalikan!`)) return;
+      
+      try {
+        await deleteDoc(doc(db, 'articles', id));
+        alert('Artikel berhasil dihapus');
+        loadArticles();
+      } catch (error) {
+        alert('Gagal menghapus artikel');
+        console.error(error);
+      }
+    };
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('filterStatus').addEventListener('change', applyFilters);
+    document.getElementById('filterCategory').addEventListener('change', applyFilters);
+    
+    document.getElementById('btnReset').addEventListener('click', () => {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('filterStatus').value = '';
+      document.getElementById('filterCategory').value = '';
+      applyFilters();
+    });
+
+    loadArticles();
+  </script>
+</body>
+</html>
