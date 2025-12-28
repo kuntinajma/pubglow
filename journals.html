@@ -102,6 +102,19 @@
       color: var(--color-text);
     }
     
+    .fast-track-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--color-primary);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 8px;
+    }
+    
     .result-header {
       display: flex;
       justify-content: space-between;
@@ -360,8 +373,11 @@
       const priceMax = parseInt(document.getElementById('priceMax').value) || Infinity;
       filtered = filtered.filter(j => j.harga >= priceMin && j.harga <= priceMax);
       const fastTrack = document.getElementById('filterFastTrack').value;
-      if (fastTrack === 'ya') filtered = filtered.filter(j => j.fastTrack === 'Ada');
-      else if (fastTrack === 'tidak') filtered = filtered.filter(j => j.fastTrack !== 'Ada');
+      if (fastTrack === 'ya') {
+        filtered = filtered.filter(j => j.fastTrack === 'Ada');
+      } else if (fastTrack === 'tidak') {
+        filtered = filtered.filter(j => j.fastTrack !== 'Ada');
+      }
       const sortBy = document.getElementById('sortBy').value;
       if (sortBy === 'harga-asc') filtered.sort((a, b) => a.harga - b.harga);
       else if (sortBy === 'harga-desc') filtered.sort((a, b) => b.harga - a.harga);
@@ -378,6 +394,18 @@
       journals.forEach(j => {
         const scopes = Array.isArray(j.scope) ? j.scope : [j.scope];
         const scopeBadges = scopes.map(s => `<span class="badge">${s}</span>`).join(' ');
+        
+        // Fast Track Badge
+        let fastTrackHTML = '';
+        if (j.fastTrack === 'Ada') {
+          const fastTrackPrice = j.fastTrackBiaya ? `Rp ${j.fastTrackBiaya.toLocaleString('id-ID')}` : 'Hubungi jurnal';
+          fastTrackHTML = `
+            <div class="journal-meta-item">
+              <span class="fast-track-badge">⚡ Fast Track Tersedia - ${fastTrackPrice}</span>
+            </div>
+          `;
+        }
+        
         html += `
           <div class="journal-card">
             <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">
@@ -405,7 +433,7 @@
                 <span class="journal-meta-label">Frekuensi</span>
                 <span class="journal-meta-value">${j.frekuensi}</span>
               </div>
-              ${j.fastTrack === 'Ada' ? '<div class="journal-meta-item"><span class="badge" style="background:var(--color-primary);color:white">Fast Track Tersedia</span></div>' : ''}
+              ${fastTrackHTML}
             </div>
             <a href="${j.tautan}" target="_blank" class="btn btn-primary" style="padding:8px 16px;font-size:13px">Kunjungi Website</a>
           </div>
