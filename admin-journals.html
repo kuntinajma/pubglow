@@ -28,6 +28,55 @@
     .month-checkboxes .form-check {
       margin: 0;
     }
+    /* Search & Filter Styles */
+    .search-filter-section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .search-filter-section .search-box {
+      position: relative;
+    }
+    .search-filter-section .search-box input {
+      padding-left: 40px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+    .search-filter-section .search-box::before {
+      content: '🔍';
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      z-index: 1;
+    }
+    .filter-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .filter-badge {
+      background: #e3f2fd;
+      color: #1976d2;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filter-badge .clear {
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 4px;
+    }
+    .filter-badge .clear:hover {
+      color: #d32f2f;
+    }
   </style>
 </head>
 <body>
@@ -56,6 +105,44 @@
       <h1>Kelola Jurnal</h1>
       <p>Manage database jurnal terakreditasi</p>
       <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalJurnal">+ Tambah Jurnal Baru</button>
+    </div>
+
+    <!-- Search & Filter Section -->
+    <div class="search-filter-section">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="search-box">
+            <input type="text" class="form-control" id="searchInput" placeholder="Cari jurnal...">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" id="filterAkreditasi">
+            <option value="">Semua Akreditasi</option>
+            <option value="SINTA 1">SINTA 1</option>
+            <option value="SINTA 2">SINTA 2</option>
+            <option value="SINTA 3">SINTA 3</option>
+            <option value="SINTA 4">SINTA 4</option>
+            <option value="SINTA 5">SINTA 5</option>
+            <option value="SINTA 6">SINTA 6</option>
+            <option value="Non-SINTA">Non-SINTA</option>
+            <option value="Scopus Q1">Scopus Q1</option>
+            <option value="Scopus Q2">Scopus Q2</option>
+            <option value="Scopus Q3">Scopus Q3</option>
+            <option value="Scopus Q4">Scopus Q4</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" id="filterStatus">
+            <option value="">Semua Status</option>
+            <option value="aktif">Aktif</option>
+            <option value="hidden">Hidden</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-outline-secondary w-100" id="btnResetFilter">Reset Filter</button>
+        </div>
+      </div>
+      <div class="filter-badges" id="activeBadges"></div>
     </div>
 
     <div id="journalsList" class="mb-4">
